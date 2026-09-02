@@ -1,1 +1,408 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>NatureBite</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f7f7f2;
+      color: #1d3525;
+    }
+
+    header {
+      background: #ffffff;
+      padding: 18px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e5e5df;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      color: #1d5c36;
+    }
+
+    .login-btn {
+      border: none;
+      background: #1d5c36;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .hero {
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 50px 20px;
+    }
+
+    .hero-content {
+      max-width: 700px;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .hero h1 span {
+      color: #1d5c36;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: #59645d;
+      line-height: 1.7;
+      margin-bottom: 30px;
+    }
+
+    .shop-btn {
+      display: inline-block;
+      background: #1d5c36;
+      color: white;
+      padding: 14px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    footer {
+      background: #1d3525;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* Login Modal */
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      right: 18px;
+      top: 12px;
+      font-size: 25px;
+      cursor: pointer;
+      color: #777;
+    }
+
+    .modal-box h2 {
+      margin-bottom: 10px;
+      color: #1d5c36;
+    }
+
+    .modal-box p {
+      color: #777;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    .otp-btn {
+      width: 100%;
+      padding: 13px;
+      background: #1d5c36;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #recaptcha-container {
+      margin: 15px 0;
+    }
+
+    #message {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .hero h1 {
+        font-size: 36px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">NatureBite</div>
+
+    <button class="login-btn" onclick="openLogin()">
+      Login
+    </button>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+
+      <h1>
+        Welcome to <span>NatureBite</span>
+      </h1>
+
+      <p>
+        Healthy, natural and delicious food for your everyday life.
+        Discover better food choices with NatureBite.
+      </p>
+
+      <a href="#" class="shop-btn">
+        Explore Products
+      </a>
+
+    </div>
+  </section>
+
+  <footer>
+    © 2026 NatureBite. All Rights Reserved.
+  </footer>
+
+
+  <!-- Login Modal -->
+
+  <div class="modal" id="loginModal">
+
+    <div class="modal-box">
+
+      <div class="close" onclick="closeLogin()">×</div>
+
+      <h2>Login to NatureBite</h2>
+
+      <p>Enter your mobile number to continue.</p>
+
+      <input
+        type="tel"
+        id="phoneNumber"
+        placeholder="+8801XXXXXXXXX"
+      >
+
+      <div id="recaptcha-container"></div>
+
+      <button class="otp-btn" onclick="sendOTP()">
+        Send OTP
+      </button>
+
+      <div id="otpSection" style="display:none; margin-top:20px;">
+
+        <input
+          type="text"
+          id="otpCode"
+          placeholder="Enter OTP"
+        >
+
+        <button class="otp-btn" onclick="verifyOTP()">
+          Verify OTP
+        </button>
+
+      </div>
+
+      <div id="message"></div>
+
+    </div>
+
+  </div>
+
+
+  <script type="module">
+
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+    import {
+      getAuth,
+      RecaptchaVerifier,
+      signInWithPhoneNumber
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDBRf-8g83TnMYdoaKkpYpn_-boYng-SHE",
+      authDomain: "naturebite-538ba.firebaseapp.com",
+      projectId: "naturebite-538ba",
+      storageBucket: "naturebite-538ba.firebasestorage.app",
+      messagingSenderId: "403660151204",
+      appId: "1:403660151204:web:15db421e18442e85d70931"
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+    let confirmationResult;
+
+
+    window.openLogin = function () {
+
+      document.getElementById("loginModal").style.display = "flex";
+
+      setupRecaptcha();
+
+    };
+
+
+    window.closeLogin = function () {
+
+      document.getElementById("loginModal").style.display = "none";
+
+    };
+
+
+    function setupRecaptcha() {
+
+      if (window.recaptchaVerifier) return;
+
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        "recaptcha-container",
+        {
+          size: "normal"
+        }
+      );
+
+      window.recaptchaVerifier.render();
+
+    }
+
+
+    window.sendOTP = async function () {
+
+      const phoneNumber =
+        document.getElementById("phoneNumber").value.trim();
+
+      const message =
+        document.getElementById("message");
+
+      if (!phoneNumber) {
+
+        message.innerText =
+          "Please enter your mobile number.";
+
+        return;
+
+      }
+
+
+      try {
+
+        const appVerifier =
+          window.recaptchaVerifier;
+
+        confirmationResult =
+          await signInWithPhoneNumber(
+            auth,
+            phoneNumber,
+            appVerifier
+          );
+
+        message.innerText =
+          "OTP sent successfully.";
+
+        document.getElementById("otpSection")
+          .style.display = "block";
+
+      } catch (error) {
+
+        console.error(error);
+
+        message.innerText =
+          "OTP পাঠানো যায়নি। নম্বর ও reCAPTCHA পরীক্ষা করুন।";
+
+      }
+
+    };
+
+
+    window.verifyOTP = async function () {
+
+      const code =
+        document.getElementById("otpCode").value.trim();
+
+      const message =
+        document.getElementById("message");
+
+      if (!code) {
+
+        message.innerText =
+          "Please enter the OTP.";
+
+        return;
+
+      }
+
+
+      try {
+
+        const result =
+          await confirmationResult.confirm(code);
+
+        const user = result.user;
+
+        message.innerText =
+          "Login successful!";
+
+        console.log("Logged in user:", user);
+
+      } catch (error) {
+
+        console.error(error);
+
+        message.innerText =
+          "Invalid OTP. Please try again.";
+
+      }
+
+    };
+
+  </script>
+
+</body>
+</html>
