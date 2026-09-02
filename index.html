@@ -386,11 +386,13 @@
 
         const user = result.user;
 
-        message.innerText =
-          "Login successful!";
+        message.innerText = "Login successful!";
 
-        console.log("Logged in user:", user);
+console.log("Logged in user:", user);
 
+setTimeout(() => {
+  window.location.href = "dashboard.html";
+}, 800);
       } catch (error) {
 
         console.error(error);
