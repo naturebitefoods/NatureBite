@@ -593,12 +593,15 @@ loadProducts();
     
     onAuthStateChanged(auth, (user) => {
 
+      
       if (user) {
 
   document.getElementById("userInfo").innerText =
     "Logged in as: " + (user.phoneNumber || "Customer");
 
   loadMyOrders(user);
+
+}
 
 } else {
 
