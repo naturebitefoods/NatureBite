@@ -155,6 +155,14 @@
   </div>
 </section>
     
+    <section class="welcome">
+  <h2 style="margin-bottom:15px;">📦 My Orders</h2>
+
+  <div id="ordersList">
+    <p>Loading orders...</p>
+  </div>
+</section>
+    
     <section class="grid">
 
       <div class="card">
@@ -287,6 +295,79 @@ window.addToCart = async function (productId) {
 
     renderCart();
 
+    async function loadMyOrders(user) {
+
+  const ordersList =
+    document.getElementById("ordersList");
+
+  try {
+
+    const ordersQuery = query(
+      collection(db, "orders"),
+      where("customerPhone", "==", user.phoneNumber)
+    );
+
+    const snapshot =
+      await getDocs(ordersQuery);
+
+    if (snapshot.empty) {
+
+      ordersList.innerHTML =
+        "<p>You have no orders yet.</p>";
+
+      return;
+    }
+
+    ordersList.innerHTML = "";
+
+    snapshot.forEach((doc) => {
+
+      const order = doc.data();
+
+      const orderCard =
+        document.createElement("div");
+
+      orderCard.style.cssText = `
+        background:#f7f7f2;
+        padding:18px;
+        border-radius:12px;
+        margin-bottom:12px;
+        border:1px solid #e5e5df;
+      `;
+
+      orderCard.innerHTML = `
+        <h3 style="color:#1d5c36;">
+          Order: ${order.trackingCode || doc.id}
+        </h3>
+
+        <p style="margin-top:8px;">
+          Total: ৳${order.totalAmount || 0}
+        </p>
+
+        <p style="margin-top:5px;">
+          Payment:
+          ${order.paymentStatus || "pending"}
+        </p>
+
+        <p style="margin-top:5px;">
+          Status:
+          ${order.orderStatus || "pending"}
+        </p>
+      `;
+
+      ordersList.appendChild(orderCard);
+
+    });
+
+  } catch (error) {
+
+    console.error("Orders loading error:", error);
+
+    ordersList.innerHTML =
+      "<p>Orders load করা যাচ্ছে না।</p>";
+  }
+}
+    
     alert(product.name + " cart-এ যোগ হয়েছে।");
 
   } catch (error) {
@@ -514,10 +595,12 @@ loadProducts();
 
       if (user) {
 
-        document.getElementById("userInfo").innerText =
-          "Logged in as: " + (user.phoneNumber || "Customer");
+  document.getElementById("userInfo").innerText =
+    "Logged in as: " + (user.phoneNumber || "Customer");
 
-      } else {
+  loadMyOrders(user);
+
+}
 
         window.location.href = "index.html";
 
