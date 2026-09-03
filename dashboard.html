@@ -133,7 +133,15 @@
       <p id="userInfo">Checking your account...</p>
       <div id="status"></div>
     </section>
+    
+<section class="welcome">
+  <h2 style="margin-bottom:15px;">Our Products</h2>
 
+  <div id="productsList">
+    Loading products...
+  </div>
+</section>
+    
     <section class="grid">
 
       <div class="card">
@@ -189,6 +197,14 @@
     } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
 
+    import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+    
     const firebaseConfig = {
       apiKey: "AIzaSyDBRf-8g83TnMYdoaKkpYpn_-boYng-SHE",
       authDomain: "naturebite-538ba.firebaseapp.com",
@@ -204,6 +220,82 @@
     const auth = getAuth(app);
 
 
+    const db = getFirestore(app);
+
+
+async function loadProducts() {
+
+  const productsList =
+    document.getElementById("productsList");
+
+  try {
+
+    const productsQuery = query(
+      collection(db, "products"),
+      where("active", "==", true)
+    );
+
+    const snapshot =
+      await getDocs(productsQuery);
+
+    if (snapshot.empty) {
+
+      productsList.innerHTML =
+        "<p>No products available right now.</p>";
+
+      return;
+    }
+
+    productsList.innerHTML = "";
+
+    snapshot.forEach((doc) => {
+
+      const product = doc.data();
+
+      const productCard = document.createElement("div");
+
+      productCard.style.cssText = `
+        background:#f7f7f2;
+        padding:20px;
+        border-radius:12px;
+        margin-bottom:12px;
+        border:1px solid #e5e5df;
+      `;
+
+      productCard.innerHTML = `
+        <h3 style="color:#1d5c36;">
+          ${product.name || "NatureBite Product"}
+        </h3>
+
+        <p style="margin:8px 0;color:#68736c;">
+          ${product.description || ""}
+        </p>
+
+        <p style="font-weight:bold;">
+          Price: ৳${product.price || 0}
+        </p>
+
+        <p style="margin-top:5px;color:#68736c;">
+          Stock: ${product.stock || 0}
+        </p>
+      `;
+
+      productsList.appendChild(productCard);
+
+    });
+
+  } catch (error) {
+
+    console.error("Product loading error:", error);
+
+    productsList.innerHTML =
+      "<p>Products load করা যাচ্ছে না।</p>";
+  }
+}
+
+
+loadProducts();
+    
     onAuthStateChanged(auth, (user) => {
 
       if (user) {
