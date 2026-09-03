@@ -339,6 +339,23 @@
       Total: ৳0
     </div>
 
+    <button
+  id="checkoutBtn"
+  style="
+    width:100%;
+    margin-top:20px;
+    padding:14px;
+    background:#1d5c36;
+    color:white;
+    border:0;
+    border-radius:9px;
+    font-size:17px;
+    cursor:pointer;
+  "
+>
+  🛒 Proceed to Checkout
+</button>
+    
   </section>
 
 
@@ -1408,6 +1425,33 @@ document
   );
 
 
+  /* =========================
+   CHECKOUT BUTTON
+========================= */
+
+document
+  .getElementById("checkoutBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      if (!cart.length) {
+
+        alert(
+          "আপনার Cart খালি। আগে Product যোগ করুন।"
+        );
+
+        return;
+
+      }
+
+      window.location.href =
+        "checkout.html";
+
+    }
+  );
+
+  
 </script>
 
 
