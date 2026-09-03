@@ -141,6 +141,19 @@
     Loading products...
   </div>
 </section>
+
+    <section class="welcome">
+  <h2 style="margin-bottom:15px;">🛒 My Cart</h2>
+
+  <div id="cartList">
+    <p>Your cart is empty.</p>
+  </div>
+
+  <div id="cartTotal"
+       style="margin-top:15px;font-weight:bold;">
+    Total: ৳0
+  </div>
+</section>
     
     <section class="grid">
 
@@ -224,6 +237,191 @@
     const db = getFirestore(app);
 
 
+    let cart = JSON.parse(localStorage.getItem("naturebiteCart")) || [];
+
+
+window.addToCart = async function (productId) {
+
+  try {
+
+    const productsQuery = query(
+      collection(db, "products"),
+      where("active", "==", true)
+    );
+
+    const snapshot = await getDocs(productsQuery);
+
+    const productDoc = snapshot.docs.find(
+      doc => doc.id === productId
+    );
+
+    if (!productDoc) {
+      alert("Product পাওয়া যায়নি।");
+      return;
+    }
+
+    const product = {
+      id: productDoc.id,
+      ...productDoc.data()
+    };
+
+    const existing = cart.find(
+      item => item.id === product.id
+    );
+
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push({
+        id: product.id,
+        name: product.name,
+        price: Number(product.price) || 0,
+        quantity: 1
+      });
+    }
+
+    localStorage.setItem(
+      "naturebiteCart",
+      JSON.stringify(cart)
+    );
+
+    renderCart();
+
+    alert(product.name + " cart-এ যোগ হয়েছে।");
+
+  } catch (error) {
+
+    console.error("Add to cart error:", error);
+
+    alert("Cart-এ product যোগ করা যায়নি।");
+  }
+};
+
+
+function renderCart() {
+
+  const cartList =
+    document.getElementById("cartList");
+
+  const cartTotal =
+    document.getElementById("cartTotal");
+
+  if (!cart.length) {
+
+    cartList.innerHTML =
+      "<p>Your cart is empty.</p>";
+
+    cartTotal.innerText =
+      "Total: ৳0";
+
+    return;
+  }
+
+  cartList.innerHTML = "";
+
+  let total = 0;
+
+  cart.forEach((item, index) => {
+
+    const itemTotal =
+      item.price * item.quantity;
+
+    total += itemTotal;
+
+    const div =
+      document.createElement("div");
+
+    div.style.cssText = `
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:15px;
+      margin-bottom:10px;
+      background:#f7f7f2;
+      border-radius:10px;
+    `;
+
+    div.innerHTML = `
+      <div>
+        <strong>${item.name}</strong>
+        <p style="margin-top:5px;">
+          ৳${item.price} × ${item.quantity}
+        </p>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:7px;">
+
+        <button onclick="changeQuantity(${index}, -1)"
+          style="padding:5px 10px;">
+          −
+        </button>
+
+        <span>${item.quantity}</span>
+
+        <button onclick="changeQuantity(${index}, 1)"
+          style="padding:5px 10px;">
+          +
+        </button>
+
+        <button onclick="removeFromCart(${index})"
+          style="
+            padding:6px 9px;
+            background:#b42318;
+            color:white;
+            border:0;
+            border-radius:5px;
+          ">
+          ×
+        </button>
+
+      </div>
+    `;
+
+    cartList.appendChild(div);
+
+  });
+
+  cartTotal.innerText =
+    "Total: ৳" + total;
+}
+
+
+window.changeQuantity =
+  function(index, change) {
+
+    cart[index].quantity += change;
+
+    if (cart[index].quantity <= 0) {
+      cart.splice(index, 1);
+    }
+
+    localStorage.setItem(
+      "naturebiteCart",
+      JSON.stringify(cart)
+    );
+
+    renderCart();
+  };
+
+
+window.removeFromCart =
+  function(index) {
+
+    cart.splice(index, 1);
+
+    localStorage.setItem(
+      "naturebiteCart",
+      JSON.stringify(cart)
+    );
+
+    renderCart();
+  };
+
+
+renderCart();
+
+    
 async function loadProducts() {
 
   const productsList =
@@ -267,6 +465,21 @@ async function loadProducts() {
         <h3 style="color:#1d5c36;">
           ${product.name || "NatureBite Product"}
         </h3>
+
+<button
+  onclick="addToCart('${doc.id}')"
+  style="
+    margin-top:12px;
+    width:100%;
+    padding:11px;
+    background:#1d5c36;
+    color:white;
+    border:0;
+    border-radius:8px;
+    cursor:pointer;
+  ">
+  🛒 Add to Cart
+</button>
 
         <p style="margin:8px 0;color:#68736c;">
           ${product.description || ""}
