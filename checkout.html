@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>NatureBite — Checkout</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f7f7f2;
+      color: #1d3525;
+    }
+
+    header {
+      background: white;
+      padding: 18px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e5e5df;
+    }
+
+    .logo {
+      font-size: 27px;
+      font-weight: bold;
+      color: #1d5c36;
+    }
+
+    .back-btn {
+      background: #1d5c36;
+      color: white;
+      border: 0;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    .box {
+      background: white;
+      padding: 25px;
+      border-radius: 14px;
+      border: 1px solid #e5e5df;
+      margin-bottom: 20px;
+    }
+
+    h1,
+    h2 {
+      color: #1d5c36;
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+
+    .total {
+      font-size: 20px;
+      font-weight: bold;
+      color: #1d5c36;
+      border-top: 1px solid #ddd;
+      margin-top: 10px;
+      padding-top: 15px;
+    }
+
+    .place-order {
+      width: 100%;
+      padding: 14px;
+      margin-top: 20px;
+      background: #1d5c36;
+      color: white;
+      border: 0;
+      border-radius: 9px;
+      font-size: 17px;
+      cursor: pointer;
+    }
+
+    .place-order:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 30px;
+      color: #68736c;
+    }
+
+    #message {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    @media (max-width: 700px) {
+
+      .container {
+        padding: 20px 15px;
+      }
+
+      header {
+        padding: 16px 15px;
+      }
+
+      .cart-item {
+        flex-direction: column;
+        gap: 5px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+  <div class="logo">
+    NatureBite
+  </div>
+
+  <button
+    class="back-btn"
+    id="backBtn"
+  >
+    ← Dashboard
+  </button>
+
+</header>
+
+
+<main class="container">
+
+
+  <h1>
+    🛒 Checkout
+  </h1>
+
+
+  <!-- CUSTOMER INFORMATION -->
+
+  <section class="box">
+
+    <h2>
+      📍 Delivery Information
+    </h2>
+
+    <label>
+      Customer Name
+    </label>
+
+    <input
+      type="text"
+      id="customerName"
+      placeholder="আপনার নাম"
+    >
+
+
+    <label>
+      Mobile Number
+    </label>
+
+    <input
+      type="tel"
+      id="customerPhone"
+      readonly
+    >
+
+
+    <label>
+      Delivery Address
+    </label>
+
+    <textarea
+      id="deliveryAddress"
+      placeholder="সম্পূর্ণ delivery address লিখুন"
+    ></textarea>
+
+
+    <label>
+      Delivery Area
+    </label>
+
+    <input
+      type="text"
+      id="deliveryArea"
+      placeholder="যেমন: Chattogram"
+    >
+
+  </section>
+
+
+
+  <!-- CART -->
+
+  <section class="box">
+
+    <h2>
+      🛍️ Your Cart
+    </h2>
+
+    <div id="cartList">
+      Loading cart...
+    </div>
+
+  </section>
+
+
+
+  <!-- ORDER SUMMARY -->
+
+  <section class="box">
+
+    <h2>
+      💰 Order Summary
+    </h2>
+
+    <div class="summary-row">
+
+      <span>
+        Subtotal
+      </span>
+
+      <strong id="subtotal">
+        ৳0
+      </strong>
+
+    </div>
+
+
+    <div class="summary-row">
+
+      <span>
+        Delivery Charge
+      </span>
+
+      <strong id="deliveryCharge">
+        ৳0
+      </strong>
+
+    </div>
+
+
+    <div class="summary-row">
+
+      <span>
+        NatureBite Platform/App Charge
+      </span>
+
+      <strong id="platformCharge">
+        ৳0
+      </strong>
+
+    </div>
+
+
+    <div class="summary-row">
+
+      <span>
+        Discount
+      </span>
+
+      <strong id="discount">
+        ৳0
+      </strong>
+
+    </div>
+
+
+    <div class="summary-row total">
+
+      <span>
+        Total
+      </span>
+
+      <strong id="totalAmount">
+        ৳0
+      </strong>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- COUPON -->
+
+  <section class="box">
+
+    <h2>
+      🎟️ Coupon
+    </h2>
+
+    <label>
+      Coupon Code
+    </label>
+
+    <input
+      type="text"
+      id="couponCode"
+      placeholder="যেমন: WELCOME10"
+    >
+
+    <button
+      class="place-order"
+      id="applyCouponBtn"
+      type="button"
+    >
+      Apply Coupon
+    </button>
+
+    <div id="couponMessage"></div>
+
+  </section>
+
+
+
+  <!-- PAYMENT -->
+
+  <section class="box">
+
+    <h2>
+      💳 Payment Method
+    </h2>
+
+    <select id="paymentMethod">
+
+      <option value="COD">
+        Cash on Delivery
+      </option>
+
+      <option value="Online">
+        Online Payment
+      </option>
+
+    </select>
+
+
+    <button
+      class="place-order"
+      id="placeOrderBtn"
+    >
+      Confirm Order
+    </button>
+
+
+    <div id="message"></div>
+
+  </section>
+
+
+</main>
+
+
+
+<script type="module">
+
+
+/* =========================
+   FIREBASE IMPORTS
+========================= */
+
+import {
+  initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+
+import {
+  getAuth,
+  onAuthStateChanged
+}
+from
+"https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+
+import {
+  getFirestore,
+  collection,
+  getDoc,
+  doc,
+  query,
+  where,
+  getDocs
+}
+from
+"https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+
+/* =========================
+   FIREBASE CONFIG
+========================= */
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyDBRf-8g83TnMYdoaKkpYpn_-boYng-SHE",
+
+  authDomain:
+    "naturebite-538ba.firebaseapp.com",
+
+  projectId:
+    "naturebite-538ba",
+
+  storageBucket:
+    "naturebite-538ba.firebasestorage.app",
+
+  messagingSenderId:
+    "403660151204",
+
+  appId:
+    "1:403660151204:web:15db421e18442e85d70931"
+
+};
+
+
+
+/* =========================
+   INITIALIZE
+========================= */
+
+const app =
+  initializeApp(
+    firebaseConfig
+  );
+
+
+const auth =
+  getAuth(app);
+
+
+const db =
+  getFirestore(app);
+
+
+
+/* =========================
+   VARIABLES
+========================= */
+
+let currentUser = null;
+
+let cart = [];
+
+let subtotal = 0;
+
+let deliveryCharge = 0;
+
+let platformCharge = 0;
+
+let discount = 0;
+
+let finalTotal = 0;
+
+let appliedCoupon = "";
+
+
+
+/* =========================
+   SETTINGS
+========================= */
+
+async function loadSettings() {
+
+  try {
+
+    const deliveryDoc =
+      await getDoc(
+        doc(
+          db,
+          "settings",
+          "delivery"
+        )
+      );
+
+
+    if (deliveryDoc.exists()) {
+
+      const data =
+        deliveryDoc.data();
+
+
+      deliveryCharge =
+        Number(
+          data.charge
+        ) || 0;
+
+    }
+
+
+    const platformDoc =
+      await getDoc(
+        doc(
+          db,
+          "settings",
+          "platform"
+        )
+      );
+
+
+    if (platformDoc.exists()) {
+
+      const data =
+        platformDoc.data();
+
+
+      if (data.enabled === true) {
+
+        if (
+          data.type ===
+          "percentage"
+        ) {
+
+          platformCharge =
+            Math.round(
+              subtotal *
+              (
+                Number(
+                  data.value
+                ) || 0
+              ) /
+              100
+            );
+
+        } else {
+
+          platformCharge =
+            Number(
+              data.value
+            ) || 0;
+
+        }
+
+      } else {
+
+        platformCharge = 0;
+
+      }
+
+    }
+
+
+    calculateTotal();
+
+
+  } catch (error) {
+
+    console.error(
+      "Settings error:",
+      error
+    );
+
+  }
+
+}
+
+
+
+/* =========================
+   LOAD CART
+========================= */
+
+async function loadCart() {
+
+  if (!currentUser) {
+    return;
+  }
+
+
+  try {
+
+    const cartDoc =
+      await getDoc(
+        doc(
+          db,
+          "carts",
+          currentUser.uid
+        )
+      );
+
+
+    if (
+      !cartDoc.exists()
+    ) {
+
+      cart = [];
+
+      renderCart();
+
+      return;
+
+    }
+
+
+    const data =
+      cartDoc.data();
+
+
+    cart =
+      Array.isArray(
+        data.items
+      )
+        ? data.items
+        : [];
+
+
+    renderCart();
+
+
+  } catch (error) {
+
+    console.error(
+      "Cart loading error:",
+      error
+    );
+
+    document.getElementById(
+      "cartList"
+    ).innerText =
+      "Cart load করা যায়নি।";
+
+  }
+
+}
+
+
+
+/* =========================
+   RENDER CART
+========================= */
+
+function renderCart() {
+
+  const cartList =
+    document.getElementById(
+      "cartList"
+    );
+
+
+  if (!cart.length) {
+
+    cartList.innerHTML = `
+
+      <div class="empty">
+
+        আপনার Cart খালি।
+
+        <br><br>
+
+        Dashboard থেকে Product যোগ করুন।
+
+      </div>
+
+    `;
+
+    subtotal = 0;
+
+    calculateTotal();
+
+    return;
+
+  }
+
+
+  cartList.innerHTML =
+    "";
+
+
+  subtotal = 0;
+
+
+  cart.forEach(
+    item => {
+
+      const itemTotal =
+        (
+          Number(
+            item.price
+          ) || 0
+        ) *
+        (
+          Number(
+            item.quantity
+          ) || 0
+        );
+
+
+      subtotal +=
+        itemTotal;
+
+
+      const div =
+        document.createElement(
+          "div"
+        );
+
+
+      div.className =
+        "cart-item";
+
+
+      div.innerHTML = `
+
+        <div>
+
+          <strong>
+            ${item.name}
+          </strong>
+
+          <br>
+
+          <small>
+            ৳${item.price}
+            ×
+            ${item.quantity}
+          </small>
+
+        </div>
+
+
+        <strong>
+          ৳${itemTotal}
+        </strong>
+
+      `;
+
+
+      cartList.appendChild(
+        div
+      );
+
+    }
+  );
+
+
+  calculateTotal();
+
+}
+
+
+
+/* =========================
+   CALCULATE TOTAL
+========================= */
+
+function calculateTotal() {
+
+  document.getElementById(
+    "subtotal"
+  ).innerText =
+    "৳" + subtotal;
+
+
+  document.getElementById(
+    "deliveryCharge"
+  ).innerText =
+    "৳" + deliveryCharge;
+
+
+  document.getElementById(
+    "platformCharge"
+  ).innerText =
+    "৳" + platformCharge;
+
+
+  document.getElementById(
+    "discount"
+  ).innerText =
+    "৳" + discount;
+
+
+  finalTotal =
+    subtotal +
+    deliveryCharge +
+    platformCharge -
+    discount;
+
+
+  if (finalTotal < 0) {
+
+    finalTotal = 0;
+
+  }
+
+
+  document.getElementById(
+    "totalAmount"
+  ).innerText =
+    "৳" + finalTotal;
+
+}
+
+
+
+/* =========================
+   COUPON
+========================= */
+
+document
+  .getElementById(
+    "applyCouponBtn"
+  )
+  .addEventListener(
+    "click",
+    async () => {
+
+      const code =
+        document
+          .getElementById(
+            "couponCode"
+          )
+          .value
+          .trim()
+          .toUpperCase();
+
+
+      const couponMessage =
+        document.getElementById(
+          "couponMessage"
+        );
+
+
+      discount = 0;
+
+      appliedCoupon = "";
+
+
+      if (!code) {
+
+        couponMessage.innerText =
+          "Coupon code দিন।";
+
+        calculateTotal();
+
+        return;
+
+      }
+
+
+      try {
+
+        const couponQuery =
+          query(
+
+            collection(
+              db,
+              "coupons"
+            ),
+
+            where(
+              "code",
+              "==",
+              code
+            ),
+
+            where(
+              "active",
+              "==",
+              true
+            )
+
+          );
+
+
+        const snapshot =
+          await getDocs(
+            couponQuery
+          );
+
+
+        if (
+          snapshot.empty
+        ) {
+
+          couponMessage.innerText =
+            "Invalid বা inactive coupon।";
+
+          calculateTotal();
+
+          return;
+
+        }
+
+
+        const coupon =
+          snapshot.docs[0].data();
+
+
+        const minimumOrder =
+          Number(
+            coupon.minimumOrder
+          ) || 0;
+
+
+        if (
+          subtotal <
+          minimumOrder
+        ) {
+
+          couponMessage.innerText =
+            "এই coupon ব্যবহার করতে minimum order ৳" +
+            minimumOrder +
+            " প্রয়োজন।";
+
+          calculateTotal();
+
+          return;
+
+        }
+
+
+        if (
+          coupon.discountType ===
+          "percentage"
+        ) {
+
+          discount =
+            Math.round(
+              subtotal *
+              (
+                Number(
+                  coupon.discountValue
+                ) || 0
+              ) /
+              100
+            );
+
+        } else {
+
+          discount =
+            Number(
+              coupon.discountValue
+            ) || 0;
+
+        }
+
+
+        appliedCoupon =
+          code;
+
+
+        couponMessage.innerText =
+          "Coupon applied ✓ Discount: ৳" +
+          discount;
+
+
+        calculateTotal();
+
+
+      } catch (error) {
+
+        console.error(
+          "Coupon error:",
+          error
+        );
+
+
+        couponMessage.innerText =
+          "Coupon যাচাই করা যায়নি।";
+
+      }
+
+    }
+  );
+
+
+
+/* =========================
+   PLACE ORDER
+========================= */
+
+document
+  .getElementById(
+    "placeOrderBtn"
+  )
+  .addEventListener(
+    "click",
+    async () => {
+
+      const button =
+        document.getElementById(
+          "placeOrderBtn"
+        );
+
+
+      const message =
+        document.getElementById(
+          "message"
+        );
+
+
+      if (!currentUser) {
+
+        alert(
+          "আপনাকে Login করতে হবে।"
+        );
+
+        return;
+
+      }
+
+
+      if (!cart.length) {
+
+        alert(
+          "আপনার Cart খালি।"
+        );
+
+        return;
+
+      }
+
+
+      const customerName =
+        document.getElementById(
+          "customerName"
+        ).value.trim();
+
+
+      const customerPhone =
+        document.getElementById(
+          "customerPhone"
+        ).value.trim();
+
+
+      const deliveryAddress =
+        document.getElementById(
+          "deliveryAddress"
+        ).value.trim();
+
+
+      const deliveryArea =
+        document.getElementById(
+          "deliveryArea"
+        ).value.trim();
+
+
+      const paymentMethod =
+        document.getElementById(
+          "paymentMethod"
+        ).value;
+
+
+      if (!customerName) {
+
+        alert(
+          "Customer Name দিন।"
+        );
+
+        return;
+
+      }
+
+
+      if (!deliveryAddress) {
+
+        alert(
+          "Delivery Address দিন।"
+        );
+
+        return;
+
+      }
+
+
+      if (!deliveryArea) {
+
+        alert(
+          "Delivery Area দিন।"
+        );
+
+        return;
+
+      }
+
+
+      button.disabled = true;
+
+      button.innerText =
+        "Creating Order...";
+
+
+      try {
+
+        /*
+          এই ধাপে আমরা শুধু
+          order data প্রস্তুত করছি।
+          
+          নিরাপত্তার কারণে পরবর্তী ধাপে
+          backend/server-side order creation
+          যুক্ত করব।
+        */
+
+        const orderCode =
+          "NB-" +
+          Date.now()
+            .toString()
+            .slice(-8);
+
+
+        const orderData = {
+
+          customerId:
+            currentUser.uid,
+
+          customerName:
+            customerName,
+
+          customerPhone:
+            customerPhone,
+
+          deliveryAddress:
+            deliveryAddress,
+
+          deliveryArea:
+            deliveryArea,
+
+          items:
+            cart,
+
+          subtotal:
+            subtotal,
+
+          deliveryCharge:
+            deliveryCharge,
+
+          platformCharge:
+            platformCharge,
+
+          discount:
+            discount,
+
+          couponCode:
+            appliedCoupon,
+
+          totalAmount:
+            finalTotal,
+
+          paymentMethod:
+            paymentMethod,
+
+          paymentStatus:
+            "pending",
+
+          orderStatus:
+            "pending",
+
+          trackingCode:
+            orderCode,
+
+          riderAssigned:
+            false,
+
+          barcodeScanned:
+            false,
+
+          deliveryOtpRequired:
+            true,
+
+          deliveryOtpVerified:
+            false,
+
+          cancelled:
+            false,
+
+          createdAt:
+            new Date().toISOString()
+
+        };
+
+
+        /*
+          এখনো Firestore-এ Order
+          লেখা হচ্ছে না।
+        */
+
+        console.log(
+          "Prepared Order:",
+          orderData
+        );
+
+
+        message.style.display =
+          "block";
+
+        message.innerText =
+          "Checkout information প্রস্তুত হয়েছে। পরবর্তী ধাপে secure order creation যুক্ত হবে।";
+
+
+        button.disabled =
+          false;
+
+        button.innerText =
+          "Confirm Order";
+
+
+      } catch (error) {
+
+        console.error(
+          "Order error:",
+          error
+        );
+
+
+        message.style.display =
+          "block";
+
+        message.innerText =
+          "Order তৈরি করা যায়নি।";
+
+
+        button.disabled =
+          false;
+
+        button.innerText =
+          "Confirm Order";
+
+      }
+
+    }
+  );
+
+
+
+/* =========================
+   BACK TO DASHBOARD
+========================= */
+
+document
+  .getElementById(
+    "backBtn"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      window.location.href =
+        "dashboard.html";
+
+    }
+  );
+
+
+
+/* =========================
+   AUTH
+========================= */
+
+onAuthStateChanged(
+  auth,
+  async user => {
+
+    if (!user) {
+
+      window.location.href =
+        "index.html";
+
+      return;
+
+    }
+
+
+    currentUser =
+      user;
+
+
+    document.getElementById(
+      "customerPhone"
+    ).value =
+      user.phoneNumber || "";
+
+
+    await loadCart();
+
+    await loadSettings();
+
+  }
+);
+
+
+</script>
+
+
+</body>
+
+</html>
