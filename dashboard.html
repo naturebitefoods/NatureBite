@@ -1,1763 +1,3611 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NatureBite - Customer Dashboard</title>
+  <title>NatureBite | Customer Dashboard</title>
 
-<style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Arial,Helvetica,sans-serif;
-}
+  <style>
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
 
-body{
-  background:#f4f7f3;
-  color:#1f2d26;
-}
+    body{
+      font-family:Arial,Helvetica,sans-serif;
+      background:#f7f4ea;
+      color:#183c2b;
+    }
 
-header{
-  background:#064e3b;
-  color:white;
-  padding:15px 20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  position:sticky;
-  top:0;
-  z-index:100;
-}
+    button,
+    input,
+    select,
+    textarea{
+      font-family:inherit;
+    }
 
-.logo{
-  font-size:25px;
-  font-weight:bold;
-}
+    button{
+      cursor:pointer;
+    }
 
-.header-right{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
+    .header{
+      background:#fffdf6;
+      border-bottom:1px solid #e5e1d4;
+      padding:14px 20px;
+      position:sticky;
+      top:0;
+      z-index:100;
+    }
 
-button{
-  border:0;
-  border-radius:10px;
-  padding:11px 16px;
-  cursor:pointer;
-  font-size:15px;
-}
+    .header-inner{
+      max-width:1200px;
+      margin:auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:15px;
+    }
 
-.logout{
-  background:#dc2626;
-  color:white;
-}
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
 
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:20px;
-}
+    .brand-icon{
+      width:42px;
+      height:42px;
+      border-radius:50%;
+      background:#1e5638;
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:21px;
+    }
 
-.welcome{
-  background:white;
-  padding:22px;
-  border-radius:18px;
-  margin-bottom:20px;
-  box-shadow:0 4px 15px rgba(0,0,0,.06);
-}
+    .brand-name{
+      font-size:22px;
+      font-weight:700;
+      color:#174b31;
+    }
 
-.welcome h2{
-  margin-bottom:7px;
-}
+    .brand-small{
+      font-size:11px;
+      color:#718074;
+    }
 
-.menu{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:12px;
-  margin-bottom:25px;
-}
+    .header-actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
 
-.menu button{
-  background:white;
-  border:1px solid #dce5df;
-  color:#064e3b;
-  font-weight:bold;
-}
+    .cart-button,
+    .logout-button{
+      border:none;
+      border-radius:10px;
+      padding:10px 14px;
+      font-weight:600;
+    }
 
-.menu button:hover{
-  background:#064e3b;
-  color:white;
-}
+    .cart-button{
+      background:#e7f0e7;
+      color:#174b31;
+    }
 
-.section{
-  background:white;
-  border-radius:18px;
-  padding:20px;
-  margin-bottom:20px;
-  box-shadow:0 4px 15px rgba(0,0,0,.05);
-}
+    .logout-button{
+      background:#174b31;
+      color:white;
+    }
 
-.section h2{
-  margin-bottom:15px;
-}
+    .cart-count{
+      background:#d85b45;
+      color:white;
+      border-radius:50%;
+      padding:2px 7px;
+      font-size:12px;
+      margin-left:4px;
+    }
 
-.products{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:15px;
-}
+    .container{
+      max-width:1200px;
+      margin:auto;
+      padding:25px 18px 50px;
+    }
 
-.product{
-  border:1px solid #e0e8e2;
-  border-radius:15px;
-  padding:16px;
-}
+    .welcome{
+      background:linear-gradient(135deg,#edf5e9,#fffdf5);
+      border:1px solid #dce8d9;
+      border-radius:20px;
+      padding:25px;
+      margin-bottom:22px;
+    }
 
-.product h3{
-  color:#064e3b;
-  margin-bottom:8px;
-}
+    .welcome h1{
+      font-size:28px;
+      margin-bottom:7px;
+    }
 
-.product .price{
-  font-size:20px;
-  font-weight:bold;
-  margin:12px 0;
-}
+    .welcome p{
+      color:#68756d;
+    }
 
-.add{
-  width:100%;
-  background:#064e3b;
-  color:white;
-}
+    .user-phone{
+      margin-top:10px;
+      font-size:14px;
+      color:#496456;
+    }
 
-.cart-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  border-bottom:1px solid #eee;
-  padding:12px 0;
-}
+    .menu-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:14px;
+      margin-bottom:25px;
+    }
 
-.qty{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
+    .menu-card{
+      background:white;
+      border:1px solid #e3e1d7;
+      border-radius:16px;
+      padding:18px;
+      text-align:center;
+      box-shadow:0 4px 15px rgba(40,60,45,.04);
+    }
 
-.qty button{
-  padding:5px 10px;
-  background:#e8f1eb;
-  color:#064e3b;
-}
+    .menu-icon{
+      font-size:27px;
+      margin-bottom:8px;
+    }
 
-.remove{
-  background:#fee2e2;
-  color:#b91c1c;
-}
+    .menu-card h3{
+      font-size:15px;
+      margin-bottom:4px;
+    }
 
-.summary{
-  margin-top:15px;
-  border-top:1px solid #ddd;
-  padding-top:15px;
-}
+    .menu-card p{
+      font-size:12px;
+      color:#788078;
+    }
 
-.row{
-  display:flex;
-  justify-content:space-between;
-  margin:8px 0;
-}
+    .section{
+      margin-top:28px;
+    }
 
-.total{
-  font-size:20px;
-  font-weight:bold;
-  color:#064e3b;
-}
+    .section-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:15px;
+      gap:10px;
+    }
 
-.checkout-btn{
-  width:100%;
-  margin-top:15px;
-  background:#059669;
-  color:white;
-  font-size:17px;
-  font-weight:bold;
-}
+    .section-title{
+      font-size:23px;
+    }
 
-.order{
-  border:1px solid #e1e7e2;
-  border-radius:13px;
-  padding:15px;
-  margin-bottom:12px;
-}
+    .section-subtitle{
+      color:#768077;
+      font-size:13px;
+    }
 
-.status{
-  display:inline-block;
-  padding:5px 10px;
-  border-radius:20px;
-  background:#ecfdf5;
-  color:#047857;
-  font-size:13px;
-  margin-top:8px;
-}
+    .products-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+    }
 
-.empty{
-  text-align:center;
-  padding:25px;
-  color:#777;
-}
+    .product-card{
+      background:#fffdf8;
+      border:1px solid #e4e1d6;
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:0 6px 20px rgba(40,60,45,.05);
+    }
 
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  z-index:500;
-  align-items:center;
-  justify-content:center;
-  padding:15px;
-}
+    .product-image{
+      height:170px;
+      background:linear-gradient(135deg,#edf3e9,#f8f3e7);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:65px;
+    }
 
-.modal-box{
-  background:white;
-  width:100%;
-  max-width:500px;
-  max-height:92vh;
-  overflow:auto;
-  border-radius:20px;
-  padding:22px;
-}
+    .product-info{
+      padding:18px;
+    }
 
-.modal-box h2{
-  margin-bottom:15px;
-  color:#064e3b;
-}
+    .product-name{
+      font-size:19px;
+      font-weight:700;
+      margin-bottom:6px;
+    }
 
-.close{
-  float:right;
-  background:#eee;
-}
+    .product-category{
+      font-size:12px;
+      color:#68806f;
+      margin-bottom:8px;
+    }
 
-label{
-  display:block;
-  margin-top:13px;
-  margin-bottom:6px;
-  font-weight:bold;
-}
+    .product-description{
+      font-size:13px;
+      color:#747b76;
+      min-height:38px;
+      line-height:1.5;
+    }
 
-input,select,textarea{
-  width:100%;
-  padding:12px;
-  border:1px solid #ccd7d0;
-  border-radius:9px;
-  font-size:15px;
-}
+    .product-bottom{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:15px;
+    }
 
-.payment-box{
-  background:#f0fdf4;
-  border:1px solid #bbf7d0;
-  padding:15px;
-  border-radius:12px;
-  margin:15px 0;
-}
+    .price{
+      font-weight:700;
+      font-size:18px;
+      color:#174b31;
+    }
 
-.warning{
-  background:#fff7ed;
-  border:1px solid #fed7aa;
-  color:#9a3412;
-  padding:12px;
-  border-radius:10px;
-  margin:12px 0;
-}
+    .add-cart{
+      border:none;
+      background:#1c5638;
+      color:white;
+      padding:10px 13px;
+      border-radius:10px;
+      font-weight:600;
+    }
 
-.success{
-  background:#ecfdf5;
-  border:1px solid #a7f3d0;
-  color:#047857;
-  padding:12px;
-  border-radius:10px;
-  margin:12px 0;
-}
+    .add-cart:disabled{
+      background:#aaa;
+      cursor:not-allowed;
+    }
 
-.confirm{
-  width:100%;
-  background:#064e3b;
-  color:white;
-  margin-top:15px;
-  font-size:17px;
-}
+    .empty{
+      text-align:center;
+      padding:35px;
+      background:white;
+      border-radius:16px;
+      color:#777;
+      border:1px solid #e5e1d6;
+    }
 
-.confirm:disabled{
-  opacity:.5;
-  cursor:not-allowed;
-}
+    /* CART */
 
-.hidden{
-  display:none!important;
-}
+    .cart-list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
 
-footer{
-  text-align:center;
-  padding:30px;
-  color:#777;
-}
+    .cart-item{
+      background:white;
+      border:1px solid #e3e1d7;
+      border-radius:15px;
+      padding:15px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:15px;
+    }
 
-@media(max-width:600px){
-  header{
-    padding:13px;
-  }
+    .cart-item-info{
+      flex:1;
+    }
 
-  .logo{
-    font-size:21px;
-  }
+    .cart-item-name{
+      font-weight:700;
+      margin-bottom:5px;
+    }
 
-  .container{
-    padding:12px;
-  }
+    .cart-item-price{
+      font-size:13px;
+      color:#707871;
+    }
 
-  .section{
-    padding:15px;
-  }
-}
-</style>
+    .quantity-controls{
+      display:flex;
+      align-items:center;
+      gap:9px;
+    }
+
+    .quantity-controls button{
+      width:32px;
+      height:32px;
+      border:1px solid #d7ddd7;
+      background:#f5f8f4;
+      border-radius:8px;
+      color:#174b31;
+      font-weight:bold;
+    }
+
+    .remove-btn{
+      border:none !important;
+      background:#fff0ed !important;
+      color:#c84c37 !important;
+    }
+
+    .cart-summary{
+      background:white;
+      border:1px solid #e3e1d7;
+      border-radius:16px;
+      padding:20px;
+      margin-top:15px;
+    }
+
+    .summary-row{
+      display:flex;
+      justify-content:space-between;
+      padding:7px 0;
+      color:#5f6a63;
+      font-size:14px;
+    }
+
+    .summary-row.total{
+      border-top:1px solid #e3e1d7;
+      margin-top:8px;
+      padding-top:15px;
+      font-weight:700;
+      color:#174b31;
+      font-size:18px;
+    }
+
+    .checkout-button{
+      width:100%;
+      border:none;
+      background:#174b31;
+      color:white;
+      padding:14px;
+      border-radius:11px;
+      margin-top:15px;
+      font-size:16px;
+      font-weight:700;
+    }
+
+    /* ORDERS */
+
+    .order-card{
+      background:white;
+      border:1px solid #e2e0d6;
+      border-radius:17px;
+      padding:18px;
+      margin-bottom:14px;
+    }
+
+    .order-top{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:13px;
+    }
+
+    .order-code{
+      font-weight:700;
+      color:#174b31;
+    }
+
+    .status{
+      padding:5px 10px;
+      border-radius:20px;
+      font-size:12px;
+      font-weight:700;
+      background:#edf1ec;
+      color:#496050;
+    }
+
+    .status.confirmed,
+    .status.completed,
+    .status.delivered{
+      background:#e5f4e9;
+      color:#20703b;
+    }
+
+    .status.cancelled,
+    .status.rejected{
+      background:#ffebe7;
+      color:#b84231;
+    }
+
+    .status.pending,
+    .status.verification_pending,
+    .status.payment_verification_pending{
+      background:#fff4d9;
+      color:#966d15;
+    }
+
+    .order-details{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      font-size:13px;
+      color:#66716a;
+    }
+
+    .order-detail-box{
+      background:#f8f8f3;
+      border-radius:10px;
+      padding:10px;
+    }
+
+    .order-detail-box strong{
+      display:block;
+      color:#234c36;
+      margin-bottom:4px;
+    }
+
+    .verification-message{
+      margin-top:12px;
+      padding:11px;
+      border-radius:10px;
+      background:#fff6dc;
+      color:#806316;
+      font-size:13px;
+    }
+
+    /* MODAL */
+
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:15px;
+      z-index:500;
+    }
+
+    .modal.show{
+      display:flex;
+    }
+
+    .modal-box{
+      background:#fffdf8;
+      width:100%;
+      max-width:600px;
+      max-height:92vh;
+      overflow:auto;
+      border-radius:20px;
+      padding:24px;
+      position:relative;
+    }
+
+    .modal-title{
+      font-size:23px;
+      margin-bottom:5px;
+    }
+
+    .modal-subtitle{
+      color:#747c76;
+      font-size:13px;
+      margin-bottom:20px;
+    }
+
+    .close{
+      position:absolute;
+      right:18px;
+      top:15px;
+      border:none;
+      background:#edf0ea;
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      font-size:20px;
+      color:#35513e;
+    }
+
+    .form-group{
+      margin-bottom:14px;
+    }
+
+    .form-group label{
+      display:block;
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:6px;
+      color:#365343;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea{
+      width:100%;
+      border:1px solid #d8ddd5;
+      background:white;
+      padding:12px;
+      border-radius:10px;
+      outline:none;
+      font-size:14px;
+    }
+
+    .form-group textarea{
+      min-height:85px;
+      resize:vertical;
+    }
+
+    .payment-box{
+      background:#edf6ed;
+      border:1px solid #d5e6d5;
+      border-radius:14px;
+      padding:15px;
+      margin:15px 0;
+    }
+
+    .payment-box h3{
+      font-size:16px;
+      margin-bottom:10px;
+    }
+
+    .payment-number{
+      font-size:18px;
+      font-weight:700;
+      color:#174b31;
+      margin:5px 0;
+    }
+
+    .payment-note{
+      color:#68746c;
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    .coupon-row{
+      display:flex;
+      gap:8px;
+    }
+
+    .coupon-row input{
+      flex:1;
+    }
+
+    .coupon-row button{
+      border:none;
+      background:#2b6547;
+      color:white;
+      border-radius:10px;
+      padding:0 15px;
+      font-weight:700;
+    }
+
+    .coupon-result{
+      margin-top:7px;
+      font-size:12px;
+    }
+
+    .coupon-success{
+      color:#1f743d;
+    }
+
+    .coupon-error{
+      color:#bd4432;
+    }
+
+    .place-order{
+      width:100%;
+      background:#174b31;
+      color:white;
+      border:none;
+      border-radius:11px;
+      padding:14px;
+      font-weight:700;
+      font-size:16px;
+      margin-top:8px;
+    }
+
+    .place-order:disabled{
+      background:#aaa;
+      cursor:not-allowed;
+    }
+
+    .notice{
+      padding:12px;
+      background:#fff4d9;
+      border:1px solid #f1dfac;
+      color:#775e19;
+      border-radius:10px;
+      font-size:12px;
+      line-height:1.5;
+      margin-bottom:15px;
+    }
+
+    .success-box{
+      background:#e8f5e9;
+      border:1px solid #cde5cf;
+      color:#23653a;
+      padding:14px;
+      border-radius:11px;
+      margin-bottom:15px;
+      line-height:1.6;
+    }
+
+    .loading{
+      text-align:center;
+      padding:30px;
+      color:#6f786f;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:25px;
+      transform:translateX(-50%);
+      background:#173f2b;
+      color:white;
+      padding:12px 18px;
+      border-radius:10px;
+      z-index:1000;
+      display:none;
+      box-shadow:0 5px 20px rgba(0,0,0,.2);
+      font-size:14px;
+    }
+
+    .toast.show{
+      display:block;
+    }
+
+    @media(max-width:850px){
+      .menu-grid{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .products-grid{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .order-details{
+        grid-template-columns:repeat(2,1fr);
+      }
+    }
+
+    @media(max-width:600px){
+      .header{
+        padding:11px 12px;
+      }
+
+      .brand-name{
+        font-size:19px;
+      }
+
+      .brand-small{
+        display:none;
+      }
+
+      .header-actions{
+        gap:5px;
+      }
+
+      .cart-button,
+      .logout-button{
+        padding:9px 10px;
+        font-size:12px;
+      }
+
+      .container{
+        padding:18px 12px 40px;
+      }
+
+      .welcome{
+        padding:20px;
+      }
+
+      .welcome h1{
+        font-size:23px;
+      }
+
+      .menu-grid{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .products-grid{
+        grid-template-columns:1fr;
+      }
+
+      .cart-item{
+        align-items:flex-start;
+        flex-wrap:wrap;
+      }
+
+      .quantity-controls{
+        width:100%;
+        justify-content:flex-end;
+      }
+
+      .order-details{
+        grid-template-columns:1fr;
+      }
+
+      .modal-box{
+        padding:19px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-  <div class="logo">NatureBite</div>
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-inner">
 
-  <div class="header-right">
-    <span id="headerUser">Customer</span>
-    <button class="logout" id="logoutBtn">Logout</button>
-  </div>
-</header>
+      <div class="brand">
+        <div class="brand-icon">🌿</div>
 
-<div class="container">
+        <div>
+          <div class="brand-name">NatureBite</div>
+          <div class="brand-small">Healthy • Natural • Tasty</div>
+        </div>
+      </div>
 
-  <div class="welcome">
-    <h2 id="welcomeText">Welcome to NatureBite</h2>
-    <p id="userPhone">Loading...</p>
-  </div>
+      <div class="header-actions">
 
-  <!-- CUSTOMER MENU ONLY -->
-  <div class="menu">
-    <button onclick="showSection('productsSection')">🛒 Products</button>
-    <button onclick="showSection('cartSection')">🛍️ Cart</button>
-    <button onclick="showSection('ordersSection')">📦 My Orders</button>
-    <button onclick="loadOrders()">🔄 Refresh Orders</button>
-  </div>
+        <button class="cart-button" onclick="scrollToCart()">
+          🛒 Cart
+          <span id="cartCount" class="cart-count">0</span>
+        </button>
 
-  <!-- PRODUCTS -->
-  <div class="section" id="productsSection">
-    <h2>NatureBite Products</h2>
+        <button class="logout-button" onclick="logoutUser()">
+          Logout
+        </button>
 
-    <div id="products" class="products">
-      <div class="empty">Loading products...</div>
+      </div>
     </div>
-  </div>
+  </header>
 
-  <!-- CART -->
-  <div class="section" id="cartSection">
-    <h2>My Cart</h2>
 
-    <div id="cartItems">
-      <div class="empty">Your cart is empty.</div>
-    </div>
+  <main class="container">
 
-    <div id="cartSummary" class="summary hidden">
+    <!-- WELCOME -->
+    <section class="welcome">
 
-      <div class="row">
-        <span>Subtotal</span>
-        <strong>৳<span id="subtotal">0</span></strong>
+      <h1>
+        Welcome, <span id="customerName">Customer</span> 🌿
+      </h1>
+
+      <p>
+        Discover healthy, natural and thoughtfully made NatureBite products.
+      </p>
+
+      <div class="user-phone" id="customerPhone">
+        Loading...
       </div>
 
-      <div class="row">
-        <span>Discount</span>
-        <strong>- ৳<span id="discount">0</span></strong>
+    </section>
+
+
+    <!-- QUICK MENU -->
+    <section class="menu-grid">
+
+      <div class="menu-card" onclick="scrollToProducts()">
+        <div class="menu-icon">🥗</div>
+        <h3>Products</h3>
+        <p>Explore NatureBite products</p>
       </div>
 
-      <div class="row">
-        <span>Delivery Charge</span>
-        <strong>৳<span id="deliveryCharge">0</span></strong>
+      <div class="menu-card" onclick="scrollToCart()">
+        <div class="menu-icon">🛒</div>
+        <h3>My Cart</h3>
+        <p>Review your selected items</p>
       </div>
 
-      <div class="row">
-        <span>NatureBite Platform/App Charge</span>
-        <strong>৳<span id="platformCharge">0</span></strong>
+      <div class="menu-card" onclick="scrollToOrders()">
+        <div class="menu-icon">📦</div>
+        <h3>My Orders</h3>
+        <p>Track your orders</p>
       </div>
 
-      <div class="row total">
-        <span>Total</span>
-        <strong>৳<span id="totalAmount">0</span></strong>
+      <div class="menu-card" onclick="openCheckout()">
+        <div class="menu-icon">💳</div>
+        <h3>Checkout</h3>
+        <p>Complete your purchase</p>
       </div>
 
-      <button class="checkout-btn" onclick="openCheckout()">
-        Proceed to Checkout
+    </section>
+
+
+    <!-- PRODUCTS -->
+    <section class="section" id="productsSection">
+
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Our Products</h2>
+          <div class="section-subtitle">
+            Made for better choices.
+          </div>
+        </div>
+      </div>
+
+      <div id="productsGrid" class="products-grid">
+        <div class="loading">
+          Loading products...
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- CART -->
+    <section class="section" id="cartSection">
+
+      <div class="section-header">
+
+        <div>
+          <h2 class="section-title">My Cart</h2>
+          <div class="section-subtitle">
+            Your selected NatureBite products
+          </div>
+        </div>
+
+      </div>
+
+      <div id="cartList">
+        <div class="empty">
+          Your cart is empty.
+        </div>
+      </div>
+
+      <div id="cartSummary" class="cart-summary" style="display:none;">
+
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <strong id="summarySubtotal">৳0</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Discount</span>
+          <strong id="summaryDiscount">৳0</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Delivery Charge</span>
+          <strong id="summaryDelivery">৳0</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>NatureBite Platform/App Charge</span>
+          <strong id="summaryPlatform">৳0</strong>
+        </div>
+
+        <div class="summary-row total">
+          <span>Total</span>
+          <strong id="summaryTotal">৳0</strong>
+        </div>
+
+        <button class="checkout-button" onclick="openCheckout()">
+          Proceed to Checkout
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- ORDERS -->
+    <section class="section" id="ordersSection">
+
+      <div class="section-header">
+
+        <div>
+          <h2 class="section-title">My Orders</h2>
+
+          <div class="section-subtitle">
+            Track your NatureBite orders
+          </div>
+        </div>
+
+      </div>
+
+      <div id="ordersList">
+        <div class="loading">
+          Loading orders...
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- CHECKOUT MODAL -->
+  <div class="modal" id="checkoutModal">
+
+    <div class="modal-box">
+
+      <button class="close" onclick="closeCheckout()">×</button>
+
+      <h2 class="modal-title">
+        Checkout
+      </h2>
+
+      <p class="modal-subtitle">
+        Complete your delivery and payment information.
+      </p>
+
+
+      <div id="checkoutNotice" class="notice">
+        Delivery charge must be paid first. Your order will remain pending until
+        the delivery payment is verified by NatureBite Admin.
+      </div>
+
+
+      <!-- CUSTOMER INFORMATION -->
+
+      <div class="form-group">
+
+        <label>Customer Name</label>
+
+        <input
+          type="text"
+          id="checkoutName"
+          placeholder="Enter your name"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Mobile Number</label>
+
+        <input
+          type="tel"
+          id="checkoutPhone"
+          placeholder="01XXXXXXXXX"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Delivery Address</label>
+
+        <textarea
+          id="checkoutAddress"
+          placeholder="Enter complete delivery address"
+        ></textarea>
+
+      </div>
+
+
+      <!-- COUPON -->
+
+      <div class="form-group">
+
+        <label>Coupon Code</label>
+
+        <div class="coupon-row">
+
+          <input
+            type="text"
+            id="couponCode"
+            placeholder="Example: WELCOME10"
+          >
+
+          <button onclick="applyCoupon()">
+            Apply
+          </button>
+
+        </div>
+
+        <div id="couponResult" class="coupon-result"></div>
+
+      </div>
+
+
+      <!-- ORDER PAYMENT -->
+
+      <div class="form-group">
+
+        <label>Order Payment Method</label>
+
+        <select id="orderPaymentMethod">
+
+          <option value="COD">
+            Cash on Delivery
+          </option>
+
+          <option value="bKash">
+            bKash Online Payment
+          </option>
+
+          <option value="Nagad">
+            Nagad Online Payment
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- DELIVERY CHARGE PAYMENT -->
+
+      <div class="payment-box">
+
+        <h3>
+          🚚 Delivery Charge Payment
+        </h3>
+
+        <p class="payment-note">
+          Delivery charge must be paid before your order can be confirmed.
+        </p>
+
+        <div style="margin-top:10px;">
+          Delivery Charge:
+          <strong id="checkoutDeliveryCharge">
+            ৳0
+          </strong>
+        </div>
+
+        <div style="margin-top:12px;">
+          bKash:
+          <div id="checkoutBkash" class="payment-number">
+            Not configured
+          </div>
+        </div>
+
+        <div>
+          Nagad:
+          <div id="checkoutNagad" class="payment-number">
+            Not configured
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Delivery Charge Payment Method</label>
+
+        <select id="deliveryPaymentMethod">
+
+          <option value="">
+            Select payment method
+          </option>
+
+          <option value="bKash">
+            bKash
+          </option>
+
+          <option value="Nagad">
+            Nagad
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Delivery Charge Transaction ID
+        </label>
+
+        <input
+          type="text"
+          id="deliveryTransactionId"
+          placeholder="Enter transaction ID"
+        >
+
+      </div>
+
+
+      <!-- CHECKOUT SUMMARY -->
+
+      <div class="cart-summary" style="margin-top:10px;">
+
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <strong id="checkoutSubtotal">৳0</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Discount</span>
+          <strong id="checkoutDiscount">৳0</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Delivery Charge</span>
+          <strong id="checkoutDelivery">৳0</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Platform/App Charge</span>
+          <strong id="checkoutPlatform">৳0</strong>
+        </div>
+
+        <div class="summary-row total">
+          <span>Total</span>
+          <strong id="checkoutTotal">৳0</strong>
+        </div>
+
+      </div>
+
+
+      <button
+        id="placeOrderButton"
+        class="place-order"
+        onclick="placeOrder()"
+      >
+        Submit Order
       </button>
 
     </div>
-  </div>
-
-  <!-- ORDERS -->
-  <div class="section" id="ordersSection">
-    <h2>My Orders</h2>
-
-    <div id="orders">
-      <div class="empty">Loading orders...</div>
-    </div>
-  </div>
-
-</div>
-
-<footer>
-  © 2026 NatureBite. All Rights Reserved.
-</footer>
-
-
-<!-- CHECKOUT MODAL -->
-<div class="modal" id="checkoutModal">
-
-  <div class="modal-box">
-
-    <button class="close" onclick="closeCheckout()">✕</button>
-
-    <h2>Confirm Your Order</h2>
-
-    <div id="checkoutMessage"></div>
-
-    <label>Customer Name</label>
-    <input type="text" id="customerName" placeholder="Your name">
-
-    <label>Mobile Number</label>
-    <input type="text" id="customerPhone" readonly>
-
-    <label>Delivery Address</label>
-    <textarea id="deliveryAddress" rows="3"
-      placeholder="Enter your complete delivery address"></textarea>
-
-    <label>Payment Method</label>
-    <select id="paymentMethod">
-      <option value="COD">Cash on Delivery</option>
-    </select>
-
-    <div class="payment-box">
-
-      <h3>Delivery Charge Payment</h3>
-
-      <p>
-        আপনার অর্ডার Confirm করার আগে Delivery Charge অবশ্যই
-        bKash/Nagad-এর মাধ্যমে পরিশোধ করতে হবে।
-      </p>
-
-      <br>
-
-      <p>
-        <strong>bKash:</strong>
-        <span id="bkashNumber">Loading...</span>
-      </p>
-
-      <p>
-        <strong>Nagad:</strong>
-        <span id="nagadNumber">Loading...</span>
-      </p>
-
-      <br>
-
-      <p>
-        Delivery Charge:
-        <strong>৳<span id="checkoutDeliveryCharge">0</span></strong>
-      </p>
-
-    </div>
-
-    <label>Payment Method</label>
-    <select id="deliveryPaymentMethod">
-      <option value="">Select payment method</option>
-      <option value="bKash">bKash</option>
-      <option value="Nagad">Nagad</option>
-    </select>
-
-    <label>Delivery Charge Transaction ID</label>
-    <input
-      type="text"
-      id="transactionId"
-      placeholder="Enter Transaction ID"
-    >
-
-    <div class="warning">
-      ⚠️ Delivery Charge payment-এর Transaction ID না দিলে
-      Order Confirm করা যাবে না।
-    </div>
-
-    <div class="row">
-      <span>Product Total</span>
-      <strong>৳<span id="checkoutSubtotal">0</span></strong>
-    </div>
-
-    <div class="row">
-      <span>Discount</span>
-      <strong>- ৳<span id="checkoutDiscount">0</span></strong>
-    </div>
-
-    <div class="row">
-      <span>Delivery Charge</span>
-      <strong>৳<span id="checkoutDelivery">0</span></strong>
-    </div>
-
-    <div class="row">
-      <span>Platform/App Charge</span>
-      <strong>৳<span id="checkoutPlatform">0</span></strong>
-    </div>
-
-    <div class="row total">
-      <span>COD Payable</span>
-      <strong>৳<span id="checkoutTotal">0</span></strong>
-    </div>
-
-    <button
-      class="confirm"
-      id="confirmOrderBtn"
-      onclick="submitOrder()">
-      Submit & Confirm Order
-    </button>
 
   </div>
-</div>
 
 
-<script type="module">
+  <!-- SUCCESS MODAL -->
 
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+  <div class="modal" id="successModal">
 
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+    <div class="modal-box">
 
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  getDoc,
-  doc,
-  setDoc,
-  addDoc,
-  query,
-  where,
-  orderBy,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+      <button class="close" onclick="closeSuccess()">×</button>
 
+      <div class="success-box">
 
-/* ==============================
-   FIREBASE
-============================== */
+        <strong>Order Submitted Successfully! 🎉</strong>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDBRf-8g83TnMYdoaKkpYpn_-boYng-SHE",
-  authDomain: "naturebite-538ba.firebaseapp.com",
-  projectId: "naturebite-538ba",
-  storageBucket: "naturebite-538ba.firebasestorage.app",
-  messagingSenderId: "403660151204",
-  appId: "1:403660151204:web:15db421e18442e85d70931"
-};
+        <div style="margin-top:8px;">
+          Your delivery charge payment is now waiting for verification.
+        </div>
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+        <div style="margin-top:8px;">
+          After Admin verifies the payment, your order will automatically
+          become <strong>Confirmed</strong>.
+        </div>
 
+      </div>
 
-/* ==============================
-   GLOBAL VARIABLES
-============================== */
+      <div class="form-group">
 
-let currentUser = null;
+        <label>Order Code</label>
 
-let products = [];
+        <input
+          id="successOrderCode"
+          readonly
+        >
 
-let cart = JSON.parse(
-  localStorage.getItem("naturebiteCart") || "[]"
-);
+      </div>
 
-let settings = {
-  deliveryCharge: 60,
-  freeDeliveryMinimum: 1000,
+      <button
+        class="place-order"
+        onclick="closeSuccess();scrollToOrders();"
+      >
+        View My Orders
+      </button>
 
-  platformEnabled: true,
-  platformType: "percentage",
-  platformValue: 2,
+    </div>
 
-  bkashNumber: "",
-  nagadNumber: ""
-};
+  </div>
 
-let appliedCoupon = null;
 
+  <div id="toast" class="toast"></div>
 
-/* ==============================
-   AUTH
-============================== */
 
-onAuthStateChanged(auth, async (user) => {
+  <!-- FIREBASE -->
 
-  if (!user) {
+  <script type="module">
 
-    window.location.href = "index.html";
-    return;
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 
-  }
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
-  currentUser = user;
+    import {
+      getFirestore,
+      collection,
+      doc,
+      getDoc,
+      getDocs,
+      setDoc,
+      addDoc,
+      query,
+      where,
+      orderBy,
+      onSnapshot,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
-  document.getElementById("headerUser").innerText =
-    user.phoneNumber || "Customer";
 
-  document.getElementById("userPhone").innerText =
-    "Mobile: " + (user.phoneNumber || "");
+    /* ==========================================
+       FIREBASE CONFIG
+    ========================================== */
 
-  document.getElementById("customerPhone").value =
-    user.phoneNumber || "";
+    const firebaseConfig = {
 
-  document.getElementById("welcomeText").innerText =
-    "Welcome to NatureBite";
+      apiKey:
+        "AIzaSyDBRf-8g83TnMYdoaKkpYpn_-boYng-SHE",
 
-  await createOrUpdateUser();
+      authDomain:
+        "naturebite-538ba.firebaseapp.com",
 
-  await loadSettings();
+      projectId:
+        "naturebite-538ba",
 
-  await loadProducts();
+      storageBucket:
+        "naturebite-538ba.firebasestorage.app",
 
-  renderCart();
+      messagingSenderId:
+        "403660151204",
 
-  await loadOrders();
+      appId:
+        "1:403660151204:web:15db421e18442e85d70931"
 
-});
+    };
 
 
-/* ==============================
-   USER PROFILE
-============================== */
+    const app = initializeApp(firebaseConfig);
 
-async function createOrUpdateUser(){
+    const auth = getAuth(app);
 
-  if(!currentUser) return;
+    const db = getFirestore(app);
 
-  const userRef =
-    doc(db, "users", currentUser.uid);
 
-  const userSnap =
-    await getDoc(userRef);
+    /* ==========================================
+       GLOBAL DATA
+    ========================================== */
 
-  const data = {
+    let currentUser = null;
 
-    uid: currentUser.uid,
+    let products = [];
 
-    phone: currentUser.phoneNumber || "",
+    let settings = {
 
-    role: "customer",
+      deliveryCharge: 60,
 
-    active: true,
+      freeDeliveryMinimum: 1000,
 
-    updatedAt: serverTimestamp()
+      platformEnabled: true,
 
-  };
+      platformType: "percentage",
 
-  if(!userSnap.exists()){
+      platformValue: 2,
 
-    data.createdAt = serverTimestamp();
+      bkashNumber: "",
 
-  }
+      nagadNumber: ""
 
-  await setDoc(
-    userRef,
-    data,
-    { merge:true }
-  );
-}
+    };
 
 
-/* ==============================
-   SETTINGS
-============================== */
+    let cart = [];
 
-async function loadSettings(){
+    let appliedCoupon = null;
 
-  try{
 
-    /*
-      Customer-এর জন্য settings/public document ব্যবহার করা হবে।
+    /* ==========================================
+       LOCAL STORAGE CART
+    ========================================== */
 
-      এতে শুধুমাত্র public information থাকবে:
-      deliveryCharge
-      freeDeliveryMinimum
-      platformEnabled
-      platformType
-      platformValue
-      bkashNumber
-      nagadNumber
-    */
+    function loadCart(){
 
-    const ref =
-      doc(db,"settings","public");
+      try{
 
-    const snap =
-      await getDoc(ref);
+        const saved =
+          localStorage.getItem("naturebiteCart");
 
-    if(snap.exists()){
+        cart =
+          saved
+            ? JSON.parse(saved)
+            : [];
 
-      const d = snap.data();
+        if(!Array.isArray(cart)){
+          cart = [];
+        }
 
-      settings = {
+      }catch(error){
 
-        ...settings,
+        console.error(error);
 
-        ...d
+        cart = [];
 
-      };
+      }
+
+      updateCartUI();
 
     }
 
-  }catch(error){
 
-    console.log(
-      "Public settings unavailable:",
-      error
-    );
+    function saveCart(){
 
-  }
-
-}
-
-
-/* ==============================
-   PRODUCTS
-============================== */
-
-async function loadProducts(){
-
-  const box =
-    document.getElementById("products");
-
-  box.innerHTML =
-    '<div class="empty">Loading products...</div>';
-
-  try{
-
-    const q =
-      query(
-        collection(db,"products"),
-        where("active","==",true)
+      localStorage.setItem(
+        "naturebiteCart",
+        JSON.stringify(cart)
       );
 
-    const snap =
-      await getDocs(q);
+      updateCartUI();
 
-    products = [];
+    }
 
-    snap.forEach(item => {
 
-      products.push({
+    /* ==========================================
+       AUTH
+    ========================================== */
 
-        id:item.id,
+    onAuthStateChanged(auth, async (user)=>{
 
-        ...item.data()
+      if(!user){
 
-      });
+        window.location.href = "index.html";
+
+        return;
+
+      }
+
+
+      currentUser = user;
+
+
+      document.getElementById(
+        "customerPhone"
+      ).innerText =
+        "📱 " +
+        (user.phoneNumber || "Phone verified");
+
+
+      loadCart();
+
+
+      await createCustomerProfile();
+
+      await loadSettings();
+
+      await loadProducts();
+
+      loadOrders();
 
     });
 
-    if(products.length === 0){
 
-      box.innerHTML =
-        '<div class="empty">No products available.</div>';
+    /* ==========================================
+       CUSTOMER PROFILE
+    ========================================== */
 
-      return;
+    async function createCustomerProfile(){
+
+      if(!currentUser) return;
+
+
+      const userRef =
+        doc(db,"users",currentUser.uid);
+
+      const userSnap =
+        await getDoc(userRef);
+
+
+      if(userSnap.exists()){
+
+        const data = userSnap.data();
+
+        document.getElementById(
+          "customerName"
+        ).innerText =
+          data.name ||
+          "Customer";
+
+        document.getElementById(
+          "checkoutName"
+        ).value =
+          data.name || "";
+
+        document.getElementById(
+          "checkoutPhone"
+        ).value =
+          data.phone ||
+          currentUser.phoneNumber ||
+          "";
+
+        return;
+
+      }
+
+
+      await setDoc(
+        userRef,
+        {
+
+          name:"Customer",
+
+          phone:
+            currentUser.phoneNumber || "",
+
+          role:"customer",
+
+          active:true,
+
+          createdAt:serverTimestamp(),
+
+          updatedAt:serverTimestamp()
+
+        }
+      );
+
+
+      document.getElementById(
+        "customerName"
+      ).innerText =
+        "Customer";
+
+      document.getElementById(
+        "checkoutPhone"
+      ).value =
+        currentUser.phoneNumber || "";
 
     }
 
-    box.innerHTML = "";
 
-    products.forEach(product => {
+    /* ==========================================
+       SETTINGS
+    ========================================== */
+
+    async function loadSettings(){
+
+      try{
+
+        const publicSettings =
+          await getDoc(
+            doc(db,"settings","public")
+          );
+
+
+        if(publicSettings.exists()){
+
+          const data =
+            publicSettings.data();
+
+          settings = {
+
+            ...settings,
+
+            ...data
+
+          };
+
+        }
+
+
+        updateCartUI();
+
+      }catch(error){
+
+        console.error(
+          "Settings error:",
+          error
+        );
+
+      }
+
+    }
+
+
+    /* ==========================================
+       PRODUCTS
+    ========================================== */
+
+    async function loadProducts(){
+
+      const grid =
+        document.getElementById(
+          "productsGrid"
+        );
+
+
+      try{
+
+        const productsQuery =
+          query(
+            collection(db,"products"),
+            where("active","==",true)
+          );
+
+
+        const snapshot =
+          await getDocs(
+            productsQuery
+          );
+
+
+        products = [];
+
+
+        snapshot.forEach((item)=>{
+
+          products.push({
+
+            id:item.id,
+
+            ...item.data()
+
+          });
+
+        });
+
+
+        if(products.length === 0){
+
+          grid.innerHTML = `
+            <div class="empty">
+              No products available right now.
+            </div>
+          `;
+
+          return;
+
+        }
+
+
+        grid.innerHTML =
+          products.map(
+            (product)=>productCard(product)
+          ).join("");
+
+
+      }catch(error){
+
+        console.error(error);
+
+        grid.innerHTML = `
+          <div class="empty">
+            Unable to load products.
+          </div>
+        `;
+
+      }
+
+    }
+
+
+    function productCard(product){
 
       const price =
         Number(product.price || 0);
 
+
       const stock =
         Number(product.stock || 0);
 
-      box.innerHTML += `
 
-        <div class="product">
+      const disabled =
+        stock <= 0;
 
-          <h3>${escapeHtml(product.name || "")}</h3>
 
-          <p>${escapeHtml(product.category || "")}</p>
+      return `
 
-          <p>
-            ${escapeHtml(product.description || "")}
-          </p>
+        <div class="product-card">
 
-          <div class="price">
-            ৳${price}
+          <div class="product-image">
+            ${getProductIcon(product.name)}
           </div>
 
-          <p>
-            Stock: ${stock}
-          </p>
+          <div class="product-info">
 
-          <br>
+            <div class="product-name">
+              ${escapeHTML(product.name || "NatureBite Product")}
+            </div>
 
-          <button
-            class="add"
-            ${stock <= 0 ? "disabled" : ""}
-            onclick="addToCart('${product.id}')">
+            <div class="product-category">
+              ${escapeHTML(product.category || "Healthy Food")}
+            </div>
 
-            ${stock > 0 ? "Add to Cart" : "Out of Stock"}
+            <div class="product-description">
+              ${escapeHTML(
+                product.description ||
+                "A NatureBite healthy product."
+              )}
+            </div>
 
-          </button>
+            <div class="product-bottom">
+
+              <div class="price">
+                ৳${formatMoney(price)}
+              </div>
+
+              <button
+                class="add-cart"
+                ${disabled ? "disabled" : ""}
+                onclick="addToCart('${product.id}')"
+              >
+                ${disabled ? "Out of Stock" : "Add to Cart"}
+              </button>
+
+            </div>
+
+          </div>
 
         </div>
 
       `;
 
-    });
-
-  }catch(error){
-
-    console.error(error);
-
-    box.innerHTML = `
-      <div class="empty">
-        Products load হয়নি।
-        Firestore Rules check করুন।
-      </div>
-    `;
-
-  }
-
-}
+    }
 
 
-/* ==============================
-   CART
-============================== */
+    function getProductIcon(name){
 
-window.addToCart = function(productId){
+      const n =
+        String(name || "").toLowerCase();
 
-  const product =
-    products.find(p => p.id === productId);
 
-  if(!product) return;
+      if(n.includes("nutribite"))
+        return "🥜";
 
-  const stock =
-    Number(product.stock || 0);
+      if(n.includes("naturemix"))
+        return "🥣";
 
-  let existing =
-    cart.find(item => item.id === productId);
+      if(n.includes("diabcare"))
+        return "🌰";
 
-  if(existing){
-
-    if(existing.qty >= stock){
-
-      alert("Maximum available stock reached.");
-      return;
+      return "🌿";
 
     }
 
-    existing.qty++;
 
-  }else{
+    /* ==========================================
+       CART
+    ========================================== */
 
-    cart.push({
+    window.addToCart = function(productId){
 
-      id: product.id,
-
-      name: product.name,
-
-      price: Number(product.price || 0),
-
-      qty: 1
-
-    });
-
-  }
-
-  saveCart();
-
-  renderCart();
-
-};
+      const product =
+        products.find(
+          p => p.id === productId
+        );
 
 
-window.changeQty = function(id, change){
+      if(!product){
 
-  const item =
-    cart.find(x => x.id === id);
+        showToast(
+          "Product not found."
+        );
 
-  if(!item) return;
+        return;
 
-  item.qty += change;
-
-  if(item.qty <= 0){
-
-    cart =
-      cart.filter(x => x.id !== id);
-
-  }
-
-  saveCart();
-
-  renderCart();
-
-};
+      }
 
 
-window.removeFromCart = function(id){
-
-  cart =
-    cart.filter(x => x.id !== id);
-
-  saveCart();
-
-  renderCart();
-
-};
+      const stock =
+        Number(product.stock || 0);
 
 
-function saveCart(){
-
-  localStorage.setItem(
-    "naturebiteCart",
-    JSON.stringify(cart)
-  );
-
-}
+      const existing =
+        cart.find(
+          item => item.id === productId
+        );
 
 
-/* ==============================
-   CART CALCULATION
-============================== */
+      if(existing){
 
-function calculateCart(){
+        if(
+          Number(existing.quantity || 0)
+          >= stock
+        ){
 
-  let subtotal = 0;
+          showToast(
+            "Maximum available stock reached."
+          );
 
-  cart.forEach(item => {
+          return;
 
-    subtotal +=
-      Number(item.price || 0) *
-      Number(item.qty || 0);
+        }
 
-  });
 
-  let discount = 0;
+        existing.quantity += 1;
 
-  if(appliedCoupon){
+      }else{
 
-    if(
-      subtotal >=
-      Number(appliedCoupon.minimumOrder || 0)
+        cart.push({
+
+          id:product.id,
+
+          name:product.name,
+
+          price:Number(product.price || 0),
+
+          quantity:1,
+
+          stock:stock
+
+        });
+
+      }
+
+
+      saveCart();
+
+
+      showToast(
+        "Added to cart."
+      );
+
+    };
+
+
+    window.changeQuantity = function(
+      productId,
+      change
     ){
+
+      const item =
+        cart.find(
+          p => p.id === productId
+        );
+
+
+      if(!item) return;
+
+
+      item.quantity =
+        Number(item.quantity || 0)
+        + Number(change);
+
+
+      if(item.quantity <= 0){
+
+        cart =
+          cart.filter(
+            p => p.id !== productId
+          );
+
+      }
+
+
+      if(
+        item.quantity > Number(item.stock || 0)
+      ){
+
+        item.quantity =
+          Number(item.stock || 0);
+
+      }
+
+
+      saveCart();
+
+    };
+
+
+    window.removeFromCart = function(
+      productId
+    ){
+
+      cart =
+        cart.filter(
+          p => p.id !== productId
+        );
+
+
+      saveCart();
+
+    };
+
+
+    function updateCartUI(){
+
+      const count =
+        cart.reduce(
+          (total,item)=>
+            total + Number(item.quantity || 0),
+          0
+        );
+
+
+      document.getElementById(
+        "cartCount"
+      ).innerText =
+        count;
+
+
+      const list =
+        document.getElementById(
+          "cartList"
+        );
+
+
+      const summary =
+        document.getElementById(
+          "cartSummary"
+        );
+
+
+      if(cart.length === 0){
+
+        list.innerHTML = `
+          <div class="empty">
+            Your cart is empty.
+          </div>
+        `;
+
+        summary.style.display =
+          "none";
+
+        return;
+
+      }
+
+
+      list.innerHTML =
+        cart.map(item=>`
+
+          <div class="cart-item">
+
+            <div class="cart-item-info">
+
+              <div class="cart-item-name">
+                ${escapeHTML(item.name)}
+              </div>
+
+              <div class="cart-item-price">
+                ৳${formatMoney(item.price)}
+                × ${item.quantity}
+                =
+                <strong>
+                  ৳${formatMoney(
+                    item.price * item.quantity
+                  )}
+                </strong>
+              </div>
+
+            </div>
+
+            <div class="quantity-controls">
+
+              <button
+                onclick="changeQuantity(
+                  '${item.id}',
+                  -1
+                )"
+              >
+                −
+              </button>
+
+              <strong>
+                ${item.quantity}
+              </strong>
+
+              <button
+                onclick="changeQuantity(
+                  '${item.id}',
+                  1
+                )"
+              >
+                +
+              </button>
+
+              <button
+                class="remove-btn"
+                onclick="removeFromCart(
+                  '${item.id}'
+                )"
+              >
+                ×
+              </button>
+
+            </div>
+
+          </div>
+
+        `).join("");
+
+
+      summary.style.display =
+        "block";
+
+
+      updateSummary();
+
+    }
+
+
+    /* ==========================================
+       CALCULATIONS
+    ========================================== */
+
+    function calculateSubtotal(){
+
+      return cart.reduce(
+
+        (total,item)=>
+          total +
+          (
+            Number(item.price || 0)
+            *
+            Number(item.quantity || 0)
+          ),
+
+        0
+
+      );
+
+    }
+
+
+    function calculateDiscount(
+      subtotal
+    ){
+
+      if(!appliedCoupon)
+        return 0;
+
+
+      if(
+        subtotal <
+        Number(
+          appliedCoupon.minimumOrder || 0
+        )
+      ){
+
+        return 0;
+
+      }
+
 
       if(
         appliedCoupon.discountType ===
         "percentage"
       ){
 
-        discount =
+        return Math.round(
           subtotal *
-          Number(appliedCoupon.discountValue || 0)
-          / 100;
-
-      }else{
-
-        discount =
-          Number(appliedCoupon.discountValue || 0);
+          (
+            Number(
+              appliedCoupon.discountValue || 0
+            )
+            / 100
+          )
+        );
 
       }
 
-    }
 
-  }
+      return Math.min(
 
-  if(discount > subtotal){
+        Number(
+          appliedCoupon.discountValue || 0
+        ),
 
-    discount = subtotal;
+        subtotal
 
-  }
-
-  let delivery = 0;
-
-  if(
-    subtotal - discount <
-    Number(settings.freeDeliveryMinimum || 0)
-  ){
-
-    delivery =
-      Number(settings.deliveryCharge || 0);
-
-  }
-
-  let afterDiscount =
-    subtotal - discount;
-
-  let platform = 0;
-
-  if(settings.platformEnabled !== false){
-
-    if(
-      settings.platformType ===
-      "percentage"
-    ){
-
-      platform =
-        afterDiscount *
-        Number(settings.platformValue || 0)
-        / 100;
-
-    }else{
-
-      platform =
-        Number(settings.platformValue || 0);
-
-    }
-
-  }
-
-  const total =
-    afterDiscount +
-    delivery +
-    platform;
-
-  return {
-
-    subtotal,
-
-    discount,
-
-    delivery,
-
-    platform,
-
-    total
-
-  };
-
-}
-
-
-/* ==============================
-   RENDER CART
-============================== */
-
-function renderCart(){
-
-  const box =
-    document.getElementById("cartItems");
-
-  const summary =
-    document.getElementById("cartSummary");
-
-  if(cart.length === 0){
-
-    box.innerHTML =
-      '<div class="empty">Your cart is empty.</div>';
-
-    summary.classList.add("hidden");
-
-    return;
-
-  }
-
-  summary.classList.remove("hidden");
-
-  box.innerHTML = "";
-
-  cart.forEach(item => {
-
-    box.innerHTML += `
-
-      <div class="cart-item">
-
-        <div>
-
-          <strong>
-            ${escapeHtml(item.name)}
-          </strong>
-
-          <br>
-
-          ৳${item.price} × ${item.qty}
-
-        </div>
-
-        <div class="qty">
-
-          <button
-            onclick="changeQty('${item.id}',-1)">
-            −
-          </button>
-
-          <span>${item.qty}</span>
-
-          <button
-            onclick="changeQty('${item.id}',1)">
-            +
-          </button>
-
-          <button
-            class="remove"
-            onclick="removeFromCart('${item.id}')">
-            Remove
-          </button>
-
-        </div>
-
-      </div>
-
-    `;
-
-  });
-
-  const c =
-    calculateCart();
-
-  document.getElementById("subtotal")
-    .innerText = Math.round(c.subtotal);
-
-  document.getElementById("discount")
-    .innerText = Math.round(c.discount);
-
-  document.getElementById("deliveryCharge")
-    .innerText = Math.round(c.delivery);
-
-  document.getElementById("platformCharge")
-    .innerText = Math.round(c.platform);
-
-  document.getElementById("totalAmount")
-    .innerText = Math.round(c.total);
-
-}
-
-
-/* ==============================
-   CHECKOUT
-============================== */
-
-window.openCheckout = function(){
-
-  if(cart.length === 0){
-
-    alert("Your cart is empty.");
-    return;
-
-  }
-
-  const c =
-    calculateCart();
-
-  document.getElementById("checkoutModal")
-    .style.display = "flex";
-
-  document.getElementById("customerPhone")
-    .value =
-    currentUser.phoneNumber || "";
-
-  document.getElementById("checkoutDeliveryCharge")
-    .innerText =
-    Math.round(c.delivery);
-
-  document.getElementById("checkoutSubtotal")
-    .innerText =
-    Math.round(c.subtotal);
-
-  document.getElementById("checkoutDiscount")
-    .innerText =
-    Math.round(c.discount);
-
-  document.getElementById("checkoutDelivery")
-    .innerText =
-    Math.round(c.delivery);
-
-  document.getElementById("checkoutPlatform")
-    .innerText =
-    Math.round(c.platform);
-
-  document.getElementById("checkoutTotal")
-    .innerText =
-    Math.round(c.total);
-
-  document.getElementById("bkashNumber")
-    .innerText =
-    settings.bkashNumber || "Not configured";
-
-  document.getElementById("nagadNumber")
-    .innerText =
-    settings.nagadNumber || "Not configured";
-
-};
-
-
-window.closeCheckout = function(){
-
-  document.getElementById("checkoutModal")
-    .style.display = "none";
-
-};
-
-
-/* ==============================
-   SUBMIT ORDER
-============================== */
-
-window.submitOrder = async function(){
-
-  if(!currentUser){
-
-    alert("Please login first.");
-    return;
-
-  }
-
-  if(cart.length === 0){
-
-    alert("Your cart is empty.");
-    return;
-
-  }
-
-  const name =
-    document.getElementById("customerName")
-      .value.trim();
-
-  const phone =
-    document.getElementById("customerPhone")
-      .value.trim();
-
-  const address =
-    document.getElementById("deliveryAddress")
-      .value.trim();
-
-  const deliveryPaymentMethod =
-    document.getElementById("deliveryPaymentMethod")
-      .value;
-
-  const transactionId =
-    document.getElementById("transactionId")
-      .value.trim();
-
-  if(!name){
-
-    alert("Customer name দিন।");
-    return;
-
-  }
-
-  if(!address){
-
-    alert("Delivery address দিন।");
-    return;
-
-  }
-
-  if(!deliveryPaymentMethod){
-
-    alert("Delivery Charge payment method select করুন।");
-    return;
-
-  }
-
-  if(!transactionId){
-
-    alert("Delivery Charge-এর Transaction ID দিন।");
-    return;
-
-  }
-
-  if(transactionId.length < 5){
-
-    alert("সঠিক Transaction ID দিন।");
-    return;
-
-  }
-
-
-  const c =
-    calculateCart();
-
-  const button =
-    document.getElementById("confirmOrderBtn");
-
-  button.disabled = true;
-
-  button.innerText =
-    "Submitting...";
-
-
-  try{
-
-    /*
-      STEP 1
-      Payment verification request তৈরি
-    */
-
-    const verificationRef =
-      await addDoc(
-        collection(db,"paymentVerifications"),
-        {
-
-          orderId: null,
-
-          customerId:
-            currentUser.uid,
-
-          customerPhone:
-            phone,
-
-          customerName:
-            name,
-
-          method:
-            deliveryPaymentMethod,
-
-          transactionId:
-            transactionId,
-
-          amount:
-            Math.round(c.delivery),
-
-          status:
-            "pending",
-
-          createdAt:
-            serverTimestamp()
-
-        }
       );
 
+    }
 
-    /*
-      STEP 2
-      Order তৈরি হবে।
 
-      গুরুত্বপূর্ণ:
-      paymentStatus = verification_pending
+    function calculateDelivery(
+      subtotalAfterDiscount
+    ){
 
-      Backend/API payment verify না করা পর্যন্ত
-      order সরাসরি paid/confirmed হবে না।
-    */
+      if(
+        subtotalAfterDiscount >=
+        Number(
+          settings.freeDeliveryMinimum || 0
+        )
+      ){
 
-    const trackingCode =
-      createOrderCode();
+        return 0;
 
-    const orderData = {
+      }
 
-      customerId:
-        currentUser.uid,
 
-      customerName:
-        name,
+      return Number(
+        settings.deliveryCharge || 0
+      );
 
-      customerPhone:
-        phone,
+    }
 
-      deliveryAddress:
-        address,
 
-      items:
-        cart,
+    function calculatePlatform(
+      amount
+    ){
 
-      subtotal:
-        Math.round(c.subtotal),
+      if(
+        !settings.platformEnabled
+      ){
 
-      discount:
-        Math.round(c.discount),
+        return 0;
 
-      deliveryCharge:
-        Math.round(c.delivery),
+      }
 
-      platformCharge:
-        Math.round(c.platform),
 
-      totalAmount:
-        Math.round(c.total),
+      const value =
+        Number(
+          settings.platformValue || 0
+        );
 
-      paymentMethod:
-        "COD",
 
-      paymentStatus:
-        "verification_pending",
+      if(
+        settings.platformType ===
+        "fixed"
+      ){
 
-      orderStatus:
-        "payment_verification_pending",
+        return value;
 
-      deliveryChargePaymentMethod:
-        deliveryPaymentMethod,
+      }
 
-      deliveryChargeTransactionId:
-        transactionId,
 
-      paymentVerificationId:
-        verificationRef.id,
+      return Math.round(
+        amount * (value / 100)
+      );
 
-      trackingCode:
-        trackingCode,
+    }
 
-      riderAssigned:
-        false,
 
-      barcodeScanned:
-        false,
+    function calculateTotals(){
 
-      deliveryOtpRequired:
-        true,
+      const subtotal =
+        calculateSubtotal();
 
-      deliveryOtpVerified:
-        false,
 
-      riderContactAllowed:
-        false,
+      const discount =
+        calculateDiscount(
+          subtotal
+        );
 
-      cancelled:
-        false,
 
-      createdAt:
-        serverTimestamp()
+      const afterDiscount =
+        Math.max(
+          0,
+          subtotal - discount
+        );
+
+
+      const delivery =
+        calculateDelivery(
+          afterDiscount
+        );
+
+
+      const platform =
+        calculatePlatform(
+          afterDiscount
+        );
+
+
+      const total =
+        afterDiscount +
+        delivery +
+        platform;
+
+
+      return {
+
+        subtotal,
+
+        discount,
+
+        delivery,
+
+        platform,
+
+        total
+
+      };
+
+    }
+
+
+    function updateSummary(){
+
+      const totals =
+        calculateTotals();
+
+
+      document.getElementById(
+        "summarySubtotal"
+      ).innerText =
+        "৳" +
+        formatMoney(
+          totals.subtotal
+        );
+
+
+      document.getElementById(
+        "summaryDiscount"
+      ).innerText =
+        "৳" +
+        formatMoney(
+          totals.discount
+        );
+
+
+      document.getElementById(
+        "summaryDelivery"
+      ).innerText =
+        "৳" +
+        formatMoney(
+          totals.delivery
+        );
+
+
+      document.getElementById(
+        "summaryPlatform"
+      ).innerText =
+        "৳" +
+        formatMoney(
+          totals.platform
+        );
+
+
+      document.getElementById(
+        "summaryTotal"
+      ).innerText =
+        "৳" +
+        formatMoney(
+          totals.total
+        );
+
+    }
+
+
+    /* ==========================================
+       COUPON
+    ========================================== */
+
+    window.applyCoupon = async function(){
+
+      const code =
+        document.getElementById(
+          "couponCode"
+        ).value
+        .trim()
+        .toUpperCase();
+
+
+      const result =
+        document.getElementById(
+          "couponResult"
+        );
+
+
+      if(!code){
+
+        result.className =
+          "coupon-result coupon-error";
+
+        result.innerText =
+          "Please enter a coupon code.";
+
+        return;
+
+      }
+
+
+      try{
+
+        const couponRef =
+          doc(
+            db,
+            "coupons",
+            code
+          );
+
+
+        const snap =
+          await getDoc(
+            couponRef
+          );
+
+
+        if(!snap.exists()){
+
+          appliedCoupon = null;
+
+          result.className =
+            "coupon-result coupon-error";
+
+          result.innerText =
+            "Invalid coupon code.";
+
+          updateCartUI();
+
+          updateCheckoutTotals();
+
+          return;
+
+        }
+
+
+        const coupon =
+          snap.data();
+
+
+        if(
+          coupon.active !== true
+        ){
+
+          appliedCoupon = null;
+
+          result.className =
+            "coupon-result coupon-error";
+
+          result.innerText =
+            "This coupon is inactive.";
+
+          return;
+
+        }
+
+
+        const subtotal =
+          calculateSubtotal();
+
+
+        if(
+          subtotal <
+          Number(
+            coupon.minimumOrder || 0
+          )
+        ){
+
+          appliedCoupon = null;
+
+          result.className =
+            "coupon-result coupon-error";
+
+          result.innerText =
+            "Minimum order amount is ৳" +
+            formatMoney(
+              coupon.minimumOrder || 0
+            );
+
+          return;
+
+        }
+
+
+        appliedCoupon = {
+
+          id:code,
+
+          ...coupon
+
+        };
+
+
+        result.className =
+          "coupon-result coupon-success";
+
+        result.innerText =
+          "Coupon applied successfully.";
+
+
+        updateCartUI();
+
+        updateCheckoutTotals();
+
+
+      }catch(error){
+
+        console.error(error);
+
+        result.className =
+          "coupon-result coupon-error";
+
+        result.innerText =
+          "Unable to apply coupon.";
+
+      }
 
     };
 
 
-    const orderRef =
-      await addDoc(
-        collection(db,"orders"),
-        orderData
+    /* ==========================================
+       CHECKOUT
+    ========================================== */
+
+    window.openCheckout = function(){
+
+      if(cart.length === 0){
+
+        showToast(
+          "Your cart is empty."
+        );
+
+        scrollToCart();
+
+        return;
+
+      }
+
+
+      const modal =
+        document.getElementById(
+          "checkoutModal"
+        );
+
+
+      modal.classList.add(
+        "show"
       );
 
 
-    /*
-      STEP 3
-      Verification document-এ orderId update করার
-      জন্য নতুন document তৈরি করা হচ্ছে।
-
-      Admin/backend এটি reference হিসেবে ব্যবহার করবে।
-    */
-
-    await setDoc(
-
-      doc(
-        db,
-        "paymentVerifications",
-        verificationRef.id
-      ),
-
-      {
-
-        orderId:
-          orderRef.id,
-
-        trackingCode:
-          trackingCode
-
-      },
-
-      {merge:true}
-
-    );
+      document.getElementById(
+        "checkoutDeliveryCharge"
+      ).innerText =
+        "৳" +
+        formatMoney(
+          calculateTotals().delivery
+        );
 
 
-    /*
-      CART CLEAR
-    */
-
-    cart = [];
-
-    saveCart();
-
-    renderCart();
+      document.getElementById(
+        "checkoutBkash"
+      ).innerText =
+        settings.bkashNumber ||
+        "Not configured";
 
 
-    /*
-      SUCCESS
-    */
-
-    document.getElementById("checkoutMessage")
-      .innerHTML = `
-
-        <div class="success">
-
-          ✅ Order successfully submitted!
-
-          <br><br>
-
-          Order Code:
-          <strong>${trackingCode}</strong>
-
-          <br><br>
-
-          Delivery Charge payment verification
-          pending আছে।
-
-          <br><br>
-
-          Payment verified হলে order automatically
-          Confirmed হবে।
-
-        </div>
-
-      `;
-
-    button.innerText =
-      "Order Submitted";
-
-    setTimeout(() => {
-
-      closeCheckout();
-
-      loadOrders();
-
-      document.getElementById("ordersSection")
-        .scrollIntoView();
-
-    },2000);
+      document.getElementById(
+        "checkoutNagad"
+      ).innerText =
+        settings.nagadNumber ||
+        "Not configured";
 
 
-  }catch(error){
+      updateCheckoutTotals();
 
-    console.error(error);
-
-    alert(
-      "Order submit হয়নি: " +
-      error.message
-    );
-
-    button.disabled = false;
-
-    button.innerText =
-      "Submit & Confirm Order";
-
-  }
-
-};
+    };
 
 
-/* ==============================
-   ORDER CODE
-============================== */
+    window.closeCheckout = function(){
 
-function createOrderCode(){
-
-  const random =
-    Math.floor(
-      100000 +
-      Math.random() * 900000
-    );
-
-  return "NB-" + Date.now() + "-" + random;
-
-}
-
-
-/* ==============================
-   LOAD ORDERS
-============================== */
-
-window.loadOrders = async function(){
-
-  const box =
-    document.getElementById("orders");
-
-  box.innerHTML =
-    '<div class="empty">Loading orders...</div>';
-
-  if(!currentUser) return;
-
-  try{
-
-    const q =
-      query(
-
-        collection(db,"orders"),
-
-        where(
-          "customerId",
-          "==",
-          currentUser.uid
-        )
-
+      document.getElementById(
+        "checkoutModal"
+      ).classList.remove(
+        "show"
       );
 
-    const snap =
-      await getDocs(q);
-
-    let orders = [];
-
-    snap.forEach(item => {
-
-      orders.push({
-
-        id:item.id,
-
-        ...item.data()
-
-      });
-
-    });
+    };
 
 
-    orders.sort((a,b) => {
+    function updateCheckoutTotals(){
 
-      const aTime =
-        a.createdAt?.seconds || 0;
-
-      const bTime =
-        b.createdAt?.seconds || 0;
-
-      return bTime - aTime;
-
-    });
+      const totals =
+        calculateTotals();
 
 
-    if(orders.length === 0){
+      document.getElementById(
+        "checkoutSubtotal"
+      ).innerText =
+        "৳" +
+        formatMoney(
+          totals.subtotal
+        );
 
-      box.innerHTML =
-        '<div class="empty">No orders yet.</div>';
 
-      return;
+      document.getElementById(
+        "checkoutDiscount"
+      ).innerText =
+        "৳" +
+        formatMoney(
+          totals.discount
+        );
+
+
+      document.getElementById(
+        "checkoutDelivery"
+      ).innerText =
+        "৳" +
+        formatMoney(
+          totals.delivery
+        );
+
+
+      document.getElementById(
+        "checkoutPlatform"
+      ).innerText =
+        "৳" +
+        formatMoney(
+          totals.platform
+        );
+
+
+      document.getElementById(
+        "checkoutTotal"
+      ).innerText =
+        "৳" +
+        formatMoney(
+          totals.total
+        );
+
+
+      document.getElementById(
+        "checkoutDeliveryCharge"
+      ).innerText =
+        "৳" +
+        formatMoney(
+          totals.delivery
+        );
 
     }
 
-    box.innerHTML = "";
 
-    orders.forEach(order => {
+    /* ==========================================
+       PLACE ORDER
+    ========================================== */
+
+    window.placeOrder = async function(){
+
+      if(!currentUser){
+
+        showToast(
+          "Please login first."
+        );
+
+        return;
+
+      }
+
+
+      if(cart.length === 0){
+
+        showToast(
+          "Your cart is empty."
+        );
+
+        return;
+
+      }
+
+
+      const name =
+        document.getElementById(
+          "checkoutName"
+        ).value.trim();
+
+
+      const phone =
+        document.getElementById(
+          "checkoutPhone"
+        ).value.trim();
+
+
+      const address =
+        document.getElementById(
+          "checkoutAddress"
+        ).value.trim();
+
+
+      const orderPaymentMethod =
+        document.getElementById(
+          "orderPaymentMethod"
+        ).value;
+
+
+      const deliveryPaymentMethod =
+        document.getElementById(
+          "deliveryPaymentMethod"
+        ).value;
+
+
+      const transactionId =
+        document.getElementById(
+          "deliveryTransactionId"
+        ).value.trim();
+
+
+      if(!name){
+
+        showToast(
+          "Please enter your name."
+        );
+
+        return;
+
+      }
+
+
+      if(!phone){
+
+        showToast(
+          "Please enter your mobile number."
+        );
+
+        return;
+
+      }
+
+
+      if(!address){
+
+        showToast(
+          "Please enter your delivery address."
+        );
+
+        return;
+
+      }
+
+
+      if(!deliveryPaymentMethod){
+
+        showToast(
+          "Please select delivery payment method."
+        );
+
+        return;
+
+      }
+
+
+      if(!transactionId){
+
+        showToast(
+          "Please enter delivery payment transaction ID."
+        );
+
+        return;
+
+      }
+
+
+      const totals =
+        calculateTotals();
+
+
+      if(
+        totals.delivery <= 0
+      ){
+
+        showToast(
+          "Delivery charge is already free."
+        );
+
+      }
+
+
+      const button =
+        document.getElementById(
+          "placeOrderButton"
+        );
+
+
+      button.disabled = true;
+
+      button.innerText =
+        "Submitting...";
+
+
+      try{
+
+        /* =====================================
+           CREATE PAYMENT VERIFICATION
+        ===================================== */
+
+        const verificationRef =
+          await addDoc(
+
+            collection(
+              db,
+              "paymentVerifications"
+            ),
+
+            {
+
+              orderId:"",
+
+              customerId:
+                currentUser.uid,
+
+              customerName:name,
+
+              customerPhone:phone,
+
+              method:
+                deliveryPaymentMethod,
+
+              transactionId:
+                transactionId,
+
+              amount:
+                totals.delivery,
+
+              purpose:
+                "delivery_charge",
+
+              status:
+                "pending",
+
+              createdAt:
+                serverTimestamp()
+
+            }
+
+          );
+
+
+        /* =====================================
+           ORDER CODE
+        ===================================== */
+
+        const orderCode =
+          generateOrderCode();
+
+
+        /* =====================================
+           COD AMOUNT
+        ===================================== */
+
+        let codAmount = 0;
+
+
+        if(
+          orderPaymentMethod === "COD"
+        ){
+
+          codAmount =
+            totals.total;
+
+        }
+
+
+        /* =====================================
+           CREATE ORDER
+        ===================================== */
+
+        const orderRef =
+          await addDoc(
+
+            collection(
+              db,
+              "orders"
+            ),
+
+            {
+
+              customerId:
+                currentUser.uid,
+
+              customerName:
+                name,
+
+              customerPhone:
+                phone,
+
+              deliveryAddress:
+                address,
+
+
+              items:
+                cart.map(
+                  item => ({
+
+                    productId:
+                      item.id,
+
+                    name:
+                      item.name,
+
+                    price:
+                      Number(
+                        item.price || 0
+                      ),
+
+                    quantity:
+                      Number(
+                        item.quantity || 0
+                      ),
+
+                    subtotal:
+                      Number(
+                        item.price || 0
+                      ) *
+                      Number(
+                        item.quantity || 0
+                      )
+
+                  })
+                ),
+
+
+              subtotal:
+                totals.subtotal,
+
+              discount:
+                totals.discount,
+
+              deliveryCharge:
+                totals.delivery,
+
+              platformCharge:
+                totals.platform,
+
+              totalAmount:
+                totals.total,
+
+
+              couponCode:
+                appliedCoupon
+                  ? appliedCoupon.id
+                  : "",
+
+
+              couponDiscount:
+                totals.discount,
+
+
+              orderPaymentMethod:
+                orderPaymentMethod,
+
+
+              paymentMethod:
+                orderPaymentMethod,
+
+
+              /* DELIVERY PAYMENT */
+
+              deliveryChargePaid:
+                false,
+
+              deliveryPaymentStatus:
+                "pending",
+
+              deliveryChargeTransactionId:
+                transactionId,
+
+              paymentVerificationId:
+                verificationRef.id,
+
+
+              /* ORDER PAYMENT */
+
+              paymentStatus:
+                "verification_pending",
+
+
+              /* ORDER STATUS */
+
+              orderStatus:
+                "payment_verification_pending",
+
+
+              /* COD */
+
+              codAmount:
+                codAmount,
+
+
+              /* TRACKING */
+
+              trackingCode:
+                orderCode,
+
+
+              /* RIDER */
+
+              riderAssigned:
+                false,
+
+              riderAssignedAt:
+                null,
+
+              assignedRiderId:
+                "",
+
+              assignmentMethod:
+                "barcode",
+
+              barcodeScanned:
+                false,
+
+              barcodeValue:
+                orderCode,
+
+
+              /* DELIVERY */
+
+              deliveryOtpRequired:
+                true,
+
+              deliveryOtpVerified:
+                false,
+
+              riderContactAllowed:
+                true,
+
+
+              /* CANCEL */
+
+              cancelled:
+                false,
+
+              cancelledAt:
+                null,
+
+              cancelledOrderHandoverRequired:
+                false,
+
+              cancelledOrderHandoverLocation:
+                "",
+
+              cancelledOrderHandoverStatus:
+                "",
+
+              cancelledOrderHandoverProofUrl:
+                "",
+
+              cancelledOrderHandoverVerified:
+                false,
+
+
+              createdAt:
+                serverTimestamp(),
+
+              updatedAt:
+                serverTimestamp()
+
+            }
+
+          );
+
+
+        /* =====================================
+           UPDATE VERIFICATION WITH ORDER ID
+        ===================================== */
+
+        await setDoc(
+
+          doc(
+            db,
+            "paymentVerifications",
+            verificationRef.id
+          ),
+
+          {
+
+            orderId:
+              orderRef.id
+
+          },
+
+          {
+
+            merge:true
+
+          }
+
+        );
+
+
+        /* =====================================
+           UPDATE CUSTOMER PROFILE
+        ===================================== */
+
+        await setDoc(
+
+          doc(
+            db,
+            "users",
+            currentUser.uid
+          ),
+
+          {
+
+            name:name,
+
+            phone:phone,
+
+            updatedAt:
+              serverTimestamp()
+
+          },
+
+          {
+
+            merge:true
+
+          }
+
+        );
+
+
+        /* =====================================
+           CLEAR CART
+        ===================================== */
+
+        cart = [];
+
+        appliedCoupon = null;
+
+        saveCart();
+
+
+        closeCheckout();
+
+
+        document.getElementById(
+          "successOrderCode"
+        ).value =
+          orderCode;
+
+
+        document.getElementById(
+          "successModal"
+        ).classList.add(
+          "show"
+        );
+
+
+        document.getElementById(
+          "checkoutAddress"
+        ).value = "";
+
+
+        document.getElementById(
+          "deliveryTransactionId"
+        ).value = "";
+
+
+        document.getElementById(
+          "couponCode"
+        ).value = "";
+
+
+        document.getElementById(
+          "couponResult"
+        ).innerText = "";
+
+
+        loadOrders();
+
+
+      }catch(error){
+
+        console.error(
+          "Order error:",
+          error
+        );
+
+
+        showToast(
+          "Order could not be submitted: " +
+          error.message
+        );
+
+      }finally{
+
+        button.disabled = false;
+
+        button.innerText =
+          "Submit Order";
+
+      }
+
+    };
+
+
+    /* ==========================================
+       LOAD ORDERS
+    ========================================== */
+
+    let unsubscribeOrders = null;
+
+
+    function loadOrders(){
+
+      if(!currentUser) return;
+
+
+      const list =
+        document.getElementById(
+          "ordersList"
+        );
+
+
+      if(unsubscribeOrders){
+
+        unsubscribeOrders();
+
+      }
+
+
+      const ordersQuery =
+        query(
+
+          collection(
+            db,
+            "orders"
+          ),
+
+          where(
+            "customerId",
+            "==",
+            currentUser.uid
+          )
+
+        );
+
+
+      unsubscribeOrders =
+        onSnapshot(
+
+          ordersQuery,
+
+          (snapshot)=>{
+
+            const orders = [];
+
+
+            snapshot.forEach(
+              item => {
+
+                orders.push({
+
+                  id:item.id,
+
+                  ...item.data()
+
+                });
+
+              }
+            );
+
+
+            orders.sort(
+              (a,b)=>{
+
+                const aTime =
+                  a.createdAt &&
+                  a.createdAt.toMillis
+                    ? a.createdAt.toMillis()
+                    : 0;
+
+                const bTime =
+                  b.createdAt &&
+                  b.createdAt.toMillis
+                    ? b.createdAt.toMillis()
+                    : 0;
+
+                return bTime - aTime;
+
+              }
+            );
+
+
+            if(
+              orders.length === 0
+            ){
+
+              list.innerHTML = `
+                <div class="empty">
+                  You have no orders yet.
+                </div>
+              `;
+
+              return;
+
+            }
+
+
+            list.innerHTML =
+              orders.map(
+                order =>
+                  orderCard(order)
+              ).join("");
+
+          },
+
+          (error)=>{
+
+            console.error(
+              "Order listener error:",
+              error
+            );
+
+
+            list.innerHTML = `
+              <div class="empty">
+                Unable to load your orders.
+              </div>
+            `;
+
+          }
+
+        );
+
+    }
+
+
+    function orderCard(order){
 
       const status =
-        order.orderStatus || "pending";
+        String(
+          order.orderStatus ||
+          "pending"
+        );
 
-      const amount =
-        Number(order.totalAmount || 0);
 
-      box.innerHTML += `
+      const paymentStatus =
+        String(
+          order.deliveryPaymentStatus ||
+          order.paymentStatus ||
+          "pending"
+        );
 
-        <div class="order">
 
-          <strong>
-            ${escapeHtml(order.trackingCode || order.id)}
-          </strong>
+      let verificationMessage = "";
 
-          <br><br>
 
-          Total:
-          <strong>৳${amount}</strong>
+      if(
+        status ===
+        "payment_verification_pending"
+      ){
 
-          <br>
+        verificationMessage = `
 
-          Payment:
-          ${escapeHtml(order.paymentMethod || "COD")}
+          <div class="verification-message">
 
-          <br>
+            ⏳
+            <strong>
+              Delivery payment verification pending
+            </strong>
 
-          Payment Status:
-          ${escapeHtml(order.paymentStatus || "")}
+            <br>
 
-          <br>
+            Your order will be confirmed after
+            NatureBite Admin verifies the delivery charge.
 
-          Order Status:
+          </div>
 
-          <span class="status">
-            ${escapeHtml(status)}
-          </span>
+        `;
 
-          <br><br>
+      }
 
-          Address:
-          ${escapeHtml(order.deliveryAddress || "")}
+
+      if(
+        status === "confirmed"
+      ){
+
+        verificationMessage = `
+
+          <div class="verification-message"
+               style="
+                 background:#e8f5e9;
+                 color:#28663a;
+                 border:1px solid #cde6d2;
+               ">
+
+            ✅
+            <strong>
+              Order Confirmed
+            </strong>
+
+            <br>
+
+            Your order is now being processed.
+
+          </div>
+
+        `;
+
+      }
+
+
+      if(
+        status === "payment_rejected"
+      ){
+
+        verificationMessage = `
+
+          <div class="verification-message"
+               style="
+                 background:#ffebe7;
+                 color:#a83f31;
+               ">
+
+            ❌
+            <strong>
+              Payment verification rejected
+            </strong>
+
+            <br>
+
+            Please contact NatureBite support.
+
+          </div>
+
+        `;
+
+      }
+
+
+      const itemText =
+        Array.isArray(order.items)
+          ? order.items
+              .map(
+                item =>
+                  `${escapeHTML(
+                    item.name || ""
+                  )} × ${
+                    item.quantity || 0
+                  }`
+              )
+              .join(", ")
+          : "Products";
+
+
+      const created =
+        formatDate(
+          order.createdAt
+        );
+
+
+      return `
+
+        <div class="order-card">
+
+          <div class="order-top">
+
+            <div>
+
+              <div class="order-code">
+                Order #${escapeHTML(
+                  order.trackingCode ||
+                  order.id
+                )}
+              </div>
+
+              <div style="
+                color:#777;
+                font-size:12px;
+                margin-top:4px;
+              ">
+                ${created}
+              </div>
+
+            </div>
+
+            <div class="status ${statusClass(status)}">
+              ${prettyStatus(status)}
+            </div>
+
+          </div>
+
+
+          <div style="
+            font-size:13px;
+            color:#59645d;
+            margin-bottom:13px;
+          ">
+
+            ${itemText}
+
+          </div>
+
+
+          <div class="order-details">
+
+            <div class="order-detail-box">
+
+              <strong>
+                Total
+              </strong>
+
+              ৳${formatMoney(
+                order.totalAmount || 0
+              )}
+
+            </div>
+
+
+            <div class="order-detail-box">
+
+              <strong>
+                Payment
+              </strong>
+
+              ${
+                order.orderPaymentMethod ||
+                order.paymentMethod ||
+                "COD"
+              }
+
+            </div>
+
+
+            <div class="order-detail-box">
+
+              <strong>
+                Delivery Payment
+              </strong>
+
+              ${prettyStatus(paymentStatus)}
+
+            </div>
+
+
+            <div class="order-detail-box">
+
+              <strong>
+                COD Amount
+              </strong>
+
+              ৳${formatMoney(
+                order.codAmount || 0
+              )}
+
+            </div>
+
+
+            <div class="order-detail-box">
+
+              <strong>
+                Rider
+              </strong>
+
+              ${
+                order.assignedRiderId ||
+                "Not assigned"
+              }
+
+            </div>
+
+
+            <div class="order-detail-box">
+
+              <strong>
+                Delivery
+              </strong>
+
+              ৳${formatMoney(
+                order.deliveryCharge || 0
+              )}
+
+            </div>
+
+          </div>
+
+
+          ${verificationMessage}
 
         </div>
 
       `;
 
-    });
-
-  }catch(error){
-
-    console.error(error);
-
-    box.innerHTML = `
-      <div class="empty">
-        Orders load হয়নি।
-      </div>
-    `;
-
-  }
-
-};
+    }
 
 
-/* ==============================
-   SECTION SCROLL
-============================== */
+    /* ==========================================
+       LOGOUT
+       CART IS PRESERVED
+    ========================================== */
 
-window.showSection = function(id){
+    window.logoutUser = async function(){
 
-  document.getElementById(id)
-    .scrollIntoView({
-      behavior:"smooth"
-    });
+      try{
 
-};
+        /*
+          IMPORTANT:
+          We intentionally DO NOT remove
+          naturebiteCart from localStorage.
+        */
+
+        await signOut(auth);
+
+      }catch(error){
+
+        console.error(error);
+
+        showToast(
+          "Logout failed."
+        );
+
+      }
+
+    };
 
 
-/* ==============================
-   LOGOUT
-============================== */
+    /* ==========================================
+       SUCCESS MODAL
+    ========================================== */
 
-document.getElementById("logoutBtn")
-  .addEventListener("click", async () => {
+    window.closeSuccess = function(){
 
-    try{
+      document.getElementById(
+        "successModal"
+      ).classList.remove(
+        "show"
+      );
 
-      /*
-        গুরুত্বপূর্ণ:
-        Logout করলে cart delete করা হচ্ছে না।
-        Cart localStorage-এ থাকবে।
-      */
+    };
 
-      await signOut(auth);
 
-      window.location.href =
-        "index.html";
+    /* ==========================================
+       NAVIGATION
+    ========================================== */
 
-    }catch(error){
+    window.scrollToProducts = function(){
 
-      alert(error.message);
+      document.getElementById(
+        "productsSection"
+      ).scrollIntoView({
+        behavior:"smooth"
+      });
+
+    };
+
+
+    window.scrollToCart = function(){
+
+      document.getElementById(
+        "cartSection"
+      ).scrollIntoView({
+        behavior:"smooth"
+      });
+
+    };
+
+
+    window.scrollToOrders = function(){
+
+      document.getElementById(
+        "ordersSection"
+      ).scrollIntoView({
+        behavior:"smooth"
+      });
+
+    };
+
+
+    /* ==========================================
+       UTILITIES
+    ========================================== */
+
+    function generateOrderCode(){
+
+      const now =
+        new Date();
+
+      const date =
+        now.getTime()
+          .toString()
+          .slice(-8);
+
+
+      const random =
+        Math.floor(
+          100 +
+          Math.random() * 900
+        );
+
+
+      return "NB-" +
+        date +
+        random;
 
     }
 
-  });
+
+    function formatMoney(
+      amount
+    ){
+
+      return Number(
+        amount || 0
+      ).toLocaleString(
+        "en-BD"
+      );
+
+    }
 
 
-/* ==============================
-   ESCAPE HTML
-============================== */
+    function formatDate(
+      timestamp
+    ){
 
-function escapeHtml(value){
+      if(
+        !timestamp ||
+        !timestamp.toDate
+      ){
 
-  return String(value || "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+        return "Just now";
 
-}
+      }
 
-</script>
+
+      return timestamp
+        .toDate()
+        .toLocaleString(
+          "en-BD",
+          {
+            dateStyle:"medium",
+            timeStyle:"short"
+          }
+        );
+
+    }
+
+
+    function prettyStatus(
+      status
+    ){
+
+      const text =
+        String(status || "")
+          .replaceAll("_"," ")
+          .replace(
+            /\b\w/g,
+            letter =>
+              letter.toUpperCase()
+          );
+
+
+      return text || "Pending";
+
+    }
+
+
+    function statusClass(
+      status
+    ){
+
+      return String(
+        status || ""
+      )
+      .toLowerCase()
+      .replaceAll(" ","_");
+
+    }
+
+
+    function escapeHTML(
+      value
+    ){
+
+      return String(
+        value ?? ""
+      )
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+
+    }
+
+
+    function showToast(
+      message
+    ){
+
+      const toast =
+        document.getElementById(
+          "toast"
+        );
+
+
+      toast.innerText =
+        message;
+
+
+      toast.classList.add(
+        "show"
+      );
+
+
+      setTimeout(
+        ()=>{
+          toast.classList.remove(
+            "show"
+          );
+        },
+        2800
+      );
+
+    }
+
+  </script>
 
 </body>
 </html>
