@@ -1,0 +1,4297 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NatureBite Admin Panel</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Arial,"Noto Sans Bengali",sans-serif;
+  background:#f5f7f5;
+  color:#1d2b22;
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0}
+.app{display:flex;min-height:100vh}
+
+.sidebar{
+  width:250px;
+  background:#123b27;
+  color:white;
+  position:fixed;
+  top:0;bottom:0;left:0;
+  overflow-y:auto;
+  z-index:20;
+}
+.logo{
+  padding:24px 20px;
+  font-size:25px;
+  font-weight:800;
+  border-bottom:1px solid rgba(255,255,255,.12);
+}
+.logo small{
+  display:block;
+  font-size:11px;
+  opacity:.65;
+  margin-top:5px;
+  letter-spacing:1px;
+}
+.nav{padding:12px}
+.nav button{
+  display:block;
+  width:100%;
+  text-align:left;
+  padding:12px 14px;
+  margin:4px 0;
+  border-radius:9px;
+  background:transparent;
+  color:#e8f3eb;
+}
+.nav button:hover,.nav button.active{
+  background:#285d3e;
+}
+.nav .danger{color:#ffb8b8}
+
+.main{
+  margin-left:250px;
+  width:calc(100% - 250px);
+}
+.topbar{
+  height:68px;
+  background:white;
+  border-bottom:1px solid #e3e8e4;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 24px;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+.topbar h2{font-size:20px}
+.admin-info{
+  font-size:13px;
+  color:#607067;
+}
+.content{padding:22px}
+
+.section{display:none}
+.section.active{display:block}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin-bottom:20px;
+}
+.card{
+  background:white;
+  border:1px solid #e2e8e3;
+  border-radius:13px;
+  padding:18px;
+  box-shadow:0 2px 8px rgba(0,0,0,.03);
+}
+.card .label{font-size:13px;color:#708077}
+.card .value{
+  font-size:25px;
+  font-weight:800;
+  margin-top:8px;
+}
+.card.green{border-left:4px solid #1d7544}
+.card.orange{border-left:4px solid #e09524}
+.card.red{border-left:4px solid #d34d4d}
+.card.blue{border-left:4px solid #3975b9}
+
+.panel{
+  background:white;
+  border:1px solid #e2e8e3;
+  border-radius:13px;
+  margin-bottom:20px;
+  overflow:hidden;
+}
+.panel-head{
+  padding:16px 18px;
+  border-bottom:1px solid #e8ece9;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+.panel-head h3{font-size:17px}
+.panel-body{padding:18px}
+
+.table-wrap{overflow-x:auto}
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:700px;
+}
+th,td{
+  padding:11px 10px;
+  border-bottom:1px solid #edf0ee;
+  text-align:left;
+  font-size:13px;
+}
+th{background:#f7f9f7;font-weight:700}
+
+.btn{
+  padding:9px 13px;
+  border-radius:8px;
+  background:#1f6b3d;
+  color:white;
+  font-weight:700;
+  font-size:13px;
+}
+.btn:hover{opacity:.9}
+.btn.gray{background:#6c7770}
+.btn.red{background:#c94141}
+.btn.orange{background:#d88a16}
+.btn.blue{background:#316fa8}
+.btn.light{background:#edf4ef;color:#1c5936}
+
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+
+.badge{
+  display:inline-block;
+  padding:5px 8px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:700;
+}
+.badge.green{background:#def3e5;color:#176033}
+.badge.orange{background:#fff0d3;color:#875700}
+.badge.red{background:#ffe1e1;color:#a31d1d}
+.badge.blue{background:#e1effb;color:#215b8e}
+.badge.gray{background:#e8ece9;color:#56625b}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+.form-group{margin-bottom:12px}
+.form-group.full{grid-column:1/-1}
+label{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:6px;
+}
+input,select,textarea{
+  width:100%;
+  padding:11px;
+  border:1px solid #d7dfd9;
+  border-radius:8px;
+  outline:none;
+  background:white;
+}
+textarea{min-height:100px;resize:vertical}
+input:focus,select:focus,textarea:focus{
+  border-color:#398154;
+}
+
+.switch{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.switch input{width:auto}
+
+.toolbar{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:15px;
+}
+
+.empty{
+  padding:35px;
+  text-align:center;
+  color:#7b877f;
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  z-index:100;
+  padding:20px;
+  overflow-y:auto;
+}
+.modal.show{display:flex;align-items:flex-start;justify-content:center}
+.modal-box{
+  background:white;
+  width:min(850px,100%);
+  margin:20px auto;
+  border-radius:14px;
+  overflow:hidden;
+}
+.modal-head{
+  padding:16px 20px;
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid #eee;
+}
+.modal-head button{
+  background:#eee;
+  border-radius:50%;
+  width:30px;height:30px;
+}
+.modal-body{padding:20px}
+
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  background:#123b27;
+  color:white;
+  padding:13px 18px;
+  border-radius:9px;
+  display:none;
+  z-index:200;
+}
+.toast.show{display:block}
+
+.mobile-menu{
+  display:none;
+  background:#123b27;
+  color:white;
+  padding:8px 11px;
+  border-radius:7px;
+}
+
+.finance-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+.finance-box{
+  background:#f7faf7;
+  border:1px solid #e1e9e2;
+  border-radius:10px;
+  padding:15px;
+}
+.finance-box span{
+  display:block;
+  font-size:12px;
+  color:#68766d;
+}
+.finance-box strong{
+  display:block;
+  font-size:20px;
+  margin-top:7px;
+}
+
+@media(max-width:1000px){
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .finance-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){
+  .sidebar{transform:translateX(-100%);transition:.25s}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0;width:100%}
+  .mobile-menu{display:block}
+  .topbar{padding:0 12px}
+  .content{padding:12px}
+  .cards{grid-template-columns:1fr 1fr;gap:9px}
+  .card{padding:13px}
+  .card .value{font-size:20px}
+  .form-grid{grid-template-columns:1fr}
+  .form-group.full{grid-column:auto}
+  .finance-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+  <div class="logo">
+    NatureBite
+    <small>ADMIN CONTROL PANEL</small>
+  </div>
+
+  <div class="nav">
+    <button class="active" onclick="showSection('dashboard',this)">📊 Dashboard</button>
+    <button onclick="showSection('orders',this)">🛒 Orders</button>
+    <button onclick="showSection('payments',this)">💳 Payments</button>
+    <button onclick="showSection('settlements',this)">💰 Rider Settlements</button>
+    <button onclick="showSection('products',this)">📦 Products</button>
+    <button onclick="showSection('customers',this)">👥 Customers</button>
+    <button onclick="showSection('riders',this)">🏍️ Riders</button>
+    <button onclick="showSection('coupons',this)">🎟️ Coupons</button>
+    <button onclick="showSection('offers',this)">🎁 Offers</button>
+    <button onclick="showSection('reviews',this)">⭐ Reviews</button>
+    <button onclick="showSection('partners',this)">🚚 Delivery Partners</button>
+    <button onclick="showSection('staff',this)">👨‍💼 Staff & Roles</button>
+    <button onclick="showSection('festival',this)">🎉 Festival / Lucky Draw</button>
+    <button onclick="showSection('wheel',this)">🎡 Discount Wheel</button>
+    <button onclick="showSection('theme',this)">🇧🇩 Theme</button>
+    <button onclick="showSection('finance',this)">📈 Monthly Profit/Loss</button>
+    <button onclick="showSection('settings',this)">⚙️ Settings</button>
+    <button onclick="showSection('ai',this)">🤖 AI Tools</button>
+    <button class="danger" onclick="logout()">🚪 Logout</button>
+  </div>
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:10px">
+    <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+    <h2 id="pageTitle">Dashboard</h2>
+  </div>
+  <div class="admin-info" id="adminInfo">Checking access...</div>
+</header>
+
+<div class="content">
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="section active">
+
+  <div class="cards">
+    <div class="card green">
+      <div class="label">Total Orders</div>
+      <div class="value" id="statOrders">0</div>
+    </div>
+    <div class="card blue">
+      <div class="label">Confirmed Orders</div>
+      <div class="value" id="statConfirmed">0</div>
+    </div>
+    <div class="card orange">
+      <div class="label">Pending Payments</div>
+      <div class="value" id="statPayments">0</div>
+    </div>
+    <div class="card red">
+      <div class="label">Cancelled Orders</div>
+      <div class="value" id="statCancelled">0</div>
+    </div>
+  </div>
+
+  <div class="cards">
+    <div class="card green">
+      <div class="label">Sales</div>
+      <div class="value">৳ <span id="statSales">0</span></div>
+    </div>
+    <div class="card blue">
+      <div class="label">COD Outstanding</div>
+      <div class="value">৳ <span id="statCOD">0</span></div>
+    </div>
+    <div class="card orange">
+      <div class="label">Riders</div>
+      <div class="value" id="statRiders">0</div>
+    </div>
+    <div class="card">
+      <div class="label">Products</div>
+      <div class="value" id="statProducts">0</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Recent Orders</h3>
+      <button class="btn light" onclick="showSectionById('orders')">View All</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Amount</th>
+            <th>Payment</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="recentOrders"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ORDERS -->
+<section id="orders" class="section">
+
+  <div class="toolbar">
+    <button class="btn" onclick="loadOrders()">🔄 Refresh</button>
+    <select id="orderFilter" onchange="renderOrders()">
+      <option value="all">All Orders</option>
+      <option value="pending">Pending</option>
+      <option value="confirmed">Confirmed</option>
+      <option value="processing">Processing</option>
+      <option value="out_for_delivery">Out for Delivery</option>
+      <option value="delivered">Delivered</option>
+      <option value="cancelled">Cancelled</option>
+    </select>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3>Order Management</h3></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Order</th>
+          <th>Customer</th>
+          <th>Amount</th>
+          <th>Payment</th>
+          <th>Status</th>
+          <th>Rider</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="ordersTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- PAYMENTS -->
+<section id="payments" class="section">
+
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Delivery Charge / Payment Verification</h3>
+      <button class="btn" onclick="loadPayments()">🔄 Refresh</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Verification</th>
+          <th>Order</th>
+          <th>Customer</th>
+          <th>Method</th>
+          <th>Amount</th>
+          <th>Transaction ID</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="paymentsTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- SETTLEMENTS -->
+<section id="settlements" class="section">
+
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Rider COD Settlement</h3>
+      <button class="btn" onclick="loadSettlements()">🔄 Refresh</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Settlement</th>
+          <th>Rider</th>
+          <th>Amount</th>
+          <th>Method</th>
+          <th>Transaction ID</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="settlementsTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- PRODUCTS -->
+<section id="products" class="section">
+
+  <div class="toolbar">
+    <button class="btn" onclick="openProductModal()">➕ Add Product</button>
+    <button class="btn light" onclick="loadProducts()">🔄 Refresh</button>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3>Products</h3></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th>Cost</th>
+          <th>Stock</th>
+          <th>Variants</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="productsTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- CUSTOMERS -->
+<section id="customers" class="section">
+
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Customers</h3>
+      <button class="btn" onclick="loadCustomers()">🔄 Refresh</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>UID</th>
+        </tr>
+        </thead>
+        <tbody id="customersTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- RIDERS -->
+<section id="riders" class="section">
+
+  <div class="toolbar">
+    <button class="btn" onclick="openRiderModal()">➕ Add Rider</button>
+    <button class="btn light" onclick="loadRiders()">🔄 Refresh</button>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3>Rider Management</h3></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Rider ID</th>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Status</th>
+          <th>Wallet</th>
+          <th>COD Outstanding</th>
+          <th>Active</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="ridersTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- COUPONS -->
+<section id="coupons" class="section">
+
+  <div class="toolbar">
+    <button class="btn" onclick="openCouponModal()">➕ Add Coupon</button>
+    <button class="btn light" onclick="loadCoupons()">🔄 Refresh</button>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3>Coupons</h3></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Code</th>
+          <th>Type</th>
+          <th>Discount</th>
+          <th>Minimum Order</th>
+          <th>Usage Limit</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="couponsTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- OFFERS -->
+<section id="offers" class="section">
+
+  <div class="toolbar">
+    <button class="btn" onclick="openOfferModal()">➕ Add Offer</button>
+    <button class="btn light" onclick="loadOffers()">🔄 Refresh</button>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3>Offers</h3></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Type</th>
+          <th>Discount</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="offersTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- REVIEWS -->
+<section id="reviews" class="section">
+
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Customer Reviews</h3>
+      <button class="btn" onclick="loadReviews()">🔄 Refresh</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Product</th>
+          <th>Rating</th>
+          <th>Comment</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="reviewsTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- DELIVERY PARTNERS -->
+<section id="partners" class="section">
+
+  <div class="toolbar">
+    <button class="btn" onclick="openPartnerModal()">➕ Add Partner</button>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h3>Delivery Partners</h3></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="partnersTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- STAFF -->
+<section id="staff" class="section">
+
+  <div class="toolbar">
+    <button class="btn" onclick="openStaffModal()">➕ Add Staff</button>
+    <button class="btn light" onclick="loadStaff()">🔄 Refresh</button>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Staff & Roles</h3>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>UID</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="staffTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- FESTIVAL -->
+<section id="festival" class="section">
+
+  <div class="panel">
+    <div class="panel-head"><h3>Festival / Lucky Draw</h3></div>
+
+    <div class="panel-body">
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Campaign Name</label>
+          <input id="festivalName" placeholder="যেমন: Eid Lucky Draw">
+        </div>
+
+        <div class="form-group">
+          <label>Prize</label>
+          <input id="festivalPrize" placeholder="যেমন: NatureBite Gift Box">
+        </div>
+
+        <div class="form-group">
+          <label>Start Date</label>
+          <input type="date" id="festivalStart">
+        </div>
+
+        <div class="form-group">
+          <label>End Date</label>
+          <input type="date" id="festivalEnd">
+        </div>
+
+        <div class="form-group">
+          <label>Draw Date</label>
+          <input type="date" id="festivalDrawDate">
+        </div>
+
+        <div class="form-group">
+          <label class="switch">
+            <input type="checkbox" id="festivalEnabled">
+            Enable Lucky Draw
+          </label>
+        </div>
+
+      </div>
+
+      <button class="btn" onclick="saveFestival()">Save Campaign</button>
+      <button class="btn orange" onclick="runLuckyDraw()">🎲 Run Lucky Draw</button>
+
+      <div id="drawResult" style="margin-top:15px"></div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- WHEEL -->
+<section id="wheel" class="section">
+
+  <div class="panel">
+    <div class="panel-head"><h3>New Customer Discount Wheel</h3></div>
+
+    <div class="panel-body">
+
+      <p style="color:#69766e;font-size:13px;margin-bottom:15px">
+        এমন discount রাখুন যাতে minimum order, maximum discount এবং usage limit-এর মাধ্যমে NatureBite-এর ক্ষতি নিয়ন্ত্রণ করা যায়।
+      </p>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Wheel Enabled</label>
+          <div class="switch">
+            <input type="checkbox" id="wheelEnabled">
+            <span>New customers can spin</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Maximum Discount Per Order (৳)</label>
+          <input type="number" id="wheelMaxDiscount" value="100">
+        </div>
+
+        <div class="form-group full">
+          <label>Discount Options</label>
+          <textarea id="wheelOptions" placeholder="5,10,20,30,50"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Minimum Order (৳)</label>
+          <input type="number" id="wheelMinimum" value="500">
+        </div>
+
+        <div class="form-group">
+          <label>One Spin Per Customer</label>
+          <div class="switch">
+            <input type="checkbox" id="wheelOneSpin" checked>
+          </div>
+        </div>
+
+      </div>
+
+      <button class="btn" onclick="saveWheel()">Save Wheel Settings</button>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- THEME -->
+<section id="theme" class="section">
+
+  <div class="panel">
+    <div class="panel-head"><h3>National / Festival Theme</h3></div>
+
+    <div class="panel-body">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Theme Name</label>
+          <input id="themeName" placeholder="যেমন: Victory Day">
+        </div>
+
+        <div class="form-group">
+          <label>Banner Text</label>
+          <input id="themeBanner" placeholder="Special Offer">
+        </div>
+
+        <div class="form-group">
+          <label>Theme Active</label>
+          <div class="switch">
+            <input type="checkbox" id="themeEnabled">
+            Enable Theme
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Theme Mode</label>
+          <select id="themeMode">
+            <option value="normal">Normal</option>
+            <option value="festival">Festival</option>
+            <option value="national">National Program</option>
+            <option value="eid">Eid</option>
+            <option value="pohela_boishakh">Pohela Boishakh</option>
+          </select>
+        </div>
+
+      </div>
+
+      <button class="btn" onclick="saveTheme()">Save Theme</button>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- FINANCE -->
+<section id="finance" class="section">
+
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Monthly Profit / Loss — Admin Only</h3>
+      <div class="actions">
+        <button class="btn" onclick="calculateFinance()">Calculate</button>
+        <button class="btn blue" onclick="saveMonthlyStatement()">Save Month</button>
+        <button class="btn light" onclick="printFinance()">🖨️ Print</button>
+      </div>
+    </div>
+
+    <div class="panel-body">
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Statement Month</label>
+          <input type="month" id="financeMonth">
+        </div>
+
+        <div class="form-group">
+          <label>Automatic Monthly Archive</label>
+          <div class="switch">
+            <input type="checkbox" id="autoArchive">
+            Enable
+          </div>
+        </div>
+      </div>
+
+      <hr style="border:0;border-top:1px solid #eee;margin:18px 0">
+
+      <h3 style="margin-bottom:12px">Income</h3>
+
+      <div class="finance-grid">
+        <div class="finance-box">
+          <span>Product Sales</span>
+          <strong>৳ <span id="fSales">0</span></strong>
+        </div>
+
+        <div class="finance-box">
+          <span>Delivery Income</span>
+          <strong>৳ <span id="fDelivery">0</span></strong>
+        </div>
+
+        <div class="finance-box">
+          <span>Platform/App Charge</span>
+          <strong>৳ <span id="fPlatform">0</span></strong>
+        </div>
+
+        <div class="finance-box">
+          <span>Total Discount</span>
+          <strong>৳ <span id="fDiscount">0</span></strong>
+        </div>
+
+        <div class="finance-box">
+          <span>Refunds</span>
+          <strong>৳ <span id="fRefund">0</span></strong>
+        </div>
+
+        <div class="finance-box">
+          <span>COD Collected</span>
+          <strong>৳ <span id="fCOD">0</span></strong>
+        </div>
+      </div>
+
+      <h3 style="margin:25px 0 12px">Costs / Expenses</h3>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Product Cost</label>
+          <input type="number" id="expenseProduct" value="0">
+        </div>
+
+        <div class="form-group">
+          <label>Delivery Partner Cost</label>
+          <input type="number" id="expensePartner" value="0">
+        </div>
+
+        <div class="form-group">
+          <label>Staff Salary</label>
+          <input type="number" id="expenseStaff" value="0">
+        </div>
+
+        <div class="form-group">
+          <label>Rider Payment / Wage</label>
+          <input type="number" id="expenseRider" value="0">
+        </div>
+
+        <div class="form-group">
+          <label>Other Expenses</label>
+          <input type="number" id="expenseOther" value="0">
+        </div>
+
+        <div class="form-group">
+          <label>Additional Refund / Adjustment</label>
+          <input type="number" id="expenseRefund" value="0">
+        </div>
+
+      </div>
+
+      <hr style="border:0;border-top:1px solid #eee;margin:20px 0">
+
+      <div class="finance-grid">
+
+        <div class="finance-box">
+          <span>Total Revenue</span>
+          <strong>৳ <span id="totalRevenue">0</span></strong>
+        </div>
+
+        <div class="finance-box">
+          <span>Profit Before Staff/Rider</span>
+          <strong>৳ <span id="profitBefore">0</span></strong>
+        </div>
+
+        <div class="finance-box">
+          <span>Staff + Rider Cost</span>
+          <strong>৳ <span id="staffRiderCost">0</span></strong>
+        </div>
+
+        <div class="finance-box">
+          <span>Net Profit / Loss</span>
+          <strong id="netProfitBox">৳ <span id="netProfit">0</span></strong>
+        </div>
+
+      </div>
+
+      <div style="margin-top:20px">
+        <button class="btn orange" onclick="loadPreviousStatements()">
+          📁 Previous Monthly Statements
+        </button>
+      </div>
+
+      <div id="previousStatements" style="margin-top:15px"></div>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- SETTINGS -->
+<section id="settings" class="section">
+
+  <div class="panel">
+    <div class="panel-head"><h3>NatureBite Settings</h3></div>
+
+    <div class="panel-body">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Chattogram Delivery Charge (৳)</label>
+          <input type="number" id="deliveryCharge" value="60">
+        </div>
+
+        <div class="form-group">
+          <label>Outside Chattogram Delivery Charge (৳)</label>
+          <input type="number" id="outsideDeliveryCharge" value="120">
+        </div>
+
+        <div class="form-group">
+          <label>Free Delivery Minimum Order (৳)</label>
+          <input type="number" id="freeDeliveryMinimum" value="1000">
+        </div>
+
+        <div class="form-group">
+          <label>Delivery Charge Payment Required</label>
+          <div class="switch">
+            <input type="checkbox" id="deliveryPaymentRequired" checked>
+            Required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>bKash Number</label>
+          <input id="bkashNumber">
+        </div>
+
+        <div class="form-group">
+          <label>Nagad Number</label>
+          <input id="nagadNumber">
+        </div>
+
+        <div class="form-group">
+          <label>Platform/App Charge Enabled</label>
+          <div class="switch">
+            <input type="checkbox" id="platformEnabled">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Platform Charge Type</label>
+          <select id="platformType">
+            <option value="percentage">Percentage</option>
+            <option value="fixed">Fixed Amount</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Platform/App Charge Value</label>
+          <input type="number" id="platformValue" value="2">
+        </div>
+
+        <div class="form-group">
+          <label>Customer Support Link</label>
+          <input id="supportLink" placeholder="Telegram / WhatsApp / Facebook link">
+        </div>
+
+      </div>
+
+      <button class="btn" onclick="saveSettings()">💾 Save Settings</button>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- AI -->
+<section id="ai" class="section">
+
+  <div class="panel">
+    <div class="panel-head"><h3>🤖 NatureBite AI Marketing Tools</h3></div>
+
+    <div class="panel-body">
+
+      <p style="color:#66736b;margin-bottom:15px">
+        Product image, offer এবং festival information দিয়ে Facebook/Instagram-এর জন্য advertisement তৈরি করার interface।
+      </p>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Product / Campaign Name</label>
+          <input id="aiProductName">
+        </div>
+
+        <div class="form-group">
+          <label>Platform</label>
+          <select id="aiPlatform">
+            <option>Facebook</option>
+            <option>Instagram</option>
+            <option>Both</option>
+          </select>
+        </div>
+
+        <div class="form-group full">
+          <label>Offer / Information</label>
+          <textarea id="aiOffer"></textarea>
+        </div>
+
+        <div class="form-group full">
+          <label>Extra Instructions</label>
+          <textarea id="aiInstructions"></textarea>
+        </div>
+
+      </div>
+
+      <button class="btn" onclick="generateAIAd()">✨ Generate Advertisement</button>
+
+      <div id="aiResult" style="margin-top:18px"></div>
+
+      <div style="margin-top:15px;padding:12px;background:#fff6df;border-radius:8px;font-size:12px">
+        ⚠️ AI API key কখনো এই HTML file-এ রাখবেন না। Live AI generation-এর জন্য পরে secure backend/API ব্যবহার করতে হবে।
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+</div>
+</main>
+</div>
+
+
+<!-- PRODUCT MODAL -->
+<div class="modal" id="productModal">
+<div class="modal-box">
+
+  <div class="modal-head">
+    <h3 id="productModalTitle">Add Product</h3>
+    <button onclick="closeModal('productModal')">×</button>
+  </div>
+
+  <div class="modal-body">
+
+    <input type="hidden" id="productId">
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Product Name</label>
+        <input id="productName">
+      </div>
+
+      <div class="form-group">
+        <label>Category</label>
+        <input id="productCategory">
+      </div>
+
+      <div class="form-group">
+        <label>Price</label>
+        <input type="number" id="productPrice">
+      </div>
+
+      <div class="form-group">
+        <label>Cost Price</label>
+        <input type="number" id="productCostPrice">
+      </div>
+
+      <div class="form-group">
+        <label>Stock</label>
+        <input type="number" id="productStock">
+      </div>
+
+      <div class="form-group">
+        <label>Product Image URL</label>
+        <input id="productImage" placeholder="https://...">
+      </div>
+
+      <div class="form-group full">
+        <label>Description</label>
+        <textarea id="productDescription"></textarea>
+      </div>
+
+      <div class="form-group full">
+        <label>Variants / Size / Weight</label>
+        <textarea id="productVariants" placeholder='Example:
+[
+ {"name":"30g","price":50,"stock":20,"image":"https://..."},
+ {"name":"50g","price":80,"stock":15,"image":"https://..."}
+]'></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="switch">
+          <input type="checkbox" id="productActive" checked>
+          Active Product
+        </label>
+      </div>
+
+    </div>
+
+    <button class="btn" onclick="saveProduct()">Save Product</button>
+
+  </div>
+</div>
+</div>
+
+
+<!-- RIDER MODAL -->
+<div class="modal" id="riderModal">
+<div class="modal-box">
+
+  <div class="modal-head">
+    <h3>Add Rider</h3>
+    <button onclick="closeModal('riderModal')">×</button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Rider ID</label>
+        <input id="riderIdInput" placeholder="RIDER002">
+      </div>
+
+      <div class="form-group">
+        <label>Name</label>
+        <input id="riderName">
+      </div>
+
+      <div class="form-group">
+        <label>Phone</label>
+        <input id="riderPhone">
+      </div>
+
+      <div class="form-group">
+        <label>Auth UID</label>
+        <input id="riderAuthUid">
+      </div>
+
+      <div class="form-group">
+        <label>Status</label>
+        <select id="riderStatus">
+          <option value="offline">Offline</option>
+          <option value="online">Online</option>
+          <option value="busy">Busy</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Active</label>
+        <div class="switch">
+          <input type="checkbox" id="riderActive" checked>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="btn" onclick="saveRider()">Save Rider</button>
+
+  </div>
+</div>
+</div>
+
+
+<!-- COUPON MODAL -->
+<div class="modal" id="couponModal">
+<div class="modal-box">
+
+  <div class="modal-head">
+    <h3>Add Coupon</h3>
+    <button onclick="closeModal('couponModal')">×</button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Coupon Code</label>
+        <input id="couponCode">
+      </div>
+
+      <div class="form-group">
+        <label>Discount Type</label>
+        <select id="couponType">
+          <option value="percentage">Percentage</option>
+          <option value="fixed">Fixed Amount</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Discount Value</label>
+        <input type="number" id="couponValue">
+      </div>
+
+      <div class="form-group">
+        <label>Minimum Order</label>
+        <input type="number" id="couponMinimum">
+      </div>
+
+      <div class="form-group">
+        <label>Usage Limit</label>
+        <input type="number" id="couponLimit">
+      </div>
+
+      <div class="form-group">
+        <label>Active</label>
+        <div class="switch">
+          <input type="checkbox" id="couponActive" checked>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="btn" onclick="saveCoupon()">Save Coupon</button>
+
+  </div>
+</div>
+</div>
+
+
+<!-- OFFER MODAL -->
+<div class="modal" id="offerModal">
+<div class="modal-box">
+
+  <div class="modal-head">
+    <h3>Add Offer</h3>
+    <button onclick="closeModal('offerModal')">×</button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Title</label>
+        <input id="offerTitle">
+      </div>
+
+      <div class="form-group">
+        <label>Discount Type</label>
+        <select id="offerType">
+          <option value="percentage">Percentage</option>
+          <option value="fixed">Fixed Amount</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Discount Value</label>
+        <input type="number" id="offerValue">
+      </div>
+
+      <div class="form-group">
+        <label>Active</label>
+        <div class="switch">
+          <input type="checkbox" id="offerActive" checked>
+        </div>
+      </div>
+
+      <div class="form-group full">
+        <label>Description</label>
+        <textarea id="offerDescription"></textarea>
+      </div>
+
+    </div>
+
+    <button class="btn" onclick="saveOffer()">Save Offer</button>
+
+  </div>
+</div>
+</div>
+
+
+<!-- PARTNER MODAL -->
+<div class="modal" id="partnerModal">
+<div class="modal-box">
+
+  <div class="modal-head">
+    <h3>Add Delivery Partner</h3>
+    <button onclick="closeModal('partnerModal')">×</button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Partner Name</label>
+        <input id="partnerName">
+      </div>
+
+      <div class="form-group">
+        <label>Type</label>
+        <select id="partnerType">
+          <option value="external">External</option>
+          <option value="internal">Internal</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Active</label>
+        <div class="switch">
+          <input type="checkbox" id="partnerActive" checked>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="btn" onclick="savePartner()">Save Partner</button>
+
+  </div>
+</div>
+</div>
+
+
+<!-- STAFF MODAL -->
+<div class="modal" id="staffModal">
+<div class="modal-box">
+
+  <div class="modal-head">
+    <h3>Add Staff</h3>
+    <button onclick="closeModal('staffModal')">×</button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Staff UID</label>
+        <input id="staffUid">
+      </div>
+
+      <div class="form-group">
+        <label>Name</label>
+        <input id="staffName">
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input id="staffEmail">
+      </div>
+
+      <div class="form-group">
+        <label>Role</label>
+        <select id="staffRole">
+          <option value="admin">Admin</option>
+          <option value="manager">Manager</option>
+          <option value="staff">Staff</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Active</label>
+        <div class="switch">
+          <input type="checkbox" id="staffActive" checked>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="btn" onclick="saveStaff()">Save Staff</button>
+
+  </div>
+</div>
+</div>
+
+
+<!-- ORDER MODAL -->
+<div class="modal" id="orderModal">
+<div class="modal-box">
+
+  <div class="modal-head">
+    <h3>Order Details</h3>
+    <button onclick="closeModal('orderModal')">×</button>
+  </div>
+
+  <div class="modal-body" id="orderDetails"></div>
+
+</div>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+
+<script type="module">
+
+import {
+ initializeApp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+import {
+ getAuth,
+ onAuthStateChanged,
+ signOut
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+import {
+ getFirestore,
+ collection,
+ doc,
+ getDoc,
+ getDocs,
+ setDoc,
+ updateDoc,
+ deleteDoc,
+ query,
+ where,
+ orderBy,
+ limit,
+ Timestamp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+/* =========================
+   FIREBASE
+========================= */
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDBRf8g83TnMYdoaKkpYpn_-boYng-SHE",
+  authDomain: "naturebite-538ba.firebaseapp.com",
+  projectId: "naturebite-538ba",
+  storageBucket: "naturebite-538ba.firebasestorage.app",
+  messagingSenderId: "403660151204",
+  appId: "1:403660151204:web:15db421e18442e85d70931"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let currentRole = null;
+
+let orders = [];
+let products = [];
+let riders = [];
+let payments = [];
+let settlements = [];
+let customers = [];
+let coupons = [];
+let offers = [];
+let reviews = [];
+let partners = [];
+let staff = [];
+
+
+/* =========================
+   BASIC HELPERS
+========================= */
+
+const $ = id => document.getElementById(id);
+
+function money(v){
+  return Number(v || 0).toLocaleString("en-BD");
+}
+
+function esc(v){
+  return String(v ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;");
+}
+
+function toast(msg){
+  $("toast").innerText = msg;
+  $("toast").classList.add("show");
+  setTimeout(()=>$("toast").classList.remove("show"),3000);
+}
+
+window.closeModal = function(id){
+  $(id).classList.remove("show");
+};
+
+window.toggleSidebar = function(){
+  $("sidebar").classList.toggle("open");
+};
+
+
+/* =========================
+   AUTH / ADMIN ACCESS
+========================= */
+
+onAuthStateChanged(auth, async user => {
+
+  if(!user){
+    window.location.href="index.html";
+    return;
+  }
+
+  currentUser = user;
+
+  try{
+
+    const staffRef = doc(db,"staff",user.uid);
+    const staffSnap = await getDoc(staffRef);
+
+    if(!staffSnap.exists()){
+      alert("আপনার Admin access নেই।");
+      await signOut(auth);
+      window.location.href="index.html";
+      return;
+    }
+
+    const data = staffSnap.data();
+
+    if(data.active !== true ||
+       !["admin","manager"].includes(data.role)){
+
+      alert("আপনার Admin/Manager permission নেই।");
+      await signOut(auth);
+      window.location.href="index.html";
+      return;
+    }
+
+    currentRole = data.role;
+
+    $("adminInfo").innerText =
+      `${data.name || user.email || user.phoneNumber || "Admin"} • ${data.role}`;
+
+    await initialLoad();
+
+  }catch(err){
+
+    console.error(err);
+    alert("Admin access যাচাই করা যায়নি।");
+  }
+});
+
+
+window.logout = async function(){
+
+  if(confirm("Logout করতে চান?")){
+    await signOut(auth);
+    window.location.href="index.html";
+  }
+
+};
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+window.showSection = function(id,button){
+
+  document.querySelectorAll(".section")
+    .forEach(x=>x.classList.remove("active"));
+
+  $(id).classList.add("active");
+
+  document.querySelectorAll(".nav button")
+    .forEach(x=>x.classList.remove("active"));
+
+  if(button) button.classList.add("active");
+
+  const titles = {
+    dashboard:"Dashboard",
+    orders:"Orders",
+    payments:"Payments",
+    settlements:"Rider Settlements",
+    products:"Products",
+    customers:"Customers",
+    riders:"Riders",
+    coupons:"Coupons",
+    offers:"Offers",
+    reviews:"Reviews",
+    partners:"Delivery Partners",
+    staff:"Staff & Roles",
+    festival:"Festival / Lucky Draw",
+    wheel:"Discount Wheel",
+    theme:"National / Festival Theme",
+    finance:"Monthly Profit / Loss",
+    settings:"Settings",
+    ai:"AI Tools"
+  };
+
+  $("pageTitle").innerText = titles[id] || id;
+
+  $("sidebar").classList.remove("open");
+
+  if(id==="orders") loadOrders();
+  if(id==="payments") loadPayments();
+  if(id==="settlements") loadSettlements();
+  if(id==="products") loadProducts();
+  if(id==="customers") loadCustomers();
+  if(id==="riders") loadRiders();
+  if(id==="coupons") loadCoupons();
+  if(id==="offers") loadOffers();
+  if(id==="reviews") loadReviews();
+  if(id==="partners") loadPartners();
+  if(id==="staff") loadStaff();
+  if(id==="finance"){
+    loadFinanceSettings();
+    calculateFinance();
+  }
+  if(id==="settings") loadSettings();
+  if(id==="festival") loadFestival();
+  if(id==="wheel") loadWheel();
+  if(id==="theme") loadTheme();
+};
+
+window.showSectionById = function(id){
+  const btn=[...document.querySelectorAll(".nav button")]
+    .find(x=>x.getAttribute("onclick")?.includes("'"+id+"'"));
+  showSection(id,btn);
+};
+
+
+/* =========================
+   INITIAL LOAD
+========================= */
+
+async function initialLoad(){
+
+  await Promise.all([
+    loadOrders(),
+    loadProducts(),
+    loadRiders(),
+    loadPayments(),
+    loadCustomers()
+  ]);
+
+  updateDashboard();
+  loadSettings();
+  loadWheel();
+  loadFestival();
+  loadTheme();
+  loadFinanceSettings();
+}
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+function updateDashboard(){
+
+  $("statOrders").innerText = orders.length;
+
+  $("statConfirmed").innerText =
+    orders.filter(x=>x.orderStatus==="confirmed").length;
+
+  $("statCancelled").innerText =
+    orders.filter(x=>x.orderStatus==="cancelled" || x.cancelled===true).length;
+
+  $("statPayments").innerText =
+    payments.filter(x=>x.status==="pending").length;
+
+  let sales=0;
+  let cod=0;
+
+  orders.forEach(o=>{
+    if(o.orderStatus!=="cancelled"){
+      sales += Number(o.subtotal || 0);
+      cod += Number(o.codAmount || 0);
+    }
+  });
+
+  $("statSales").innerText=money(sales);
+  $("statCOD").innerText=money(cod);
+  $("statRiders").innerText=riders.length;
+  $("statProducts").innerText=products.length;
+
+  const recent=orders.slice(0,8);
+
+  $("recentOrders").innerHTML =
+    recent.length
+    ? recent.map(o=>`
+      <tr>
+        <td><b>${esc(o.trackingCode || o.orderId || "")}</b></td>
+        <td>${esc(o.customerName)}</td>
+        <td>৳${money(o.totalAmount)}</td>
+        <td>${esc(o.paymentMethod || "")}</td>
+        <td>${statusBadge(o.orderStatus)}</td>
+      </tr>
+    `).join("")
+    : `<tr><td colspan="5" class="empty">No orders</td></tr>`;
+}
+
+
+/* =========================
+   ORDERS
+========================= */
+
+window.loadOrders = async function(){
+
+  try{
+
+    const snap=await getDocs(collection(db,"orders"));
+
+    orders=snap.docs.map(d=>({
+      id:d.id,
+      ...d.data()
+    }));
+
+    orders.sort((a,b)=>{
+      const at=a.createdAt?.seconds || 0;
+      const bt=b.createdAt?.seconds || 0;
+      return bt-at;
+    });
+
+    renderOrders();
+    updateDashboard();
+
+  }catch(err){
+    console.error(err);
+    toast("Orders load হয়নি");
+  }
+};
+
+function renderOrders(){
+
+  const filter=$("orderFilter")?.value || "all";
+
+  const data=filter==="all"
+    ? orders
+    : orders.filter(o=>o.orderStatus===filter);
+
+  $("ordersTable").innerHTML =
+    data.length
+    ? data.map(o=>{
+
+      const rider=o.assignedRiderId || "Not Assigned";
+
+      return `
+      <tr>
+
+        <td>
+          <b>${esc(o.trackingCode || o.id)}</b>
+          <br>
+          <small>${esc(o.orderStatus || "")}</small>
+        </td>
+
+        <td>
+          ${esc(o.customerName)}
+          <br>
+          <small>${esc(o.customerPhone)}</small>
+        </td>
+
+        <td>৳${money(o.totalAmount)}</td>
+
+        <td>
+          ${esc(o.paymentMethod || "")}
+          <br>
+          ${o.paymentStatus==="verified"
+            ? `<span class="badge green">Verified</span>`
+            : `<span class="badge orange">${esc(o.paymentStatus || "Pending")}</span>`
+          }
+        </td>
+
+        <td>${statusBadge(o.orderStatus)}</td>
+
+        <td>${esc(rider)}</td>
+
+        <td>
+          <div class="actions">
+            <button class="btn light" onclick="viewOrder('${o.id}')">View</button>
+            <button class="btn blue" onclick="updateOrderStatus('${o.id}')">Status</button>
+            <button class="btn" onclick="assignRider('${o.id}')">Rider</button>
+            <button class="btn orange" onclick="printOrder('${o.id}')">QR/Print</button>
+            ${
+              o.orderStatus==="cancelled"
+              ? `<button class="btn green" onclick="restoreOrder('${o.id}')">Restore</button>`
+              : ""
+            }
+          </div>
+        </td>
+
+      </tr>`;
+    }).join("")
+    : `<tr><td colspan="7" class="empty">No orders found</td></tr>`;
+}
+
+function statusBadge(status){
+
+  if(status==="confirmed")
+    return `<span class="badge green">Confirmed</span>`;
+
+  if(status==="cancelled")
+    return `<span class="badge red">Cancelled</span>`;
+
+  if(status==="delivered")
+    return `<span class="badge blue">Delivered</span>`;
+
+  if(status==="processing")
+    return `<span class="badge blue">Processing</span>`;
+
+  if(status==="out_for_delivery")
+    return `<span class="badge orange">Out for Delivery</span>`;
+
+  return `<span class="badge gray">${esc(status || "Pending")}</span>`;
+}
+
+
+window.viewOrder = function(id){
+
+  const o=orders.find(x=>x.id===id);
+  if(!o)return;
+
+  $("orderDetails").innerHTML=`
+
+    <div class="finance-grid">
+
+      <div class="finance-box">
+        <span>Order Code</span>
+        <strong>${esc(o.trackingCode || o.id)}</strong>
+      </div>
+
+      <div class="finance-box">
+        <span>Total Amount</span>
+        <strong>৳${money(o.totalAmount)}</strong>
+      </div>
+
+      <div class="finance-box">
+        <span>Payment</span>
+        <strong>${esc(o.paymentMethod || "")}</strong>
+      </div>
+
+    </div>
+
+    <hr style="margin:20px 0;border:0;border-top:1px solid #eee">
+
+    <h3>Customer</h3>
+
+    <p style="margin-top:10px">
+      <b>Name:</b> ${esc(o.customerName)}<br>
+      <b>Phone:</b> ${esc(o.customerPhone)}<br>
+      <b>Address:</b> ${esc(o.address || o.deliveryAddress || "")}<br>
+      <b>Zone:</b> ${esc(o.deliveryZone || "")}
+    </p>
+
+    <hr style="margin:20px 0;border:0;border-top:1px solid #eee">
+
+    <h3>Delivery</h3>
+
+    <p style="margin-top:10px">
+      <b>Rider:</b> ${esc(o.assignedRiderId || "Not assigned")}<br>
+      <b>Partner:</b> ${esc(o.deliveryPartner || "")}<br>
+      <b>Delivery Charge:</b> ৳${money(o.deliveryCharge)}<br>
+      <b>Rider Contact:</b> ${o.riderContactAllowed ? "Allowed" : "Blocked"}<br>
+      <b>OTP Verified:</b> ${o.deliveryOtpVerified ? "Yes" : "No"}
+    </p>
+
+    <hr style="margin:20px 0;border:0;border-top:1px solid #eee">
+
+    <h3>Customer Notification</h3>
+
+    <p style="margin-top:10px;background:#f5f8f5;padding:12px;border-radius:8px">
+      ${esc(o.customerNotification || "No notification")}
+    </p>
+
+    <div style="margin-top:20px">
+      <button class="btn orange" onclick="printOrder('${o.id}')">
+        🖨️ Print Order + QR
+      </button>
+    </div>
+  `;
+
+  $("orderModal").classList.add("show");
+};
+
+
+window.updateOrderStatus = async function(id){
+
+  const o=orders.find(x=>x.id===id);
+  if(!o)return;
+
+  const newStatus=prompt(
+    "Status লিখুন:\nconfirmed\nprocessing\nout_for_delivery\ndelivered\ncancelled",
+    o.orderStatus || "confirmed"
+  );
+
+  if(!newStatus)return;
+
+  try{
+
+    const update={
+      orderStatus:newStatus,
+      updatedAt:Timestamp.now()
+    };
+
+    if(newStatus==="delivered"){
+      update.riderContactAllowed=false;
+      update.deliveryCompletedAt=Timestamp.now();
+    }
+
+    if(newStatus==="cancelled"){
+      update.cancelled=true;
+      update.cancelledAt=Timestamp.now();
+      update.cancelledOrderHandoverRequired=true;
+      update.cancelledOrderHandoverStatus="pending";
+    }
+
+    await updateDoc(doc(db,"orders",id),update);
+
+    toast("Order status updated");
+    await loadOrders();
+
+  }catch(err){
+    console.error(err);
+    toast("Status update failed");
+  }
+};
+
+
+window.assignRider = async function(id){
+
+  if(!riders.length){
+    await loadRiders();
+  }
+
+  const list=riders.map(r=>
+    `${r.riderId} - ${r.name} (${r.status || "offline"})`
+  ).join("\n");
+
+  const riderId=prompt(
+    "Rider ID দিন:\n\n"+list
+  );
+
+  if(!riderId)return;
+
+  const rider=riders.find(r=>r.riderId===riderId.trim());
+
+  if(!rider){
+    alert("Rider পাওয়া যায়নি");
+    return;
+  }
+
+  try{
+
+    await updateDoc(doc(db,"orders",id),{
+      assignedRiderId:rider.riderId,
+      riderAssigned:true,
+      riderAssignedAt:Timestamp.now(),
+      assignmentMethod:"admin",
+      barcodeScanned:false,
+      updatedAt:Timestamp.now()
+    });
+
+    toast("Rider assigned");
+    await loadOrders();
+
+  }catch(err){
+    console.error(err);
+    toast("Rider assign failed");
+  }
+};
+
+
+window.restoreOrder = async function(id){
+
+  if(!confirm("এই cancelled order restore করবেন?"))return;
+
+  try{
+
+    await updateDoc(doc(db,"orders",id),{
+      cancelled:false,
+      orderStatus:"payment_verification_pending",
+      paymentStatus:"verification_pending",
+      restoredAt:Timestamp.now(),
+      restoredBy:currentUser.uid
+    });
+
+    toast("Order restored");
+    await loadOrders();
+
+  }catch(err){
+    console.error(err);
+    toast("Restore failed");
+  }
+};
+
+
+/* =========================
+   PRINT ORDER + QR
+========================= */
+
+window.printOrder = function(id){
+
+  const o=orders.find(x=>x.id===id);
+  if(!o)return;
+
+  const qrData=encodeURIComponent(
+    o.trackingCode || o.id
+  );
+
+  const html=`
+
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>NatureBite Order</title>
+    <style>
+      body{font-family:Arial;padding:30px;color:#222}
+      .box{border:1px solid #ddd;padding:20px;max-width:700px;margin:auto}
+      h1{color:#14552f}
+      table{width:100%;border-collapse:collapse;margin-top:15px}
+      td{padding:8px;border-bottom:1px solid #eee}
+      .qr{text-align:center;margin:20px}
+      img{max-width:180px}
+    </style>
+  </head>
+  <body>
+    <div class="box">
+
+      <h1>NatureBite</h1>
+      <h3>Confirmed Order</h3>
+
+      <p>
+        <b>Order Code:</b> ${esc(o.trackingCode || o.id)}<br>
+        <b>Status:</b> ${esc(o.orderStatus || "")}
+      </p>
+
+      <hr>
+
+      <h3>Customer</h3>
+
+      <p>
+        Name: ${esc(o.customerName)}<br>
+        Phone: ${esc(o.customerPhone)}<br>
+        Address: ${esc(o.address || o.deliveryAddress || "")}<br>
+        Zone: ${esc(o.deliveryZone || "")}
+      </p>
+
+      <h3>Payment</h3>
+
+      <p>
+        Method: ${esc(o.paymentMethod || "")}<br>
+        Payment Status: ${esc(o.paymentStatus || "")}<br>
+        COD Amount: ৳${money(o.codAmount)}
+      </p>
+
+      <h3>Delivery</h3>
+
+      <p>
+        Charge: ৳${money(o.deliveryCharge)}<br>
+        Rider: ${esc(o.assignedRiderId || "Not Assigned")}<br>
+        Partner: ${esc(o.deliveryPartner || "")}
+      </p>
+
+      <div class="qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrData}">
+        <p>${esc(o.trackingCode || o.id)}</p>
+      </div>
+
+      <button onclick="window.print()">Print</button>
+
+    </div>
+  </body>
+  </html>
+  `;
+
+  const w=window.open("","_blank");
+  w.document.write(html);
+  w.document.close();
+};
+
+
+/* =========================
+   PAYMENT VERIFICATION
+========================= */
+
+window.loadPayments = async function(){
+
+  try{
+
+    const snap=await getDocs(
+      collection(db,"paymentVerifications")
+    );
+
+    payments=snap.docs.map(d=>({
+      id:d.id,
+      ...d.data()
+    }));
+
+    payments.sort((a,b)=>{
+      const at=a.createdAt?.seconds || 0;
+      const bt=b.createdAt?.seconds || 0;
+      return bt-at;
+    });
+
+    renderPayments();
+
+  }catch(err){
+    console.error(err);
+    toast("Payment data load হয়নি");
+  }
+};
+
+
+function renderPayments(){
+
+  $("paymentsTable").innerHTML =
+    payments.length
+    ? payments.map(p=>`
+
+    <tr>
+
+      <td>${esc(p.id)}</td>
+
+      <td>${esc(p.orderId)}</td>
+
+      <td>${esc(p.customerId)}</td>
+
+      <td>${esc(p.method)}</td>
+
+      <td>৳${money(p.amount)}</td>
+
+      <td><b>${esc(p.transactionId)}</b></td>
+
+      <td>
+        ${
+          p.status==="verified"
+          ? `<span class="badge green">Verified</span>`
+          : p.status==="rejected"
+          ? `<span class="badge red">Rejected</span>`
+          : `<span class="badge orange">Pending</span>`
+        }
+      </td>
+
+      <td>
+
+        ${
+          p.status==="pending"
+          ? `
+          <div class="actions">
+            <button class="btn" onclick="verifyPayment('${p.id}','accept')">Accept</button>
+            <button class="btn red" onclick="verifyPayment('${p.id}','reject')">Reject</button>
+          </div>
+          `
+          : "-"
+        }
+
+      </td>
+
+    </tr>
+
+    `).join("")
+    : `<tr><td colspan="8" class="empty">No payment verification</td></tr>`;
+}
+
+
+window.verifyPayment = async function(id,action){
+
+  const p=payments.find(x=>x.id===id);
+  if(!p)return;
+
+  if(!confirm(
+    action==="accept"
+    ? "Transaction ID যাচাই করে Accept করবেন?"
+    : "Payment Reject করবেন?"
+  ))return;
+
+  try{
+
+    if(action==="accept"){
+
+      await updateDoc(doc(db,"paymentVerifications",id),{
+        status:"verified",
+        verifiedAt:Timestamp.now(),
+        verifiedBy:currentUser.uid,
+        verificationNote:"Verified by Admin"
+      });
+
+      if(p.orderId){
+
+        const confirmationMessage =
+        "আপনার অর্ডার টি কনফার্ম হয়েছে এবং চট্টগ্রাম জোন এর মধ্যে হলে আগামী ১ থেকে ২ দিন এর মধ্যে আপনার অর্ডার ডেলিভারি সম্পুর্ন হবে আর চট্টগ্রাম জোন এর বাহিরে হলে ৩ থেকে ৪ দিন এর মধ্যে সম্পুর্ন করা হবে।।";
+
+        await updateDoc(doc(db,"orders",p.orderId),{
+          paymentStatus:"verified",
+          orderStatus:"confirmed",
+          customerNotification:confirmationMessage,
+          customerNotificationType:"order_confirmed",
+          customerNotificationAt:Timestamp.now(),
+          deliveryEstimateText:
+            "চট্টগ্রাম: ১-২ দিন | চট্টগ্রামের বাইরে: ৩-৪ দিন",
+          verifiedBy:currentUser.uid,
+          verifiedAt:Timestamp.now()
+        });
+      }
+
+      toast("Payment verified & order confirmed");
+
+    }else{
+
+      await updateDoc(doc(db,"paymentVerifications",id),{
+        status:"rejected",
+        verifiedAt:Timestamp.now(),
+        verifiedBy:currentUser.uid,
+        verificationNote:"Rejected by Admin"
+      });
+
+      if(p.orderId){
+
+        await updateDoc(doc(db,"orders",p.orderId),{
+          paymentStatus:"rejected",
+          orderStatus:"payment_verification_failed",
+          customerNotification:
+            "আপনার Transaction ID যাচাই করা যায়নি। অনুগ্রহ করে সঠিক Transaction ID ব্যবহার করুন।"
+        });
+
+      }
+
+      toast("Payment rejected");
+    }
+
+    await loadPayments();
+    await loadOrders();
+
+  }catch(err){
+    console.error(err);
+    toast("Verification failed");
+  }
+};
+
+
+/* =========================
+   RIDER SETTLEMENT
+========================= */
+
+window.loadSettlements = async function(){
+
+  try{
+
+    const snap=await getDocs(
+      collection(db,"settlements")
+    );
+
+    settlements=snap.docs.map(d=>({
+      id:d.id,
+      ...d.data()
+    }));
+
+    settlements.sort((a,b)=>{
+      const at=a.createdAt?.seconds || 0;
+      const bt=b.createdAt?.seconds || 0;
+      return bt-at;
+    });
+
+    renderSettlements();
+
+  }catch(err){
+    console.error(err);
+    toast("Settlement load হয়নি");
+  }
+};
+
+
+function renderSettlements(){
+
+  $("settlementsTable").innerHTML =
+    settlements.length
+    ? settlements.map(s=>`
+
+    <tr>
+
+      <td>${esc(s.id)}</td>
+      <td>${esc(s.riderId)}</td>
+      <td>৳${money(s.amount)}</td>
+      <td>${esc(s.method)}</td>
+      <td>${esc(s.transactionId)}</td>
+
+      <td>
+        ${
+          s.status==="verified"
+          ? `<span class="badge green">Verified</span>`
+          : `<span class="badge orange">${esc(s.status || "Pending")}</span>`
+        }
+      </td>
+
+      <td>
+
+      ${
+        s.status==="pending"
+        ? `
+        <div class="actions">
+          <button class="btn"
+            onclick="verifySettlement('${s.id}')">
+            Verify
+          </button>
+
+          <button class="btn red"
+            onclick="rejectSettlement('${s.id}')">
+            Reject
+          </button>
+        </div>
+        `
+        : "-"
+      }
+
+      </td>
+
+    </tr>
+
+    `).join("")
+    : `<tr><td colspan="7" class="empty">No settlements</td></tr>`;
+}
+
+
+window.verifySettlement = async function(id){
+
+  const s=settlements.find(x=>x.id===id);
+  if(!s)return;
+
+  if(!confirm(
+    `৳${money(s.amount)} settlement verify করবেন?`
+  ))return;
+
+  try{
+
+    await updateDoc(doc(db,"settlements",id),{
+      status:"verified",
+      verifiedAt:Timestamp.now(),
+      verifiedBy:currentUser.uid,
+      riderWalletDeducted:true
+    });
+
+    if(s.riderId){
+
+      const rider=riders.find(
+        r=>r.riderId===s.riderId
+      );
+
+      if(rider){
+
+        const oldOutstanding=
+          Number(rider.codOutstanding || 0);
+
+        const oldWallet=
+          Number(rider.walletBalance || 0);
+
+        const amount=Number(s.amount || 0);
+
+        await updateDoc(
+          doc(db,"riders",rider.id),
+          {
+            codOutstanding:
+              Math.max(0,oldOutstanding-amount),
+
+            walletBalance:
+              oldWallet+amount,
+
+            lastSettlementAmount:amount,
+            settlementStatus:"clear",
+            lastSettlementAt:Timestamp.now()
+          }
+        );
+
+      }
+
+    }
+
+    toast("Settlement verified");
+    await loadSettlements();
+    await loadRiders();
+
+  }catch(err){
+    console.error(err);
+    toast("Settlement verification failed");
+  }
+};
+
+
+window.rejectSettlement = async function(id){
+
+  if(!confirm("Settlement reject করবেন?"))return;
+
+  try{
+
+    await updateDoc(doc(db,"settlements",id),{
+      status:"rejected",
+      verifiedAt:Timestamp.now(),
+      verifiedBy:currentUser.uid
+    });
+
+    toast("Settlement rejected");
+    await loadSettlements();
+
+  }catch(err){
+    console.error(err);
+  }
+};
+
+
+/* =========================
+   PRODUCTS
+========================= */
+
+window.loadProducts = async function(){
+
+  try{
+
+    const snap=await getDocs(
+      collection(db,"products")
+    );
+
+    products=snap.docs.map(d=>({
+      id:d.id,
+      ...d.data()
+    }));
+
+    renderProducts();
+    updateDashboard();
+
+  }catch(err){
+    console.error(err);
+    toast("Products load হয়নি");
+  }
+};
+
+
+function renderProducts(){
+
+  $("productsTable").innerHTML =
+    products.length
+    ? products.map(p=>`
+
+    <tr>
+
+      <td>
+        ${
+          p.image
+          ? `<img src="${esc(p.image)}"
+             style="width:45px;height:45px;object-fit:cover;border-radius:7px">`
+          : "—"
+        }
+      </td>
+
+      <td><b>${esc(p.name)}</b></td>
+      <td>${esc(p.category)}</td>
+      <td>৳${money(p.price)}</td>
+      <td>৳${money(p.costPrice)}</td>
+      <td>${money(p.stock)}</td>
+      <td>${Array.isArray(p.variants) ? p.variants.length : 0}</td>
+
+      <td>
+        ${
+          p.active
+          ? `<span class="badge green">Active</span>`
+          : `<span class="badge red">Inactive</span>`
+        }
+      </td>
+
+      <td>
+        <div class="actions">
+          <button class="btn" onclick="editProduct('${p.id}')">Edit</button>
+          <button class="btn red" onclick="deleteProduct('${p.id}')">Delete</button>
+        </div>
+      </td>
+
+    </tr>
+
+    `).join("")
+    : `<tr><td colspan="9" class="empty">No products</td></tr>`;
+}
+
+
+window.openProductModal = function(){
+
+  $("productModalTitle").innerText="Add Product";
+
+  $("productId").value="";
+  $("productName").value="";
+  $("productCategory").value="";
+  $("productPrice").value="";
+  $("productCostPrice").value="";
+  $("productStock").value="";
+  $("productImage").value="";
+  $("productDescription").value="";
+  $("productVariants").value="[]";
+  $("productActive").checked=true;
+
+  $("productModal").classList.add("show");
+};
+
+
+window.editProduct = function(id){
+
+  const p=products.find(x=>x.id===id);
+  if(!p)return;
+
+  $("productModalTitle").innerText="Edit Product";
+
+  $("productId").value=id;
+  $("productName").value=p.name || "";
+  $("productCategory").value=p.category || "";
+  $("productPrice").value=p.price || 0;
+  $("productCostPrice").value=p.costPrice || 0;
+  $("productStock").value=p.stock || 0;
+  $("productImage").value=p.image || "";
+  $("productDescription").value=p.description || "";
+  $("productVariants").value=
+    JSON.stringify(p.variants || [],null,2);
+  $("productActive").checked=p.active !== false;
+
+  $("productModal").classList.add("show");
+};
+
+
+window.saveProduct = async function(){
+
+  try{
+
+    const id=$("productId").value.trim();
+
+    let variants=[];
+
+    try{
+      variants=JSON.parse(
+        $("productVariants").value || "[]"
+      );
+
+      if(!Array.isArray(variants)){
+        throw new Error();
+      }
+
+    }catch{
+      alert("Variants JSON সঠিক নয়।");
+      return;
+    }
+
+    const data={
+      name:$("productName").value.trim(),
+      category:$("productCategory").value.trim(),
+      price:Number($("productPrice").value || 0),
+      costPrice:Number($("productCostPrice").value || 0),
+      stock:Number($("productStock").value || 0),
+      image:$("productImage").value.trim(),
+      description:$("productDescription").value.trim(),
+      variants,
+      active:$("productActive").checked,
+      updatedAt:Timestamp.now()
+    };
+
+    if(!data.name){
+      alert("Product name দিন");
+      return;
+    }
+
+    if(id){
+
+      await updateDoc(
+        doc(db,"products",id),
+        data
+      );
+
+    }else{
+
+      const newId=
+        data.name.toLowerCase()
+        .replace(/[^a-z0-9]+/g,"-")
+        .replace(/^-|-$/g,"")
+        +"_"+Date.now();
+
+      await setDoc(
+        doc(db,"products",newId),
+        {
+          ...data,
+          createdAt:Timestamp.now()
+        }
+      );
+    }
+
+    closeModal("productModal");
+    toast("Product saved");
+    await loadProducts();
+
+  }catch(err){
+    console.error(err);
+    toast("Product save failed");
+  }
+};
+
+
+window.deleteProduct = async function(id){
+
+  if(!confirm("Product delete করবেন?"))return;
+
+  try{
+
+    await deleteDoc(doc(db,"products",id));
+
+    toast("Product deleted");
+    await loadProducts();
+
+  }catch(err){
+    console.error(err);
+    toast("Delete failed");
+  }
+};
+
+
+/* =========================
+   CUSTOMERS
+========================= */
+
+window.loadCustomers = async function(){
+
+  try{
+
+    const snap=await getDocs(
+      collection(db,"users")
+    );
+
+    customers=snap.docs.map(d=>({
+      id:d.id,
+      ...d.data()
+    }));
+
+    $("customersTable").innerHTML =
+      customers.length
+      ? customers.map(c=>`
+
+      <tr>
+        <td>${esc(c.name)}</td>
+        <td>${esc(c.phone)}</td>
+        <td>${esc(c.role)}</td>
+        <td>
+          ${
+            c.active!==false
+            ? `<span class="badge green">Active</span>`
+            : `<span class="badge red">Inactive</span>`
+          }
+        </td>
+        <td style="font-size:10px">${esc(c.id)}</td>
+      </tr>
+
+      `).join("")
+      : `<tr><td colspan="5" class="empty">No customers</td></tr>`;
+
+  }catch(err){
+    console.error(err);
+  }
+};
+
+
+/* =========================
+   RIDERS
+========================= */
+
+window.loadRiders = async function(){
+
+  try{
+
+    const snap=await getDocs(
+      collection(db,"riders")
+    );
+
+    riders=snap.docs.map(d=>({
+      id:d.id,
+      ...d.data()
+    }));
+
+    renderRiders();
+    updateDashboard();
+
+  }catch(err){
+    console.error(err);
+  }
+};
+
+
+function renderRiders(){
+
+  $("ridersTable").innerHTML =
+    riders.length
+    ? riders.map(r=>`
+
+    <tr>
+
+      <td><b>${esc(r.riderId)}</b></td>
+      <td>${esc(r.name)}</td>
+      <td>${esc(r.phone)}</td>
+      <td>${esc(r.status || "offline")}</td>
+      <td>৳${money(r.walletBalance)}</td>
+      <td>৳${money(r.codOutstanding)}</td>
+
+      <td>
+        ${
+          r.active!==false
+          ? `<span class="badge green">Active</span>`
+          : `<span class="badge red">Inactive</span>`
+        }
+      </td>
+
+      <td>
+        <button class="btn" onclick="editRider('${r.id}')">Edit</button>
+      </td>
+
+    </tr>
+
+    `).join("")
+    : `<tr><td colspan="8" class="empty">No riders</td></tr>`;
+}
+
+
+window.openRiderModal=function(){
+
+  $("riderIdInput").value="";
+  $("riderName").value="";
+  $("riderPhone").value="";
+  $("riderAuthUid").value="";
+  $("riderStatus").value="offline";
+  $("riderActive").checked=true;
+
+  $("riderModal").classList.add("show");
+};
+
+
+window.editRider=function(id){
+
+  const r=riders.find(x=>x.id===id);
+  if(!r)return;
+
+  $("riderIdInput").value=r.riderId || "";
+  $("riderName").value=r.name || "";
+  $("riderPhone").value=r.phone || "";
+  $("riderAuthUid").value=r.authUid || "";
+  $("riderStatus").value=r.status || "offline";
+  $("riderActive").checked=r.active!==false;
+
+  $("riderModal").classList.add("show");
+
+  $("riderModal")
+    .querySelector(".btn").onclick=
+    ()=>saveRider(id);
+};
+
+
+window.saveRider=async function(existingId=null){
+
+  try{
+
+    const riderId=$("riderIdInput").value.trim();
+
+    if(!riderId){
+      alert("Rider ID দিন");
+      return;
+    }
+
+    const data={
+      riderId,
+      name:$("riderName").value.trim(),
+      phone:$("riderPhone").value.trim(),
+      authUid:$("riderAuthUid").value.trim(),
+      status:$("riderStatus").value,
+      active:$("riderActive").checked,
+      updatedAt:Timestamp.now()
+    };
+
+    const id=existingId || riderId;
+
+    if(existingId){
+
+      await updateDoc(
+        doc(db,"riders",existingId),
+        data
+      );
+
+    }else{
+
+      await setDoc(
+        doc(db,"riders",id),
+        {
+          ...data,
+          walletBalance:0,
+          codCollected:0,
+          codOutstanding:0,
+          lastSettlementAmount:0,
+          settlementStatus:"clear",
+          createdAt:Timestamp.now()
+        }
+      );
+    }
+
+    closeModal("riderModal");
+    toast("Rider saved");
+    await loadRiders();
+
+  }catch(err){
+    console.error(err);
+    toast("Rider save failed");
+  }
+};
+
+
+/* =========================
+   COUPONS
+========================= */
+
+window.loadCoupons=async function(){
+
+  const snap=await getDocs(
+    collection(db,"coupons")
+  );
+
+  coupons=snap.docs.map(d=>({
+    id:d.id,
+    ...d.data()
+  }));
+
+  $("couponsTable").innerHTML=
+    coupons.length
+    ? coupons.map(c=>`
+
+      <tr>
+        <td><b>${esc(c.code)}</b></td>
+        <td>${esc(c.discountType)}</td>
+        <td>${money(c.discountValue)}</td>
+        <td>৳${money(c.minimumOrder)}</td>
+        <td>${money(c.usageLimit)}</td>
+        <td>
+          ${
+            c.active
+            ? `<span class="badge green">Active</span>`
+            : `<span class="badge red">Inactive</span>`
+          }
+        </td>
+        <td>
+          <button class="btn red"
+            onclick="deleteCoupon('${c.id}')">
+            Delete
+          </button>
+        </td>
+      </tr>
+
+    `).join("")
+    : `<tr><td colspan="7" class="empty">No coupons</td></tr>`;
+};
+
+
+window.openCouponModal=function(){
+
+  $("couponCode").value="";
+  $("couponType").value="percentage";
+  $("couponValue").value="";
+  $("couponMinimum").value="";
+  $("couponLimit").value="100";
+  $("couponActive").checked=true;
+
+  $("couponModal").classList.add("show");
+};
+
+
+window.saveCoupon=async function(){
+
+  const code=$("couponCode").value.trim().toUpperCase();
+
+  if(!code){
+    alert("Coupon code দিন");
+    return;
+  }
+
+  try{
+
+    await setDoc(
+      doc(db,"coupons",code),
+      {
+        code,
+        discountType:$("couponType").value,
+        discountValue:Number($("couponValue").value || 0),
+        minimumOrder:Number($("couponMinimum").value || 0),
+        usageLimit:Number($("couponLimit").value || 0),
+        active:$("couponActive").checked,
+        createdAt:Timestamp.now(),
+        updatedAt:Timestamp.now()
+      }
+    );
+
+    closeModal("couponModal");
+    toast("Coupon saved");
+    await loadCoupons();
+
+  }catch(err){
+    console.error(err);
+    toast("Coupon save failed");
+  }
+};
+
+
+window.deleteCoupon=async function(id){
+
+  if(!confirm("Coupon delete করবেন?"))return;
+
+  await deleteDoc(doc(db,"coupons",id));
+  toast("Coupon deleted");
+  await loadCoupons();
+};
+
+
+/* =========================
+   OFFERS
+========================= */
+
+window.loadOffers=async function(){
+
+  const snap=await getDocs(
+    collection(db,"offers")
+  );
+
+  offers=snap.docs.map(d=>({
+    id:d.id,
+    ...d.data()
+  }));
+
+  $("offersTable").innerHTML=
+    offers.length
+    ? offers.map(o=>`
+
+      <tr>
+        <td>${esc(o.title)}</td>
+        <td>${esc(o.description)}</td>
+        <td>${esc(o.discountType)}</td>
+        <td>${money(o.discountValue)}</td>
+        <td>
+          ${
+            o.active
+            ? `<span class="badge green">Active</span>`
+            : `<span class="badge red">Inactive</span>`
+          }
+        </td>
+        <td>
+          <button class="btn red"
+            onclick="deleteOffer('${o.id}')">
+            Delete
+          </button>
+        </td>
+      </tr>
+
+    `).join("")
+    : `<tr><td colspan="6" class="empty">No offers</td></tr>`;
+};
+
+
+window.openOfferModal=function(){
+
+  $("offerTitle").value="";
+  $("offerDescription").value="";
+  $("offerType").value="percentage";
+  $("offerValue").value="";
+  $("offerActive").checked=true;
+
+  $("offerModal").classList.add("show");
+};
+
+
+window.saveOffer=async function(){
+
+  const title=$("offerTitle").value.trim();
+
+  if(!title){
+    alert("Offer title দিন");
+    return;
+  }
+
+  const id=
+    title.toLowerCase()
+    .replace(/[^a-z0-9]+/g,"-")
+    .replace(/^-|-$/g,"")
+    +"_"+Date.now();
+
+  try{
+
+    await setDoc(
+      doc(db,"offers",id),
+      {
+        title,
+        description:$("offerDescription").value.trim(),
+        discountType:$("offerType").value,
+        discountValue:Number($("offerValue").value || 0),
+        active:$("offerActive").checked,
+        createdAt:Timestamp.now(),
+        updatedAt:Timestamp.now()
+      }
+    );
+
+    closeModal("offerModal");
+    toast("Offer saved");
+    await loadOffers();
+
+  }catch(err){
+    console.error(err);
+  }
+};
+
+
+window.deleteOffer=async function(id){
+
+  if(!confirm("Offer delete করবেন?"))return;
+
+  await deleteDoc(doc(db,"offers",id));
+  toast("Offer deleted");
+  await loadOffers();
+};
+
+
+/* =========================
+   REVIEWS
+========================= */
+
+window.loadReviews=async function(){
+
+  const snap=await getDocs(
+    collection(db,"reviews")
+  );
+
+  reviews=snap.docs.map(d=>({
+    id:d.id,
+    ...d.data()
+  }));
+
+  $("reviewsTable").innerHTML=
+    reviews.length
+    ? reviews.map(r=>`
+
+      <tr>
+        <td>${esc(r.customerName || r.customerId)}</td>
+        <td>${esc(r.productId)}</td>
+        <td>⭐ ${esc(r.rating)}</td>
+        <td>${esc(r.comment)}</td>
+        <td>
+          ${
+            r.active
+            ? `<span class="badge green">Visible</span>`
+            : `<span class="badge red">Hidden</span>`
+          }
+        </td>
+        <td>
+          <button class="btn orange"
+            onclick="toggleReview('${r.id}',${r.active!==true})">
+            ${r.active ? "Hide":"Show"}
+          </button>
+        </td>
+      </tr>
+
+    `).join("")
+    : `<tr><td colspan="6" class="empty">No reviews</td></tr>`;
+};
+
+
+window.toggleReview=async function(id,status){
+
+  await updateDoc(
+    doc(db,"reviews",id),
+    {active:status}
+  );
+
+  toast("Review updated");
+  await loadReviews();
+};
+
+
+/* =========================
+   DELIVERY PARTNERS
+========================= */
+
+window.loadPartners=async function(){
+
+  const snap=await getDocs(
+    collection(db,"deliveryPartners")
+  );
+
+  partners=snap.docs.map(d=>({
+    id:d.id,
+    ...d.data()
+  }));
+
+  $("partnersTable").innerHTML=
+    partners.length
+    ? partners.map(p=>`
+
+      <tr>
+        <td>${esc(p.name)}</td>
+        <td>${esc(p.type)}</td>
+        <td>
+          ${
+            p.active
+            ? `<span class="badge green">Active</span>`
+            : `<span class="badge red">Inactive</span>`
+          }
+        </td>
+        <td>
+          <button class="btn orange"
+            onclick="togglePartner('${p.id}',${p.active!==true})">
+            ${p.active?"Disable":"Enable"}
+          </button>
+        </td>
+      </tr>
+
+    `).join("")
+    : `<tr><td colspan="4" class="empty">No partners</td></tr>`;
+};
+
+
+window.openPartnerModal=function(){
+
+  $("partnerName").value="";
+  $("partnerType").value="external";
+  $("partnerActive").checked=true;
+
+  $("partnerModal").classList.add("show");
+};
+
+
+window.savePartner=async function(){
+
+  const name=$("partnerName").value.trim();
+
+  if(!name)return;
+
+  const id=
+    name.toLowerCase()
+    .replace(/[^a-z0-9]+/g,"-")
+    +"_"+Date.now();
+
+  await setDoc(
+    doc(db,"deliveryPartners",id),
+    {
+      name,
+      type:$("partnerType").value,
+      active:$("partnerActive").checked,
+      createdAt:Timestamp.now()
+    }
+  );
+
+  closeModal("partnerModal");
+  toast("Partner saved");
+  await loadPartners();
+};
+
+
+window.togglePartner=async function(id,status){
+
+  await updateDoc(
+    doc(db,"deliveryPartners",id),
+    {active:status}
+  );
+
+  await loadPartners();
+};
+
+
+/* =========================
+   STAFF
+========================= */
+
+window.loadStaff=async function(){
+
+  const snap=await getDocs(
+    collection(db,"staff")
+  );
+
+  staff=snap.docs.map(d=>({
+    id:d.id,
+    ...d.data()
+  }));
+
+  $("staffTable").innerHTML=
+    staff.length
+    ? staff.map(s=>`
+
+      <tr>
+        <td>${esc(s.name)}</td>
+        <td>${esc(s.email)}</td>
+        <td>${esc(s.role)}</td>
+        <td>
+          ${
+            s.active
+            ? `<span class="badge green">Active</span>`
+            : `<span class="badge red">Inactive</span>`
+          }
+        </td>
+        <td style="font-size:10px">${esc(s.id)}</td>
+        <td>
+          <button class="btn orange"
+            onclick="toggleStaff('${s.id}',${s.active!==true})">
+            ${s.active?"Disable":"Enable"}
+          </button>
+        </td>
+      </tr>
+
+    `).join("")
+    : `<tr><td colspan="6" class="empty">No staff</td></tr>`;
+};
+
+
+window.openStaffModal=function(){
+
+  $("staffUid").value="";
+  $("staffName").value="";
+  $("staffEmail").value="";
+  $("staffRole").value="staff";
+  $("staffActive").checked=true;
+
+  $("staffModal").classList.add("show");
+};
+
+
+window.saveStaff=async function(){
+
+  const uid=$("staffUid").value.trim();
+
+  if(!uid){
+    alert("Staff Firebase UID দিন");
+    return;
+  }
+
+  await setDoc(
+    doc(db,"staff",uid),
+    {
+      name:$("staffName").value.trim(),
+      email:$("staffEmail").value.trim(),
+      role:$("staffRole").value,
+      active:$("staffActive").checked,
+      updatedAt:Timestamp.now()
+    },
+    {merge:true}
+  );
+
+  closeModal("staffModal");
+  toast("Staff saved");
+  await loadStaff();
+};
+
+
+window.toggleStaff=async function(id,status){
+
+  await updateDoc(
+    doc(db,"staff",id),
+    {
+      active:status,
+      updatedAt:Timestamp.now()
+    }
+  );
+
+  await loadStaff();
+};
+
+
+/* =========================
+   SETTINGS
+========================= */
+
+window.loadSettings=async function(){
+
+  try{
+
+    const delivery=await getDoc(
+      doc(db,"settings","delivery")
+    );
+
+    const platform=await getDoc(
+      doc(db,"settings","platform")
+    );
+
+    const payment=await getDoc(
+      doc(db,"settings","payment")
+    );
+
+    if(delivery.exists()){
+
+      const d=delivery.data();
+
+      $("deliveryCharge").value=
+        d.charge ?? 60;
+
+      $("freeDeliveryMinimum").value=
+        d.freeDeliveryMinimum ?? 1000;
+
+      $("outsideDeliveryCharge").value=
+        d.outsideCharge ?? 120;
+    }
+
+    if(platform.exists()){
+
+      const p=platform.data();
+
+      $("platformEnabled").checked=
+        p.enabled===true;
+
+      $("platformType").value=
+        p.type || "percentage";
+
+      $("platformValue").value=
+        p.value ?? 2;
+    }
+
+    if(payment.exists()){
+
+      const p=payment.data();
+
+      $("bkashNumber").value=
+        p.bkashNumber || "";
+
+      $("nagadNumber").value=
+        p.nagadNumber || "";
+
+      $("deliveryPaymentRequired").checked=
+        p.deliveryChargePaymentRequired !== false;
+    }
+
+    const pub=await getDoc(
+      doc(db,"settings","public")
+    );
+
+    if(pub.exists()){
+
+      const p=pub.data();
+
+      $("supportLink").value=
+        p.supportLink || "";
+    }
+
+  }catch(err){
+
+    console.error(err);
+    toast("Settings load failed");
+  }
+};
+
+
+window.saveSettings=async function(){
+
+  try{
+
+    const delivery={
+      charge:Number($("deliveryCharge").value || 0),
+      outsideCharge:Number($("outsideDeliveryCharge").value || 0),
+      freeDeliveryMinimum:Number(
+        $("freeDeliveryMinimum").value || 0
+      ),
+      active:true,
+      updatedAt:Timestamp.now()
+    };
+
+    const platform={
+      enabled:$("platformEnabled").checked,
+      type:$("platformType").value,
+      value:Number($("platformValue").value || 0),
+      updatedAt:Timestamp.now()
+    };
+
+    const payment={
+      bkashNumber:$("bkashNumber").value.trim(),
+      nagadNumber:$("nagadNumber").value.trim(),
+      deliveryChargePaymentRequired:
+        $("deliveryPaymentRequired").checked,
+      active:true,
+      updatedAt:Timestamp.now()
+    };
+
+    await setDoc(
+      doc(db,"settings","delivery"),
+      delivery,
+      {merge:true}
+    );
+
+    await setDoc(
+      doc(db,"settings","platform"),
+      platform,
+      {merge:true}
+    );
+
+    await setDoc(
+      doc(db,"settings","payment"),
+      payment,
+      {merge:true}
+    );
+
+    /*
+      শুধুমাত্র customer-এর জন্য safe information
+      public document-এ যাবে।
+    */
+
+    await setDoc(
+      doc(db,"settings","public"),
+      {
+        deliveryCharge:delivery.charge,
+        outsideDeliveryCharge:delivery.outsideCharge,
+        freeDeliveryMinimum:
+          delivery.freeDeliveryMinimum,
+
+        platformEnabled:platform.enabled,
+        platformType:platform.type,
+        platformValue:platform.value,
+
+        bkashNumber:payment.bkashNumber,
+        nagadNumber:payment.nagadNumber,
+
+        deliveryChargePaymentRequired:
+          payment.deliveryChargePaymentRequired,
+
+        supportLink:$("supportLink").value.trim(),
+
+        updatedAt:Timestamp.now()
+      },
+      {merge:true}
+    );
+
+    toast("Settings saved successfully");
+
+  }catch(err){
+    console.error(err);
+    toast("Settings save failed");
+  }
+};
+
+
+/* =========================
+   DISCOUNT WHEEL
+========================= */
+
+window.loadWheel=async function(){
+
+  try{
+
+    const snap=await getDoc(
+      doc(db,"settings","discountWheel")
+    );
+
+    if(!snap.exists())return;
+
+    const d=snap.data();
+
+    $("wheelEnabled").checked=d.enabled===true;
+    $("wheelMaxDiscount").value=d.maxDiscount ?? 100;
+    $("wheelOptions").value=
+      (d.options || [5,10,20,30,50]).join(",");
+    $("wheelMinimum").value=d.minimumOrder ?? 500;
+    $("wheelOneSpin").checked=d.oneSpin!==false;
+
+  }catch(err){
+    console.error(err);
+  }
+};
+
+
+window.saveWheel=async function(){
+
+  const options=
+    $("wheelOptions").value
+    .split(",")
+    .map(x=>Number(x.trim()))
+    .filter(x=>x>=0);
+
+  await setDoc(
+    doc(db,"settings","discountWheel"),
+    {
+      enabled:$("wheelEnabled").checked,
+      maxDiscount:Number($("wheelMaxDiscount").value || 0),
+      options,
+      minimumOrder:Number($("wheelMinimum").value || 0),
+      oneSpin:$("wheelOneSpin").checked,
+      updatedAt:Timestamp.now()
+    },
+    {merge:true}
+  );
+
+  toast("Discount wheel settings saved");
+};
+
+
+/* =========================
+   FESTIVAL / LUCKY DRAW
+========================= */
+
+window.loadFestival=async function(){
+
+  try{
+
+    const snap=await getDoc(
+      doc(db,"settings","festival")
+    );
+
+    if(!snap.exists())return;
+
+    const d=snap.data();
+
+    $("festivalName").value=d.name || "";
+    $("festivalPrize").value=d.prize || "";
+    $("festivalStart").value=d.startDate || "";
+    $("festivalEnd").value=d.endDate || "";
+    $("festivalDrawDate").value=d.drawDate || "";
+    $("festivalEnabled").checked=d.enabled===true;
+
+  }catch(err){
+    console.error(err);
+  }
+};
+
+
+window.saveFestival=async function(){
+
+  await setDoc(
+    doc(db,"settings","festival"),
+    {
+      name:$("festivalName").value.trim(),
+      prize:$("festivalPrize").value.trim(),
+      startDate:$("festivalStart").value,
+      endDate:$("festivalEnd").value,
+      drawDate:$("festivalDrawDate").value,
+      enabled:$("festivalEnabled").checked,
+      updatedAt:Timestamp.now()
+    },
+    {merge:true}
+  );
+
+  toast("Festival campaign saved");
+};
+
+
+window.runLuckyDraw=async function(){
+
+  if(!confirm(
+    "বর্তমান campaign-এর eligible customers থেকে random winner নির্বাচন করবেন?"
+  ))return;
+
+  try{
+
+    const start=$("festivalStart").value;
+    const end=$("festivalEnd").value;
+
+    if(!start || !end){
+      alert("Start এবং End date দিন");
+      return;
+    }
+
+    const eligible=[];
+
+    orders.forEach(o=>{
+
+      if(o.orderStatus==="cancelled")return;
+
+      let date="";
+
+      if(o.createdAt?.toDate){
+        date=o.createdAt.toDate()
+          .toISOString()
+          .slice(0,10);
+      }else if(o.createdAt){
+        date=String(o.createdAt).slice(0,10);
+      }
+
+      if(date>=start && date<=end){
+
+        eligible.push({
+          customerId:o.customerId,
+          customerName:o.customerName,
+          customerPhone:o.customerPhone,
+          orderId:o.id
+        });
+
+      }
+    });
+
+    const unique=[];
+
+    const ids=new Set();
+
+    eligible.forEach(x=>{
+      if(x.customerId && !ids.has(x.customerId)){
+        ids.add(x.customerId);
+        unique.push(x);
+      }
+    });
+
+    if(!unique.length){
+      alert("Eligible customer পাওয়া যায়নি।");
+      return;
+    }
+
+    const winner=
+      unique[
+        Math.floor(Math.random()*unique.length)
+      ];
+
+    await setDoc(
+      doc(db,"settings","festival"),
+      {
+        winner,
+        winnerSelectedAt:Timestamp.now(),
+        winnerSelectedBy:currentUser.uid
+      },
+      {merge:true}
+    );
+
+    $("drawResult").innerHTML=`
+      <div class="card green">
+        <div class="label">🎉 Lucky Draw Winner</div>
+        <div class="value">
+          ${esc(winner.customerName)}
+        </div>
+        <p>
+          Phone: ${esc(winner.customerPhone)}<br>
+          Customer ID: ${esc(winner.customerId)}<br>
+          Prize: ${esc($("festivalPrize").value)}
+        </p>
+      </div>
+    `;
+
+  }catch(err){
+    console.error(err);
+    toast("Lucky draw failed");
+  }
+};
+
+
+/* =========================
+   THEME
+========================= */
+
+window.loadTheme=async function(){
+
+  try{
+
+    const snap=await getDoc(
+      doc(db,"settings","theme")
+    );
+
+    if(!snap.exists())return;
+
+    const d=snap.data();
+
+    $("themeName").value=d.name || "";
+    $("themeBanner").value=d.banner || "";
+    $("themeEnabled").checked=d.enabled===true;
+    $("themeMode").value=d.mode || "normal";
+
+  }catch(err){
+    console.error(err);
+  }
+};
+
+
+window.saveTheme=async function(){
+
+  await setDoc(
+    doc(db,"settings","theme"),
+    {
+      name:$("themeName").value.trim(),
+      banner:$("themeBanner").value.trim(),
+      enabled:$("themeEnabled").checked,
+      mode:$("themeMode").value,
+      updatedAt:Timestamp.now()
+    },
+    {merge:true}
+  );
+
+  toast("Theme saved");
+};
+
+
+/* =========================
+   MONTHLY FINANCE
+========================= */
+
+window.loadFinanceSettings=async function(){
+
+  const now=new Date();
+
+  const month=
+    now.getFullYear()+"-"+
+    String(now.getMonth()+1).padStart(2,"0");
+
+  if(!$("financeMonth").value)
+    $("financeMonth").value=month;
+
+  try{
+
+    const snap=await getDoc(
+      doc(db,"settings","statementConfig")
+    );
+
+    if(snap.exists()){
+
+      const d=snap.data();
+
+      $("autoArchive").checked=
+        d.autoArchive===true;
+    }
+
+  }catch(err){
+    console.error(err);
+  }
+};
+
+
+window.calculateFinance=function(){
+
+  const month=$("financeMonth").value;
+
+  if(!month){
+    alert("Month select করুন");
+    return;
+  }
+
+  let sales=0;
+  let delivery=0;
+  let platform=0;
+  let discount=0;
+  let refund=0;
+  let cod=0;
+
+  let productCost=0;
+  let partnerCost=0;
+
+  orders.forEach(o=>{
+
+    if(o.orderStatus==="cancelled"){
+
+      refund += Number(o.refundAmount || 0);
+      return;
+    }
+
+    let date="";
+
+    if(o.createdAt?.toDate){
+      date=o.createdAt.toDate()
+        .toISOString()
+        .slice(0,7);
+    }else if(o.createdAt){
+      date=String(o.createdAt).slice(0,7);
+    }
+
+    if(date!==month)return;
+
+    sales += Number(o.subtotal || 0);
+    delivery += Number(o.deliveryCharge || 0);
+    platform += Number(o.platformCharge || 0);
+    discount += Number(o.discount || 0);
+    cod += Number(o.codAmount || 0);
+
+    partnerCost +=
+      Number(o.deliveryPartnerCost || 0);
+
+    if(Array.isArray(o.items)){
+
+      o.items.forEach(item=>{
+
+        const qty=Number(item.quantity || 1);
+        const cost=Number(
+          item.costPrice ||
+          item.cost ||
+          0
+        );
+
+        productCost += cost*qty;
+      });
+
+    }
+
+  });
+
+  $("fSales").innerText=money(sales);
+  $("fDelivery").innerText=money(delivery);
+  $("fPlatform").innerText=money(platform);
+  $("fDiscount").innerText=money(discount);
+  $("fRefund").innerText=money(refund);
+  $("fCOD").innerText=money(cod);
+
+  $("expenseProduct").value=
+    Math.round(productCost);
+
+  $("expensePartner").value=
+    Math.round(partnerCost);
+
+  const staffCost=
+    Number($("expenseStaff").value || 0);
+
+  const riderCost=
+    Number($("expenseRider").value || 0);
+
+  const other=
+    Number($("expenseOther").value || 0);
+
+  const extraRefund=
+    Number($("expenseRefund").value || 0);
+
+  const totalRevenue=
+    sales+
+    delivery+
+    platform-
+    discount-
+    refund;
+
+  const before=
+    totalRevenue-
+    productCost-
+    partnerCost-
+    other-
+    extraRefund;
+
+  const staffRider=
+    staffCost+riderCost;
+
+  const net=
+    before-staffRider;
+
+  $("totalRevenue").innerText=
+    money(totalRevenue);
+
+  $("profitBefore").innerText=
+    money(before);
+
+  $("staffRiderCost").innerText=
+    money(staffRider);
+
+  $("netProfit").innerText=
+    money(net);
+
+  $("netProfitBox").innerHTML=
+    `৳ <span id="netProfit">${money(net)}</span>`;
+
+};
+
+
+window.saveMonthlyStatement=async function(){
+
+  const month=$("financeMonth").value;
+
+  if(!month){
+    alert("Month select করুন");
+    return;
+  }
+
+  calculateFinance();
+
+  const data={
+
+    month,
+
+    productSales:
+      Number($("fSales").innerText.replaceAll(",","")),
+
+    deliveryIncome:
+      Number($("fDelivery").innerText.replaceAll(",","")),
+
+    platformCharge:
+      Number($("fPlatform").innerText.replaceAll(",","")),
+
+    discount:
+      Number($("fDiscount").innerText.replaceAll(",","")),
+
+    refunds:
+      Number($("fRefund").innerText.replaceAll(",","")),
+
+    codCollected:
+      Number($("fCOD").innerText.replaceAll(",","")),
+
+    productCost:
+      Number($("expenseProduct").value || 0),
+
+    deliveryPartnerCost:
+      Number($("expensePartner").value || 0),
+
+    staffSalary:
+      Number($("expenseStaff").value || 0),
+
+    riderCost:
+      Number($("expenseRider").value || 0),
+
+    otherExpenses:
+      Number($("expenseOther").value || 0),
+
+    additionalRefund:
+      Number($("expenseRefund").value || 0),
+
+    totalRevenue:
+      Number($("totalRevenue").innerText.replaceAll(",","")),
+
+    profitBeforeStaffRider:
+      Number($("profitBefore").innerText.replaceAll(",","")),
+
+    staffRiderCost:
+      Number($("staffRiderCost").innerText.replaceAll(",","")),
+
+    netProfit:
+      Number($("netProfit").innerText.replaceAll(",","")),
+
+    savedAt:Timestamp.now(),
+    savedBy:currentUser.uid
+  };
+
+  try{
+
+    await setDoc(
+      doc(db,"settings","statement_"+month),
+      data,
+      {merge:true}
+    );
+
+    await setDoc(
+      doc(db,"settings","statementConfig"),
+      {
+        autoArchive:$("autoArchive").checked,
+        lastStatementMonth:month,
+        updatedAt:Timestamp.now()
+      },
+      {merge:true}
+    );
+
+    toast("Monthly statement saved");
+
+  }catch(err){
+    console.error(err);
+    toast("Statement save failed");
+  }
+};
+
+
+window.loadPreviousStatements=async function(){
+
+  const snap=await getDocs(
+    collection(db,"settings")
+  );
+
+  const data=snap.docs
+    .filter(d=>d.id.startsWith("statement_"))
+    .map(d=>({
+      id:d.id,
+      ...d.data()
+    }))
+    .sort((a,b)=>
+      String(b.month).localeCompare(String(a.month))
+    );
+
+  $("previousStatements").innerHTML=
+    data.length
+    ? data.map(s=>`
+
+      <div class="card" style="margin-bottom:10px">
+
+        <b>${esc(s.month)}</b>
+
+        <p style="margin-top:8px">
+          Revenue: ৳${money(s.totalRevenue)}<br>
+          Profit Before Staff/Rider:
+          ৳${money(s.profitBeforeStaffRider)}<br>
+          Staff + Rider:
+          ৳${money(s.staffRiderCost)}<br>
+          <b>Net Profit/Loss:
+          ৳${money(s.netProfit)}</b>
+        </p>
+
+      </div>
+
+    `).join("")
+    : `<div class="empty">No previous statements</div>`;
+};
+
+
+window.printFinance=function(){
+
+  calculateFinance();
+
+  const month=$("financeMonth").value;
+
+  const html=`
+
+  <html>
+  <head>
+    <title>NatureBite Monthly Statement</title>
+    <style>
+      body{font-family:Arial;padding:30px}
+      h1{color:#164f2d}
+      table{border-collapse:collapse;width:100%}
+      td{padding:10px;border:1px solid #ddd}
+    </style>
+  </head>
+
+  <body>
+
+    <h1>NatureBite</h1>
+    <h2>Monthly Profit / Loss Statement</h2>
+
+    <p>Month: ${esc(month)}</p>
+
+    <table>
+
+      <tr>
+        <td>Product Sales</td>
+        <td>৳${$("fSales").innerText}</td>
+      </tr>
+
+      <tr>
+        <td>Delivery Income</td>
+        <td>৳${$("fDelivery").innerText}</td>
+      </tr>
+
+      <tr>
+        <td>Platform/App Charge</td>
+        <td>৳${$("fPlatform").innerText}</td>
+      </tr>
+
+      <tr>
+        <td>Discount</td>
+        <td>৳${$("fDiscount").innerText}</td>
+      </tr>
+
+      <tr>
+        <td>Product Cost</td>
+        <td>৳${$("expenseProduct").value}</td>
+      </tr>
+
+      <tr>
+        <td>Delivery Partner Cost</td>
+        <td>৳${$("expensePartner").value}</td>
+      </tr>
+
+      <tr>
+        <td>Staff Salary</td>
+        <td>৳${$("expenseStaff").value}</td>
+      </tr>
+
+      <tr>
+        <td>Rider Cost</td>
+        <td>৳${$("expenseRider").value}</td>
+      </tr>
+
+      <tr>
+        <td>Other Expenses</td>
+        <td>৳${$("expenseOther").value}</td>
+      </tr>
+
+      <tr>
+        <td><b>Profit Before Staff/Rider</b></td>
+        <td><b>৳${$("profitBefore").innerText}</b></td>
+      </tr>
+
+      <tr>
+        <td><b>NET PROFIT / LOSS</b></td>
+        <td><b>৳${$("netProfit").innerText}</b></td>
+      </tr>
+
+    </table>
+
+    <br>
+    <button onclick="window.print()">Print</button>
+
+  </body>
+  </html>
+  `;
+
+  const w=window.open("","_blank");
+  w.document.write(html);
+  w.document.close();
+};
+
+
+/* =========================
+   AI TOOL
+========================= */
+
+window.generateAIAd=function(){
+
+  const product=$("aiProductName").value.trim();
+  const offer=$("aiOffer").value.trim();
+  const platform=$("aiPlatform").value;
+
+  if(!product){
+    alert("Product/Campaign Name দিন");
+    return;
+  }
+
+  /*
+    Real AI API এখানে intentionally নেই।
+    API key frontend-এ রাখা নিরাপদ নয়।
+  */
+
+  const headline=
+    `${product} — NatureBite-এর স্বাস্থ্যকর পছন্দ`;
+
+  const caption=
+`🌿 ${product}
+
+${offer || "প্রকৃতির কাছাকাছি, স্বাস্থ্যকর একটি পছন্দ।"}
+
+NatureBite-এর সাথে থাকুন।
+
+#NatureBite #HealthyFood #NaturalFood`;
+
+  $("aiResult").innerHTML=`
+
+    <div class="card">
+
+      <h3>Generated Advertisement</h3>
+
+      <p style="margin-top:12px">
+        <b>Platform:</b> ${esc(platform)}
+      </p>
+
+      <p style="margin-top:12px">
+        <b>Headline:</b><br>
+        ${esc(headline)}
+      </p>
+
+      <p style="margin-top:12px">
+        <b>Caption:</b><br>
+        ${esc(caption).replaceAll("\n","<br>")}
+      </p>
+
+      <div style="margin-top:15px;padding:10px;background:#fff4d9;border-radius:7px;font-size:12px">
+        এটি বর্তমানে demo generation। Live AI generation-এর জন্য secure backend/API যুক্ত করতে হবে।
+      </div>
+
+    </div>
+
+  `;
+};
+
+
+/* =========================
+   CLOSE MODAL ON BACKGROUND
+========================= */
+
+document.querySelectorAll(".modal").forEach(modal=>{
+
+  modal.addEventListener("click",e=>{
+
+    if(e.target===modal){
+      modal.classList.remove("show");
+    }
+
+  });
+
+});
+
+</script>
+
+</body>
+</html>
