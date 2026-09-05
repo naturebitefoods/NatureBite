@@ -1,0 +1,2526 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>NatureBite | Admin Panel</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f7f1;
+color:#183522;
+}
+
+.header{
+background:#173a25;
+color:white;
+padding:14px 20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+position:sticky;
+top:0;
+z-index:100;
+}
+
+.logo{
+font-size:23px;
+font-weight:bold;
+}
+
+.btn{
+border:0;
+padding:9px 13px;
+border-radius:7px;
+cursor:pointer;
+}
+
+.green{
+background:#1d653c;
+color:white;
+}
+
+.red{
+background:#b42318;
+color:white;
+}
+
+.gray{
+background:#e9eee7;
+color:#183522;
+}
+
+.blue{
+background:#286ca8;
+color:white;
+}
+
+.container{
+max-width:1250px;
+margin:auto;
+padding:20px;
+}
+
+.nav{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin-bottom:18px;
+}
+
+.nav button{
+background:white;
+border:1px solid #dce5d9;
+padding:10px 13px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.nav button.active{
+background:#173a25;
+color:white;
+}
+
+.page{
+display:none;
+}
+
+.page.active{
+display:block;
+}
+
+.card{
+background:white;
+border:1px solid #dfe7dc;
+border-radius:13px;
+padding:17px;
+margin-bottom:17px;
+}
+
+.card h2{
+color:#1d653c;
+margin-bottom:15px;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px;
+}
+
+.stat{
+background:#f5f8f3;
+padding:15px;
+border-radius:10px;
+}
+
+.stat span{
+display:block;
+font-size:12px;
+color:#6b786e;
+}
+
+.stat strong{
+display:block;
+font-size:21px;
+margin-top:6px;
+color:#1d653c;
+}
+
+.table-wrap{
+overflow:auto;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+min-width:750px;
+}
+
+th,td{
+padding:10px;
+border-bottom:1px solid #e8eee5;
+text-align:left;
+font-size:13px;
+}
+
+th{
+background:#f1f5ef;
+}
+
+.input,
+select,
+textarea{
+width:100%;
+padding:10px;
+border:1px solid #d1dbcf;
+border-radius:8px;
+margin-bottom:9px;
+background:white;
+}
+
+textarea{
+min-height:80px;
+}
+
+.grid2{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+
+.variant{
+border:1px solid #dce5d9;
+padding:10px;
+border-radius:9px;
+margin-bottom:10px;
+}
+
+.badge{
+padding:5px 8px;
+border-radius:6px;
+background:#edf5eb;
+font-size:12px;
+}
+
+.danger{
+background:#fff0ee;
+border-left:4px solid #b42318;
+padding:12px;
+margin-bottom:12px;
+border-radius:7px;
+}
+
+.notice{
+background:#eef6ec;
+border-left:4px solid #1d653c;
+padding:12px;
+border-radius:7px;
+margin-bottom:12px;
+font-size:13px;
+line-height:1.6;
+}
+
+@media(max-width:900px){
+
+.stats{
+grid-template-columns:1fr 1fr;
+}
+
+}
+
+@media(max-width:600px){
+
+.grid2{
+grid-template-columns:1fr;
+}
+
+.container{
+padding:12px;
+}
+
+.stats{
+grid-template-columns:1fr 1fr;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<header class="header">
+
+<div class="logo">
+NatureBite Admin
+</div>
+
+<div>
+
+<button
+class="btn gray"
+onclick="openStatements()">
+
+Monthly Statements
+
+</button>
+
+<button
+class="btn red"
+onclick="logout()">
+
+Logout
+
+</button>
+
+</div>
+
+</header>
+
+
+<div class="container">
+
+
+<div
+id="accessBox"
+class="card"
+style="display:none;text-align:center">
+
+<h2>
+Admin Access Required
+</h2>
+
+<p id="accessMessage"></p>
+
+<br>
+
+<button
+class="btn green"
+onclick="goLogin()">
+
+Go to Login
+
+</button>
+
+</div>
+
+
+<div id="adminApp" style="display:none">
+
+
+<div class="nav">
+
+<button
+class="active"
+onclick="showPage('dashboard',this)">
+
+Dashboard
+
+</button>
+
+<button
+onclick="showPage('orders',this)">
+
+Orders
+
+</button>
+
+<button
+onclick="showPage('payments',this)">
+
+Payments
+
+</button>
+
+<button
+onclick="showPage('products',this)">
+
+Products
+
+</button>
+
+<button
+onclick="showPage('customers',this)">
+
+Customers
+
+</button>
+
+<button
+onclick="showPage('riders',this)">
+
+Riders
+
+</button>
+
+<button
+onclick="showPage('coupons',this)">
+
+Coupons
+
+</button>
+
+<button
+onclick="showPage('offers',this)">
+
+Offers
+
+</button>
+
+<button
+onclick="showPage('reviews',this)">
+
+Reviews
+
+</button>
+
+<button
+onclick="showPage('partners',this)">
+
+Delivery Partners
+
+</button>
+
+<button
+onclick="showPage('staff',this)">
+
+Staff
+
+</button>
+
+<button
+onclick="showPage('settings',this)">
+
+Settings
+
+</button>
+
+</div>
+
+
+
+<!-- DASHBOARD -->
+
+<section
+id="dashboard"
+class="page active">
+
+<div class="card">
+
+<h2>
+📊 Dashboard
+</h2>
+
+<div class="stats">
+
+<div class="stat">
+
+<span>Total Orders</span>
+
+<strong id="statOrders">
+0
+</strong>
+
+</div>
+
+<div class="stat">
+
+<span>Completed</span>
+
+<strong id="statCompleted">
+0
+</strong>
+
+</div>
+
+<div class="stat">
+
+<span>Cancelled</span>
+
+<strong id="statCancelled">
+0
+</strong>
+
+</div>
+
+<div class="stat">
+
+<span>Revenue</span>
+
+<strong id="statRevenue">
+৳0
+</strong>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ORDERS -->
+
+<section
+id="orders"
+class="page">
+
+<div class="card">
+
+<h2>
+📦 Orders
+</h2>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Order</th>
+
+<th>Customer</th>
+
+<th>Total</th>
+
+<th>Status</th>
+
+<th>Payment</th>
+
+<th>Rider</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="ordersTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- PAYMENTS -->
+
+<section
+id="payments"
+class="page">
+
+<div class="card">
+
+<h2>
+💳 Payment Verification
+</h2>
+
+<div
+id="paymentList">
+
+Loading...
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- PRODUCTS -->
+
+<section
+id="products"
+class="page">
+
+<div class="card">
+
+<h2>
+🛍️ Add / Edit Product
+</h2>
+
+<input
+id="productId"
+class="input"
+placeholder="Product ID">
+
+<input
+id="productName"
+class="input"
+placeholder="Product Name">
+
+<input
+id="productCategory"
+class="input"
+placeholder="Category">
+
+<textarea
+id="productDescription"
+class="input"
+placeholder="Description">
+</textarea>
+
+<input
+id="productPrice"
+class="input"
+type="number"
+placeholder="Default Price">
+
+<input
+id="productCost"
+class="input"
+type="number"
+placeholder="Cost Price">
+
+<input
+id="productStock"
+class="input"
+type="number"
+placeholder="Stock">
+
+<input
+id="productImage"
+class="input"
+placeholder="Main Product Image URL">
+
+
+<h3>
+Multiple Variants
+</h3>
+
+<div id="variants"></div>
+
+<button
+class="btn gray"
+onclick="addVariant()">
+
++ Add Variant
+
+</button>
+
+<br><br>
+
+<button
+class="btn green"
+onclick="saveProduct()">
+
+Save Product
+
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+Existing Products
+</h2>
+
+<div
+id="productList">
+
+Loading...
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- CUSTOMERS -->
+
+<section
+id="customers"
+class="page">
+
+<div class="card">
+
+<h2>
+👤 Customers
+</h2>
+
+<div id="customerList">
+Loading...
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- RIDERS -->
+
+<section
+id="riders"
+class="page">
+
+<div class="card">
+
+<h2>
+🏍️ Riders
+</h2>
+
+<div id="riderList">
+Loading...
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- COUPONS -->
+
+<section
+id="coupons"
+class="page">
+
+<div class="card">
+
+<h2>
+🎟️ Coupons
+</h2>
+
+<input
+id="couponId"
+class="input"
+placeholder="Coupon ID / Code">
+
+<input
+id="couponDiscount"
+class="input"
+type="number"
+placeholder="Discount Value">
+
+<select
+id="couponType"
+class="input">
+
+<option value="percentage">
+Percentage
+</option>
+
+<option value="fixed">
+Fixed Amount
+</option>
+
+</select>
+
+<input
+id="couponMinimum"
+class="input"
+type="number"
+placeholder="Minimum Order">
+
+<button
+class="btn green"
+onclick="saveCoupon()">
+
+Save Coupon
+
+</button>
+
+</div>
+
+</section>
+
+
+
+<!-- OFFERS -->
+
+<section
+id="offers"
+class="page">
+
+<div class="card">
+
+<h2>
+🎁 Offers
+</h2>
+
+<input
+id="offerId"
+class="input"
+placeholder="Offer ID">
+
+<input
+id="offerTitle"
+class="input"
+placeholder="Offer Title">
+
+<textarea
+id="offerDescription"
+class="input"
+placeholder="Description">
+</textarea>
+
+<input
+id="offerDiscount"
+class="input"
+type="number"
+placeholder="Discount">
+
+<button
+class="btn green"
+onclick="saveOffer()">
+
+Save Offer
+
+</button>
+
+</div>
+
+</section>
+
+
+
+<!-- REVIEWS -->
+
+<section
+id="reviews"
+class="page">
+
+<div class="card">
+
+<h2>
+⭐ Reviews
+</h2>
+
+<div id="reviewList">
+Loading...
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- PARTNERS -->
+
+<section
+id="partners"
+class="page">
+
+<div class="card">
+
+<h2>
+🚚 Delivery Partners
+</h2>
+
+<div id="partnerList">
+Loading...
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- STAFF -->
+
+<section
+id="staff"
+class="page">
+
+<div class="card">
+
+<h2>
+👥 Staff & Roles
+</h2>
+
+<div class="notice">
+
+Staff document-এর ID অবশ্যই Firebase Authentication
+UID হতে হবে।
+
+</div>
+
+<input
+id="staffUid"
+class="input"
+placeholder="Firebase Authentication UID">
+
+<input
+id="staffName"
+class="input"
+placeholder="Staff Name">
+
+<input
+id="staffEmail"
+class="input"
+placeholder="Email">
+
+<select
+id="staffRole"
+class="input">
+
+<option value="admin">
+Admin
+</option>
+
+<option value="manager">
+Manager
+</option>
+
+<option value="staff">
+Staff
+</option>
+
+</select>
+
+<button
+class="btn green"
+onclick="saveStaff()">
+
+Save Staff
+
+</button>
+
+</div>
+
+</section>
+
+
+
+<!-- SETTINGS -->
+
+<section
+id="settings"
+class="page">
+
+<div class="card">
+
+<h2>
+⚙️ Settings
+</h2>
+
+<input
+id="settingDelivery"
+class="input"
+type="number"
+placeholder="Chattogram Delivery Charge">
+
+<input
+id="settingOutside"
+class="input"
+type="number"
+placeholder="Outside Chattogram Charge">
+
+<input
+id="settingFree"
+class="input"
+type="number"
+placeholder="Free Delivery Minimum">
+
+<input
+id="settingBkash"
+class="input"
+placeholder="bKash Number">
+
+<input
+id="settingNagad"
+class="input"
+placeholder="Nagad Number">
+
+<input
+id="settingTelegram"
+class="input"
+placeholder="Telegram Link">
+
+<input
+id="settingPlatform"
+class="input"
+type="number"
+placeholder="Platform Charge">
+
+<select
+id="settingPlatformType"
+class="input">
+
+<option value="percentage">
+Percentage
+</option>
+
+<option value="fixed">
+Fixed
+</option>
+
+</select>
+
+<label>
+
+<input
+type="checkbox"
+id="settingPlatformEnabled">
+
+ Platform/App Charge Enabled
+
+</label>
+
+<br><br>
+
+<button
+class="btn green"
+onclick="saveSettings()">
+
+Save Settings
+
+</button>
+
+</div>
+
+</section>
+
+
+</div>
+
+</div>
+
+
+
+<script type="module">
+
+import {
+initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+import {
+getAuth,
+onAuthStateChanged,
+signOut,
+setPersistence,
+browserLocalPersistence
+}
+from
+"https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+import {
+getFirestore,
+collection,
+doc,
+getDoc,
+getDocs,
+setDoc,
+updateDoc,
+limit,
+query,
+where,
+serverTimestamp
+}
+from
+"https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+const firebaseConfig={
+
+apiKey:"AIzaSyDBRf8g83TnMYdoaKkpYpn_-boYng-SHE",
+
+authDomain:"naturebite-538ba.firebaseapp.com",
+
+projectId:"naturebite-538ba",
+
+storageBucket:"naturebite-538ba.firebasestorage.app",
+
+messagingSenderId:"403660151204",
+
+appId:"1:403660151204:web:15db421e18442e85d70931"
+
+};
+
+
+const app=initializeApp(firebaseConfig);
+
+const auth=getAuth(app);
+
+const db=getFirestore(app);
+
+
+await setPersistence(
+auth,
+browserLocalPersistence
+);
+
+
+let adminUser=null;
+
+let staffData=null;
+
+let allOrders=[];
+
+
+onAuthStateChanged(
+auth,
+async user=>{
+
+if(!user){
+
+showAccess(
+"Firebase login পাওয়া যায়নি। প্রথমে Login করুন।"
+);
+
+return;
+
+}
+
+
+try{
+
+const staffRef=
+doc(
+db,
+"staff",
+user.uid
+);
+
+const snap=
+await getDoc(staffRef);
+
+
+if(!snap.exists()){
+
+showAccess(
+"এই Firebase UID-এর জন্য staff document নেই। আপনার UID হলো: "+
+user.uid+
+" । Firestore → staff-এ এই UID দিয়ে document তৈরি করুন।"
+);
+
+return;
+
+}
+
+
+const data=snap.data();
+
+
+if(
+data.active!==true ||
+(
+data.role!=="admin" &&
+data.role!=="manager"
+)
+){
+
+showAccess(
+"আপনার Admin/Manager permission নেই।"
+);
+
+return;
+
+}
+
+
+adminUser=user;
+
+staffData=data;
+
+
+document.getElementById(
+"accessBox"
+).style.display="none";
+
+document.getElementById(
+"adminApp"
+).style.display="block";
+
+
+await loadEverything();
+
+}catch(error){
+
+console.error(error);
+
+showAccess(
+"Admin authorization error: "+
+error.message
+);
+
+}
+
+});
+
+
+function showAccess(message){
+
+document.getElementById(
+"accessBox"
+).style.display="block";
+
+document.getElementById(
+"adminApp"
+).style.display="none";
+
+document.getElementById(
+"accessMessage"
+).innerHTML=
+escapeHTML(message);
+
+}
+
+
+window.showPage=function(id,button){
+
+document.querySelectorAll(
+".page"
+).forEach(p=>
+p.classList.remove("active")
+);
+
+document.getElementById(
+id
+).classList.add("active");
+
+
+document.querySelectorAll(
+".nav button"
+).forEach(b=>
+b.classList.remove("active")
+);
+
+if(button)
+button.classList.add("active");
+
+
+if(id==="orders")
+loadOrders();
+
+if(id==="payments")
+loadPayments();
+
+if(id==="products")
+loadProducts();
+
+if(id==="customers")
+loadCustomers();
+
+if(id==="riders")
+loadRiders();
+
+if(id==="reviews")
+loadReviews();
+
+if(id==="partners")
+loadPartners();
+
+};
+
+
+async function loadEverything(){
+
+await loadOrders();
+
+await loadSettings();
+
+}
+
+
+async function loadOrders(){
+
+const snap=
+await getDocs(
+query(
+collection(db,"orders"),
+limit(500)
+)
+);
+
+
+allOrders=[];
+
+snap.forEach(d=>{
+
+allOrders.push({
+id:d.id,
+...d.data()
+});
+
+});
+
+
+let revenue=0;
+
+let completed=0;
+
+let cancelled=0;
+
+
+allOrders.forEach(o=>{
+
+if(
+o.orderStatus==="cancelled"
+){
+
+cancelled++;
+
+}else{
+
+revenue+=
+Number(o.totalAmount||0);
+
+}
+
+if(
+o.orderStatus==="delivered"
+){
+
+completed++;
+
+}
+
+});
+
+
+document.getElementById(
+"statOrders"
+).innerText=
+allOrders.length;
+
+
+document.getElementById(
+"statCompleted"
+).innerText=
+completed;
+
+
+document.getElementById(
+"statCancelled"
+).innerText=
+cancelled;
+
+
+document.getElementById(
+"statRevenue"
+).innerText=
+"৳"+
+revenue.toFixed(2);
+
+
+const table=
+document.getElementById(
+"ordersTable"
+);
+
+
+table.innerHTML=
+allOrders.map(o=>`
+
+<tr>
+
+<td>
+${escapeHTML(o.trackingCode||o.id)}
+</td>
+
+<td>
+${escapeHTML(o.customerName||"")}
+<br>
+${escapeHTML(o.customerPhone||"")}
+</td>
+
+<td>
+৳${Number(o.totalAmount||0)}
+</td>
+
+<td>
+${escapeHTML(o.orderStatus||"pending")}
+</td>
+
+<td>
+${escapeHTML(o.paymentStatus||"pending")}
+</td>
+
+<td>
+${escapeHTML(o.assignedRiderId||"Not Assigned")}
+</td>
+
+<td>
+
+<button
+class="btn green"
+onclick="confirmOrder('${o.id}')">
+
+Confirm
+
+</button>
+
+</td>
+
+</tr>
+
+`).join("");
+
+}
+
+
+window.confirmOrder=async function(id){
+
+if(staffData.role!=="admin" &&
+staffData.role!=="manager"){
+
+alert("Permission denied.");
+
+return;
+
+}
+
+
+await updateDoc(
+doc(db,"orders",id),
+{
+
+orderStatus:"confirmed",
+
+notification:
+"আপনার অর্ডার টি কনফার্ম হয়েছে এবং চট্টগ্রাম জোন এর মধ্যে হলে আগামী ১ থেকে ২ দিন এর মধ্যে আপনার অর্ডার ডেলিভারি সম্পুর্ন হবে আর চট্টগ্রাম জোন এর বাহিরে হলে ৩ থেকে ৪ দিন এর মধ্যে সম্পুর্ন করা হবে।",
+
+confirmedAt:
+serverTimestamp(),
+
+confirmedBy:
+adminUser.uid
+
+}
+);
+
+
+alert("Order confirmed.");
+
+loadOrders();
+
+};
+
+
+async function loadPayments(){
+
+const snap=
+await getDocs(
+query(
+collection(db,"paymentVerifications"),
+limit(200)
+)
+);
+
+
+const box=
+document.getElementById(
+"paymentList"
+);
+
+
+if(snap.empty){
+
+box.innerHTML=
+"No pending payments.";
+
+return;
+
+}
+
+
+box.innerHTML=
+snap.docs.map(d=>{
+
+const p=d.data();
+
+return `
+
+<div class="card">
+
+<b>
+Order:
+${escapeHTML(p.orderId)}
+</b>
+
+<br><br>
+
+Method:
+${escapeHTML(p.method)}
+
+<br>
+
+Transaction:
+${escapeHTML(p.transactionId)}
+
+<br>
+
+Amount:
+৳${Number(p.amount||0)}
+
+<br><br>
+
+<button
+class="btn green"
+onclick="verifyPayment('${d.id}','${p.orderId}',true)">
+
+Accept
+
+</button>
+
+<button
+class="btn red"
+onclick="verifyPayment('${d.id}','${p.orderId}',false)">
+
+Reject
+
+</button>
+
+</div>
+
+`;
+
+}).join("");
+
+}
+
+
+window.verifyPayment=
+async function(
+verificationId,
+orderId,
+accepted
+){
+
+const verificationRef=
+doc(
+db,
+"paymentVerifications",
+verificationId
+);
+
+
+await updateDoc(
+verificationRef,
+{
+
+status:
+accepted
+?"verified"
+:"rejected",
+
+verifiedAt:
+serverTimestamp(),
+
+verifiedBy:
+adminUser.uid
+
+}
+);
+
+
+await updateDoc(
+doc(db,"orders",orderId),
+{
+
+paymentStatus:
+accepted
+?"verified"
+:"rejected",
+
+orderStatus:
+accepted
+?"confirmed"
+:"payment_failed",
+
+notification:
+accepted
+?
+"আপনার অর্ডার টি কনফার্ম হয়েছে এবং চট্টগ্রাম জোন এর মধ্যে হলে আগামী ১ থেকে ২ দিন এর মধ্যে আপনার অর্ডার ডেলিভারি সম্পুর্ন হবে আর চট্টগ্রাম জোন এর বাহিরে হলে ৩ থেকে ৪ দিন এর মধ্যে সম্পুর্ন করা হবে।"
+:
+"আপনার payment verification সফল হয়নি।"
+
+}
+);
+
+
+alert(
+accepted
+?"Payment verified."
+:"Payment rejected."
+);
+
+
+loadPayments();
+
+loadOrders();
+
+};
+
+
+function clearProductForm(){
+
+document.getElementById(
+"productId"
+).value="";
+
+document.getElementById(
+"productName"
+).value="";
+
+document.getElementById(
+"productCategory"
+).value="";
+
+document.getElementById(
+"productDescription"
+).value="";
+
+document.getElementById(
+"productPrice"
+).value="";
+
+document.getElementById(
+"productCost"
+).value="";
+
+document.getElementById(
+"productStock"
+).value="";
+
+document.getElementById(
+"productImage"
+).value="";
+
+document.getElementById(
+"variants"
+).innerHTML="";
+
+}
+
+
+window.addVariant=function(data={}){
+
+const box=
+document.getElementById(
+"variants"
+);
+
+
+const div=
+document.createElement("div");
+
+div.className="variant";
+
+
+div.innerHTML=`
+
+<input
+class="input v-id"
+placeholder="Variant ID"
+value="${escapeHTML(data.id||"")}">
+
+
+<input
+class="input v-name"
+placeholder="Option Name যেমন 30g"
+value="${escapeHTML(data.optionName||"")}">
+
+
+<input
+class="input v-weight"
+placeholder="Weight"
+value="${escapeHTML(data.weight||"")}">
+
+
+<input
+class="input v-price"
+type="number"
+placeholder="Price"
+value="${Number(data.price||0)}">
+
+
+<input
+class="input v-cost"
+type="number"
+placeholder="Cost Price"
+value="${Number(data.costPrice||0)}">
+
+
+<input
+class="input v-stock"
+type="number"
+placeholder="Stock"
+value="${Number(data.stock||0)}">
+
+
+<input
+class="input v-image"
+placeholder="Variant Image URL"
+value="${escapeHTML(data.image||"")}">
+
+
+<label>
+
+<input
+class="v-active"
+type="checkbox"
+${data.active!==false?"checked":""}>
+
+ Active
+
+</label>
+
+
+<br><br>
+
+<button
+class="btn red"
+onclick="this.parentElement.remove()">
+
+Remove Variant
+
+</button>
+
+`;
+
+box.appendChild(div);
+
+};
+
+
+window.saveProduct=async function(){
+
+const id=
+document.getElementById(
+"productId"
+).value.trim();
+
+
+if(!id){
+
+alert("Product ID দিন.");
+
+return;
+
+}
+
+
+const variants=[];
+
+
+document.querySelectorAll(
+".variant"
+).forEach(v=>{
+
+variants.push({
+
+id:v.querySelector(".v-id").value.trim(),
+
+optionName:v.querySelector(".v-name").value.trim(),
+
+weight:v.querySelector(".v-weight").value.trim(),
+
+price:Number(
+v.querySelector(".v-price").value||0
+),
+
+costPrice:Number(
+v.querySelector(".v-cost").value||0
+),
+
+stock:Number(
+v.querySelector(".v-stock").value||0
+),
+
+image:v.querySelector(".v-image").value.trim(),
+
+active:v.querySelector(".v-active").checked
+
+});
+
+});
+
+
+await setDoc(
+
+doc(db,"products",id),
+
+{
+
+name:
+document.getElementById(
+"productName"
+).value.trim(),
+
+category:
+document.getElementById(
+"productCategory"
+).value.trim(),
+
+description:
+document.getElementById(
+"productDescription"
+).value.trim(),
+
+price:Number(
+document.getElementById(
+"productPrice"
+).value||0
+),
+
+costPrice:Number(
+document.getElementById(
+"productCost"
+).value||0
+),
+
+stock:Number(
+document.getElementById(
+"productStock"
+).value||0
+),
+
+image:
+document.getElementById(
+"productImage"
+).value.trim(),
+
+variants,
+
+active:true,
+
+updatedAt:
+serverTimestamp()
+
+},
+
+{merge:true}
+
+);
+
+
+alert("Product saved.");
+
+loadProducts();
+
+};
+
+
+async function loadProducts(){
+
+const snap=
+await getDocs(
+query(
+collection(db,"products"),
+limit(100)
+)
+);
+
+
+const box=
+document.getElementById(
+"productList"
+);
+
+
+box.innerHTML=
+snap.docs.map(d=>{
+
+const p=d.data();
+
+return `
+
+<div class="card">
+
+<b>
+${escapeHTML(p.name||d.id)}
+</b>
+
+<br>
+
+৳${Number(p.price||0)}
+
+<br>
+
+Variants:
+${Array.isArray(p.variants)
+?p.variants.length
+:0}
+
+<br><br>
+
+<button
+class="btn blue"
+onclick="editProduct('${d.id}')">
+
+Edit
+
+</button>
+
+</div>
+
+`;
+
+}).join("");
+
+}
+
+
+window.editProduct=async function(id){
+
+const snap=
+await getDoc(
+doc(db,"products",id)
+);
+
+
+if(!snap.exists())return;
+
+
+const p=snap.data();
+
+
+document.getElementById(
+"productId"
+).value=id;
+
+document.getElementById(
+"productName"
+).value=p.name||"";
+
+document.getElementById(
+"productCategory"
+).value=p.category||"";
+
+document.getElementById(
+"productDescription"
+).value=p.description||"";
+
+document.getElementById(
+"productPrice"
+).value=p.price||0;
+
+document.getElementById(
+"productCost"
+).value=p.costPrice||0;
+
+document.getElementById(
+"productStock"
+).value=p.stock||0;
+
+document.getElementById(
+"productImage"
+).value=p.image||"";
+
+
+document.getElementById(
+"variants"
+).innerHTML="";
+
+
+if(Array.isArray(p.variants)){
+
+p.variants.forEach(v=>
+addVariant(v)
+);
+
+}
+
+
+window.showPage(
+"products",
+document.querySelector(
+".nav button:nth-child(4)"
+)
+);
+
+};
+
+
+async function loadCustomers(){
+
+const snap=
+await getDocs(
+query(
+collection(db,"users"),
+limit(200)
+)
+);
+
+
+document.getElementById(
+"customerList"
+).innerHTML=
+snap.docs.map(d=>{
+
+const u=d.data();
+
+return `
+
+<div class="card">
+
+<b>
+${escapeHTML(u.name||"Customer")}
+</b>
+
+<br>
+
+${escapeHTML(u.phone||"")}
+
+<br>
+
+Role:
+${escapeHTML(u.role||"customer")}
+
+</div>
+
+`;
+
+}).join("");
+
+}
+
+
+async function loadRiders(){
+
+const snap=
+await getDocs(
+query(
+collection(db,"riders"),
+limit(200)
+)
+);
+
+
+document.getElementById(
+"riderList"
+).innerHTML=
+snap.docs.map(d=>{
+
+const r=d.data();
+
+return `
+
+<div class="card">
+
+<b>
+${escapeHTML(r.name||"Rider")}
+</b>
+
+<br>
+
+Rider ID:
+${escapeHTML(r.riderId||d.id)}
+
+<br>
+
+Status:
+${escapeHTML(r.status||"offline")}
+
+<br>
+
+COD Outstanding:
+৳${Number(r.codOutstanding||0)}
+
+</div>
+
+`;
+
+}).join("");
+
+}
+
+
+window.saveCoupon=async function(){
+
+const id=
+document.getElementById(
+"couponId"
+).value.trim()
+.toUpperCase();
+
+
+if(!id)return;
+
+
+await setDoc(
+doc(db,"coupons",id),
+{
+
+code:id,
+
+discountType:
+document.getElementById(
+"couponType"
+).value,
+
+discountValue:Number(
+document.getElementById(
+"couponDiscount"
+).value||0
+),
+
+minimumOrder:Number(
+document.getElementById(
+"couponMinimum"
+).value||0
+),
+
+active:true,
+
+updatedAt:
+serverTimestamp()
+
+},
+{merge:true}
+);
+
+
+alert("Coupon saved.");
+
+};
+
+
+window.saveOffer=async function(){
+
+const id=
+document.getElementById(
+"offerId"
+).value.trim();
+
+
+if(!id)return;
+
+
+await setDoc(
+doc(db,"offers",id),
+{
+
+title:
+document.getElementById(
+"offerTitle"
+).value.trim(),
+
+description:
+document.getElementById(
+"offerDescription"
+).value.trim(),
+
+discountType:"percentage",
+
+discountValue:Number(
+document.getElementById(
+"offerDiscount"
+).value||0
+),
+
+active:true,
+
+updatedAt:
+serverTimestamp()
+
+},
+{merge:true}
+);
+
+
+alert("Offer saved.");
+
+};
+
+
+async function loadReviews(){
+
+const snap=
+await getDocs(
+query(
+collection(db,"reviews"),
+limit(200)
+)
+);
+
+
+document.getElementById(
+"reviewList"
+).innerHTML=
+snap.docs.map(d=>{
+
+const r=d.data();
+
+return `
+
+<div class="card">
+
+<b>
+⭐ ${Number(r.rating||0)}
+</b>
+
+<br><br>
+
+${escapeHTML(r.comment||"")}
+
+<br><br>
+
+${escapeHTML(r.customerName||"Customer")}
+
+</div>
+
+`;
+
+}).join("");
+
+}
+
+
+async function loadPartners(){
+
+const snap=
+await getDocs(
+query(
+collection(db,"deliveryPartners"),
+limit(100)
+)
+);
+
+
+document.getElementById(
+"partnerList"
+).innerHTML=
+snap.docs.map(d=>{
+
+const p=d.data();
+
+return `
+
+<div class="card">
+
+<b>
+${escapeHTML(p.name||d.id)}
+</b>
+
+<br>
+
+Type:
+${escapeHTML(p.type||"")}
+
+<br>
+
+Active:
+${p.active===true?"Yes":"No"}
+
+</div>
+
+`;
+
+}).join("");
+
+}
+
+
+window.saveStaff=async function(){
+
+if(staffData.role!=="admin"){
+
+alert(
+"Only Admin can manage Staff."
+);
+
+return;
+
+}
+
+
+const uid=
+document.getElementById(
+"staffUid"
+).value.trim();
+
+
+if(!uid){
+
+alert("Firebase UID দিন.");
+
+return;
+
+}
+
+
+await setDoc(
+doc(db,"staff",uid),
+{
+
+name:
+document.getElementById(
+"staffName"
+).value.trim(),
+
+email:
+document.getElementById(
+"staffEmail"
+).value.trim(),
+
+role:
+document.getElementById(
+"staffRole"
+).value,
+
+active:true,
+
+updatedAt:
+serverTimestamp()
+
+},
+{merge:true}
+);
+
+
+alert(
+"Staff saved successfully."
+);
+
+};
+
+
+async function loadSettings(){
+
+const snap=
+await getDoc(
+doc(db,"settings","public")
+);
+
+
+if(!snap.exists())return;
+
+
+const s=snap.data();
+
+
+document.getElementById(
+"settingDelivery"
+).value=
+s.deliveryCharge||60;
+
+
+document.getElementById(
+"settingOutside"
+).value=
+s.outsideDeliveryCharge||120;
+
+
+document.getElementById(
+"settingFree"
+).value=
+s.freeDeliveryMinimum||1000;
+
+
+document.getElementById(
+"settingBkash"
+).value=
+s.bkashNumber||"";
+
+
+document.getElementById(
+"settingNagad"
+).value=
+s.nagadNumber||"";
+
+
+document.getElementById(
+"settingTelegram"
+).value=
+s.telegram||"";
+
+
+document.getElementById(
+"settingPlatform"
+).value=
+s.platformValue||0;
+
+
+document.getElementById(
+"settingPlatformType"
+).value=
+s.platformType||"percentage";
+
+
+document.getElementById(
+"settingPlatformEnabled"
+).checked=
+s.platformEnabled===true;
+
+}
+
+
+window.saveSettings=async function(){
+
+const values={
+
+deliveryCharge:Number(
+document.getElementById(
+"settingDelivery"
+).value||60
+),
+
+outsideDeliveryCharge:Number(
+document.getElementById(
+"settingOutside"
+).value||120
+),
+
+freeDeliveryMinimum:Number(
+document.getElementById(
+"settingFree"
+).value||1000
+),
+
+bkashNumber:
+document.getElementById(
+"settingBkash"
+).value.trim(),
+
+nagadNumber:
+document.getElementById(
+"settingNagad"
+).value.trim(),
+
+telegram:
+document.getElementById(
+"settingTelegram"
+).value.trim(),
+
+platformValue:Number(
+document.getElementById(
+"settingPlatform"
+).value||0
+),
+
+platformType:
+document.getElementById(
+"settingPlatformType"
+).value,
+
+platformEnabled:
+document.getElementById(
+"settingPlatformEnabled"
+).checked,
+
+updatedAt:
+serverTimestamp()
+
+};
+
+
+await setDoc(
+doc(db,"settings","public"),
+values,
+{merge:true}
+);
+
+
+await setDoc(
+doc(db,"settings","delivery"),
+{
+
+charge:
+values.deliveryCharge,
+
+outsideDeliveryCharge:
+values.outsideDeliveryCharge,
+
+freeDeliveryMinimum:
+values.freeDeliveryMinimum,
+
+active:true
+
+},
+{merge:true}
+);
+
+
+await setDoc(
+doc(db,"settings","platform"),
+{
+
+enabled:
+values.platformEnabled,
+
+type:
+values.platformType,
+
+value:
+values.platformValue
+
+},
+{merge:true}
+);
+
+
+await setDoc(
+doc(db,"settings","payment"),
+{
+
+bkashNumber:
+values.bkashNumber,
+
+nagadNumber:
+values.nagadNumber,
+
+deliveryChargePaymentRequired:true,
+
+active:true
+
+},
+{merge:true}
+);
+
+
+alert(
+"Settings saved successfully."
+);
+
+};
+
+
+window.openStatements=function(){
+
+window.location.href=
+"monthly-statements.html";
+
+};
+
+
+window.logout=async function(){
+
+await signOut(auth);
+
+window.location.href=
+"index.html";
+
+};
+
+
+window.goLogin=function(){
+
+window.location.href=
+"index.html";
+
+};
+
+
+function escapeHTML(v){
+
+return String(v??"")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
+
+</script>
+
+</body>
+</html>
