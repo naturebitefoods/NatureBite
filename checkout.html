@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>NatureBite - Checkout</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    background:#f5f8f3;
+    color:#173b28;
+    font-family:Arial,sans-serif;
+}
+
+.header{
+    background:#123d28;
+    color:white;
+    padding:15px 5%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:800;
+}
+
+.header button{
+    width:auto;
+    padding:10px 15px;
+    margin:0;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:22px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1.25fr .75fr;
+    gap:20px;
+}
+
+.card{
+    background:white;
+    border:1px solid #dce5dd;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:18px;
+}
+
+h1,h2,h3{
+    margin-top:0;
+}
+
+input,
+textarea,
+select{
+    width:100%;
+    padding:13px;
+    border:1px solid #ccd7ce;
+    border-radius:10px;
+    margin:7px 0;
+    font:inherit;
+}
+
+textarea{
+    resize:vertical;
+}
+
+button{
+    width:100%;
+    padding:13px 17px;
+    border:0;
+    border-radius:10px;
+    background:#17633d;
+    color:white;
+    font-weight:700;
+    font-size:15px;
+    cursor:pointer;
+    margin-top:8px;
+}
+
+button:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+}
+
+.secondary{
+    background:#e7efe8;
+    color:#17462e;
+}
+
+.danger{
+    background:#c92f25;
+}
+
+.row{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    padding:11px 0;
+    border-bottom:1px solid #e7ece7;
+}
+
+.product{
+    display:flex;
+    gap:12px;
+}
+
+.product img{
+    width:80px;
+    height:80px;
+    border-radius:12px;
+    object-fit:cover;
+    background:#edf1eb;
+}
+
+.total{
+    font-size:23px;
+    font-weight:800;
+}
+
+.warning{
+    background:#fff5d7;
+    padding:13px;
+    border-radius:10px;
+    line-height:1.6;
+}
+
+.success{
+    background:#eaf6ec;
+    padding:13px;
+    border-radius:10px;
+    line-height:1.6;
+}
+
+.error{
+    background:#ffe9e7;
+    padding:13px;
+    border-radius:10px;
+    line-height:1.6;
+}
+
+.paymentBox{
+    padding:15px;
+    background:#f0f6f1;
+    border-radius:12px;
+    margin-top:10px;
+}
+
+@media(max-width:750px){
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .header{
+        padding:14px 4%;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header class="header">
+
+<div class="logo">
+NatureBite
+</div>
+
+<button
+class="secondary"
+onclick="location.href='dashboard.html'">
+
+← Dashboard
+
+</button>
+
+</header>
+
+
+<main class="container">
+
+<h1>Checkout</h1>
+
+
+<div class="grid">
+
+
+<!-- =====================
+     LEFT
+===================== -->
+
+<div>
+
+
+<section class="card">
+
+<h2>🛒 Your Cart</h2>
+
+<div id="cartList">
+
+Loading...
+
+</div>
+
+</section>
+
+
+<section class="card">
+
+<h2>📍 Delivery Information</h2>
+
+
+<input
+id="customerName"
+placeholder="আপনার নাম"
+>
+
+
+<input
+id="customerPhone"
+placeholder="মোবাইল নম্বর"
+>
+
+
+<textarea
+id="deliveryAddress"
+rows="4"
+placeholder="সম্পূর্ণ ডেলিভারি ঠিকানা"
+></textarea>
+
+
+<select id="zone">
+
+<option value="chattogram">
+Chattogram Zone
+</option>
+
+<option value="outside">
+Outside Chattogram
+</option>
+
+</select>
+
+
+<button
+id="locationButton"
+class="secondary">
+
+📍 Current Location
+
+</button>
+
+
+<div id="locationMessage"></div>
+
+</section>
+
+
+<section class="card">
+
+<h2>💳 Payment</h2>
+
+
+<select id="paymentMethod">
+
+<option value="COD">
+Cash on Delivery
+</option>
+
+<option value="online">
+Online Payment
+</option>
+
+</select>
+
+
+<div
+id="paymentInformation"
+class="paymentBox">
+
+</div>
+
+
+<label>
+Delivery Charge Transaction ID
+</label>
+
+
+<input
+id="deliveryTransactionId"
+placeholder="Transaction ID"
+>
+
+
+<div class="warning">
+
+অর্ডার কনফার্ম এর জন্য সঠিক ট্রানজেকশন আইডি ব্যবহার করুন।  
+অর্ডার কনফার্ম দেওয়ার আগে ট্রানজেকশন আইডি চেক করুন।
+
+</div>
+
+
+<div
+id="onlinePaymentBox"
+style="display:none;margin-top:12px">
+
+<label>
+Online Payment Transaction ID
+</label>
+
+<input
+id="onlineTransactionId"
+placeholder="Online payment transaction ID"
+>
+
+</div>
+
+
+</section>
+
+</div>
+
+
+<!-- =====================
+     RIGHT
+===================== -->
+
+<div>
+
+<section class="card">
+
+<h2>Order Summary</h2>
+
+<div id="summary"></div>
+
+
+<button
+id="confirmOrder">
+
+Confirm Order
+
+</button>
+
+
+<div
+id="orderMessage"
+style="margin-top:12px">
+
+</div>
+
+</section>
+
+</div>
+
+
+</div>
+
+</main>
+
+
+<script type="module">
+
+import {
+initializeApp
+}
+from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+
+import {
+getAuth,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+
+import {
+getFirestore,
+doc,
+getDoc,
+setDoc,
+addDoc,
+collection,
+serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+/* ================================
+FIREBASE
+================================ */
+
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyDBRf8g83TnMYdoaKkpYpn_-boYng-SHE",
+
+authDomain:
+"naturebite-538ba.firebaseapp.com",
+
+projectId:
+"naturebite-538ba",
+
+storageBucket:
+"naturebite-538ba.firebasestorage.app",
+
+messagingSenderId:
+"403660151204",
+
+appId:
+"1:403660151204:web:15db421e18442e85d70931"
+
+};
+
+
+const app=
+initializeApp(firebaseConfig);
+
+const auth=
+getAuth(app);
+
+const db=
+getFirestore(app);
+
+
+/* ================================
+ELEMENT
+================================ */
+
+const $=
+id=>document.getElementById(id);
+
+
+/* ================================
+CART
+================================ */
+
+const CART_KEY=
+"naturebite_cart";
+
+
+let cart=
+JSON.parse(
+localStorage.getItem(CART_KEY)||"[]"
+);
+
+
+let coupon=
+JSON.parse(
+localStorage.getItem("naturebite_coupon")||"null"
+);
+
+
+let user=null;
+
+let publicSettings={};
+
+let deliveryCharge=60;
+
+let outsideDeliveryCharge=120;
+
+let platformCharge=0;
+
+
+/* ================================
+HELPERS
+================================ */
+
+function money(value){
+
+return "৳"+
+Number(value||0).toFixed(2);
+
+}
+
+
+function escapeHTML(value){
+
+return String(value??"")
+.replace(
+/[&<>"']/g,
+char=>({
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+
+}[char])
+);
+
+}
+
+
+/* ================================
+SUBTOTAL
+================================ */
+
+function getSubtotal(){
+
+return cart.reduce(
+(total,item)=>
+total+
+(
+Number(item.price||0)*
+Number(item.qty||0)
+),
+0
+);
+
+}
+
+
+/* ================================
+DISCOUNT
+================================ */
+
+function getDiscount(){
+
+if(!coupon){
+return 0;
+}
+
+
+const subtotal=
+getSubtotal();
+
+
+const minimum=
+Number(coupon.minimumOrder||0);
+
+
+if(
+subtotal<minimum
+){
+return 0;
+}
+
+
+if(
+coupon.discountType===
+"percentage"
+){
+
+return Math.min(
+subtotal,
+subtotal*
+Number(coupon.discountValue||0)/
+100
+);
+
+}
+
+
+return Math.min(
+subtotal,
+Number(coupon.discountValue||0)
+);
+
+}
+
+
+/* ================================
+DELIVERY
+================================ */
+
+function updateDelivery(){
+
+const zone=
+$("zone").value;
+
+
+if(
+zone==="chattogram"
+){
+
+deliveryCharge=
+Number(
+publicSettings.deliveryCharge||60
+);
+
+}
+else{
+
+deliveryCharge=
+Number(
+publicSettings.outsideDeliveryCharge||120
+);
+
+}
+
+
+updatePaymentInformation();
+
+renderSummary();
+
+}
+
+
+/* ================================
+PLATFORM
+================================ */
+
+function calculatePlatformCharge(
+orderSubtotal
+){
+
+if(
+publicSettings.platformEnabled!==true
+){
+
+return 0;
+
+}
+
+
+const type=
+publicSettings.platformType||
+"percentage";
+
+
+const value=
+Number(
+publicSettings.platformValue||0
+);
+
+
+if(
+type==="percentage"
+){
+
+return Math.round(
+orderSubtotal*
+value/
+100*
+100
+)/100;
+
+}
+
+
+return value;
+
+}
+
+
+/* ================================
+CART RENDER
+================================ */
+
+function renderCart(){
+
+if(!cart.length){
+
+$("cartList").innerHTML=
+`
+<div class="warning">
+আপনার Cart খালি।
+<br><br>
+<button
+onclick="location.href='dashboard.html'">
+Products দেখুন
+</button>
+</div>
+`;
+
+$("confirmOrder").disabled=true;
+
+return;
+
+}
+
+
+$("confirmOrder").disabled=false;
+
+
+$("cartList").innerHTML=
+cart.map(
+(item,index)=>`
+
+<div class="product row">
+
+<img
+src="${
+escapeHTML(
+item.image||
+"https://placehold.co/100x100?text=NatureBite"
+)
+}"
+>
+
+<div style="flex:1">
+
+<b>
+${escapeHTML(item.name)}
+</b>
+
+<br>
+
+${
+item.option
+?
+`Option: ${escapeHTML(item.option)}`
+:""
+}
+
+<br>
+
+Qty:
+${Number(item.qty||0)}
+
+<br>
+
+<b>
+${money(
+Number(item.price||0)*
+Number(item.qty||0)
+)}
+</b>
+
+</div>
+
+<button
+class="danger"
+style="width:auto;height:max-content"
+onclick="removeCartItem(${index})">
+
+Remove
+
+</button>
+
+</div>
+
+`
+).join("");
+
+}
+
+
+window.removeCartItem=
+function(index){
+
+cart.splice(index,1);
+
+localStorage.setItem(
+CART_KEY,
+JSON.stringify(cart)
+);
+
+renderCart();
+
+renderSummary();
+
+};
+
+
+/* ================================
+SUMMARY
+================================ */
+
+function renderSummary(){
+
+const subtotal=
+getSubtotal();
+
+const discount=
+getDiscount();
+
+platformCharge=
+calculatePlatformCharge(
+subtotal-discount
+);
+
+const total=
+Math.max(
+0,
+subtotal-
+discount+
+deliveryCharge+
+platformCharge
+);
+
+
+$("summary").innerHTML=
+`
+
+<div class="row">
+<span>Subtotal</span>
+<b>${money(subtotal)}</b>
+</div>
+
+<div class="row">
+<span>Coupon Discount</span>
+<b>-${money(discount)}</b>
+</div>
+
+<div class="row">
+<span>Delivery Charge</span>
+<b>${money(deliveryCharge)}</b>
+</div>
+
+<div class="row">
+<span>NatureBite Platform/App Charge</span>
+<b>${money(platformCharge)}</b>
+</div>
+
+<div class="row total">
+<span>Total</span>
+<b>${money(total)}</b>
+</div>
+
+`;
+
+}
+
+
+/* ================================
+PAYMENT INFO
+================================ */
+
+function updatePaymentInformation(){
+
+const bkash=
+publicSettings.bkashNumber||
+"Admin bKash number";
+
+const nagad=
+publicSettings.nagadNumber||
+"Admin Nagad number";
+
+
+$("paymentInformation").innerHTML=
+`
+
+Delivery Charge:
+<b>${money(deliveryCharge)}</b>
+
+<br><br>
+
+bKash:
+<b>${escapeHTML(bkash)}</b>
+
+<br>
+
+Nagad:
+<b>${escapeHTML(nagad)}</b>
+
+<br><br>
+
+Delivery charge আগে payment করুন।
+
+`;
+
+}
+
+
+/* ================================
+PAYMENT METHOD
+================================ */
+
+$("paymentMethod").onchange=
+function(){
+
+if(
+this.value==="online"
+){
+
+$("onlinePaymentBox")
+.style.display=
+"block";
+
+}
+else{
+
+$("onlinePaymentBox")
+.style.display=
+"none";
+
+}
+
+};
+
+
+/* ================================
+ZONE
+================================ */
+
+$("zone").onchange=
+updateDelivery;
+
+
+/* ================================
+LOCATION
+================================ */
+
+$("locationButton").onclick=
+function(){
+
+if(
+!navigator.geolocation
+){
+
+$("locationMessage").innerHTML=
+`
+<div class="error">
+আপনার browser location support করে না।
+</div>
+`;
+
+return;
+
+}
+
+
+$("locationMessage").innerHTML=
+`
+<div class="warning">
+Location নেওয়া হচ্ছে...
+</div>
+`;
+
+
+navigator.geolocation.getCurrentPosition(
+
+position=>{
+
+window.customerLocation={
+
+latitude:
+position.coords.latitude,
+
+longitude:
+position.coords.longitude
+
+};
+
+
+$("locationMessage").innerHTML=
+`
+<div class="success">
+✓ Customer location captured
+</div>
+`;
+
+},
+
+error=>{
+
+console.error(error);
+
+$("locationMessage").innerHTML=
+`
+<div class="error">
+Location permission দেওয়া হয়নি।
+ঠিকানা manually লিখুন।
+</div>
+`;
+
+}
+
+);
+
+};
+
+
+/* ================================
+LOAD SETTINGS
+================================ */
+
+async function loadSettings(){
+
+const ref=
+doc(db,"settings","public");
+
+const snap=
+await getDoc(ref);
+
+
+if(
+snap.exists()
+){
+
+publicSettings=
+snap.data();
+
+}
+else{
+
+publicSettings={
+
+deliveryCharge:60,
+
+outsideDeliveryCharge:120,
+
+freeDeliveryMinimum:1000,
+
+platformEnabled:true,
+
+platformType:"percentage",
+
+platformValue:2,
+
+bkashNumber:"",
+
+nagadNumber:""
+
+};
+
+}
+
+
+deliveryCharge=
+Number(
+publicSettings.deliveryCharge||60
+);
+
+
+updatePaymentInformation();
+
+renderSummary();
+
+}
+
+
+/* ================================
+LOAD USER
+================================ */
+
+async function loadUser(){
+
+if(!user){
+return;
+}
+
+
+const ref=
+doc(db,"users",user.uid);
+
+const snap=
+await getDoc(ref);
+
+
+if(
+snap.exists()
+){
+
+const data=
+snap.data();
+
+
+$("customerName").value=
+data.name||"";
+
+
+$("customerPhone").value=
+data.phone||
+user.phoneNumber||
+"";
+
+}
+else{
+
+$("customerPhone").value=
+user.phoneNumber||"";
+
+}
+
+}
+
+
+/* ================================
+CREATE ORDER
+================================ */
+
+async function createOrder(){
+
+if(!user){
+
+location.href=
+"index.html";
+
+return;
+
+}
+
+
+if(!cart.length){
+
+showOrderMessage(
+"আপনার Cart খালি।",
+"error"
+);
+
+return;
+
+}
+
+
+const name=
+$("customerName")
+.value.trim();
+
+
+const phone=
+$("customerPhone")
+.value.trim();
+
+
+const address=
+$("deliveryAddress")
+.value.trim();
+
+
+const transactionId=
+$("deliveryTransactionId")
+.value.trim();
+
+
+const onlineTransactionId=
+$("onlineTransactionId")
+.value.trim();
+
+
+const paymentMethod=
+$("paymentMethod")
+.value;
+
+
+if(!name){
+
+showOrderMessage(
+"আপনার নাম দিন।",
+"error"
+);
+
+return;
+
+}
+
+
+if(!phone){
+
+showOrderMessage(
+"মোবাইল নম্বর দিন।",
+"error"
+);
+
+return;
+
+}
+
+
+if(!address){
+
+showOrderMessage(
+"Delivery address দিন।",
+"error"
+);
+
+return;
+
+}
+
+
+/*
+Delivery charge যদি 0 হয়,
+তাহলে transaction ID দরকার নেই।
+*/
+
+if(
+deliveryCharge>0 &&
+!transactionId
+){
+
+showOrderMessage(
+
+"Delivery charge payment-এর Transaction ID দিন।",
+
+"error"
+
+);
+
+return;
+
+}
+
+
+if(
+paymentMethod==="online" &&
+!onlineTransactionId
+){
+
+showOrderMessage(
+
+"Online payment transaction ID দিন।",
+
+"error"
+
+);
+
+return;
+
+}
+
+
+const subtotal=
+getSubtotal();
+
+
+const discount=
+getDiscount();
+
+
+const finalPlatformCharge=
+calculatePlatformCharge(
+subtotal-discount
+);
+
+
+const totalAmount=
+Math.max(
+0,
+subtotal-
+discount+
+deliveryCharge+
+finalPlatformCharge
+);
+
+
+/* ================================
+CREATE ORDER ID
+================================ */
+
+const orderRef=
+doc(
+collection(db,"orders")
+);
+
+
+const orderId=
+orderRef.id;
+
+
+const trackingCode=
+"NB-"+
+orderId
+.substring(0,8)
+.toUpperCase();
+
+
+/* ================================
+ITEM SNAPSHOT
+================================ */
+
+const orderItems=
+cart.map(item=>({
+
+productId:
+item.productId||"",
+
+name:
+item.name||"",
+
+option:
+item.option||"",
+
+price:
+Number(item.price||0),
+
+costPrice:
+Number(item.costPrice||0),
+
+qty:
+Number(item.qty||0),
+
+image:
+item.image||"",
+
+total:
+Number(item.price||0)*
+Number(item.qty||0)
+
+}));
+
+
+/* ================================
+ORDER DATA
+================================ */
+
+const orderData={
+
+customerId:
+user.uid,
+
+customerName:
+name,
+
+customerPhone:
+phone,
+
+deliveryAddress:
+address,
+
+customerLocation:
+window.customerLocation||null,
+
+
+items:
+orderItems,
+
+
+subtotal:
+subtotal,
+
+discount:
+discount,
+
+deliveryCharge:
+deliveryCharge,
+
+platformCharge:
+finalPlatformCharge,
+
+totalAmount:
+totalAmount,
+
+
+paymentMethod:
+paymentMethod,
+
+paymentStatus:
+"verification_pending",
+
+orderStatus:
+"payment_verification_pending",
+
+
+trackingCode:
+trackingCode,
+
+
+deliveryTransactionId:
+transactionId||
+"N/A",
+
+
+onlineTransactionId:
+paymentMethod==="online"
+?
+onlineTransactionId||
+"N/A"
+:
+"N/A",
+
+
+deliveryOtpRequired:
+true,
+
+deliveryOtpVerified:
+false,
+
+
+riderContactAllowed:
+true,
+
+riderAssigned:
+false,
+
+riderAssignedAt:
+null,
+
+barcodeScanned:
+false,
+
+barcodeValue:
+trackingCode,
+
+
+cancelled:
+false,
+
+cancelledAt:
+null,
+
+
+cancelledOrderHandoverRequired:
+false,
+
+cancelledOrderHandoverLocation:
+"",
+
+cancelledOrderHandoverStatus:
+"not_required",
+
+cancelledOrderHandoverProofUrl:
+"",
+
+cancelledOrderHandoverVerified:
+false,
+
+
+customerNotification:
+"আপনার ট্রানজেকশন আইডি ভেরিফাই করা হচ্ছে। কিছুক্ষণের মধ্যে আপনার অর্ডার কনফার্ম হয়ে যাবে।",
+
+
+createdAt:
+serverTimestamp(),
+
+updatedAt:
+serverTimestamp()
+
+};
+
+
+/* ================================
+SAVE ORDER
+================================ */
+
+await setDoc(
+orderRef,
+orderData
+);
+
+
+/* ================================
+DELIVERY VERIFICATION
+================================ */
+
+const verificationRef=
+doc(
+collection(
+db,
+"paymentVerifications"
+);
+
+
+await setDoc(
+verificationRef,
+{
+
+orderId:
+orderId,
+
+customerId:
+user.uid,
+
+method:
+"Delivery Charge",
+
+transactionId:
+transactionId||
+"N/A",
+
+amount:
+deliveryCharge,
+
+status:
+"pending",
+
+createdAt:
+serverTimestamp()
+
+}
+);
+
+
+/* ================================
+ONLINE PAYMENT
+================================ */
+
+if(
+paymentMethod==="online"
+){
+
+await addDoc(
+collection(db,"payments"),
+{
+
+orderId:
+orderId,
+
+customerId:
+user.uid,
+
+amount:
+totalAmount,
+
+method:
+"online",
+
+status:
+"pending",
+
+transactionId:
+onlineTransactionId,
+
+createdAt:
+serverTimestamp()
+
+}
+);
+
+}
+
+
+/* ================================
+SAVE USER INFO
+================================ */
+
+await setDoc(
+doc(
+db,
+"users",
+user.uid
+),
+{
+
+name:name,
+
+phone:phone,
+
+role:"customer",
+
+active:true,
+
+updatedAt:
+serverTimestamp()
+
+},
+{
+merge:true
+}
+);
+
+
+/* ================================
+CLEAR CART
+================================ */
+
+localStorage.removeItem(
+CART_KEY
+);
+
+localStorage.removeItem(
+"naturebite_coupon"
+);
+
+
+/* ================================
+SUCCESS
+================================ */
+
+$("confirmOrder").disabled=true;
+
+
+showOrderMessage(
+
+`
+আপনার অর্ডার গ্রহণ করা হয়েছে।<br><br>
+
+<strong>Order Code:</strong>
+${escapeHTML(trackingCode)}
+
+<br><br>
+
+আপনার ট্রানজেকশন আইডি ভেরিফাই করা হচ্ছে। কিছুক্ষণের মধ্যে আপনার অর্ডার কনফার্ম হয়ে যাবে।
+
+<br><br>
+
+<a href="dashboard.html">
+Dashboard-এ যান
+</a>
+`,
+
+"success"
+
+);
+
+}
+
+
+/* ================================
+MESSAGE
+================================ */
+
+function showOrderMessage(
+text,
+type
+){
+
+$("orderMessage").innerHTML=
+`
+<div class="${type}">
+${text}
+</div>
+`;
+
+}
+
+
+$("confirmOrder").onclick=
+async function(){
+
+const button=
+$("confirmOrder");
+
+
+button.disabled=true;
+
+button.innerText=
+"Order Processing...";
+
+
+try{
+
+await createOrder();
+
+}
+catch(error){
+
+console.error(error);
+
+showOrderMessage(
+
+"Order তৈরি করা যায়নি। Firestore Rules অথবা Firebase connection পরীক্ষা করুন।",
+
+"error"
+
+);
+
+button.disabled=false;
+
+button.innerText=
+"Confirm Order";
+
+}
+
+};
+
+
+/* ================================
+AUTH
+================================ */
+
+onAuthStateChanged(
+auth,
+async currentUser=>{
+
+if(!currentUser){
+
+location.href=
+"index.html";
+
+return;
+
+}
+
+
+user=
+currentUser;
+
+
+await loadUser();
+
+await loadSettings();
+
+renderCart();
+
+renderSummary();
+
+}
+
+);
+
+</script>
+
+</body>
+
+</html>
