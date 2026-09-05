@@ -1,0 +1,5150 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>NatureBite Admin Panel</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,"Noto Sans Bengali",sans-serif;
+  background:#f4f7f4;
+  color:#173326;
+}
+
+button,input,select,textarea{
+  font:inherit;
+}
+
+button{
+  border:0;
+  border-radius:8px;
+  padding:10px 14px;
+  background:#17643f;
+  color:white;
+  cursor:pointer;
+}
+
+button:hover{
+  opacity:.9;
+}
+
+.btn-danger{
+  background:#c62828;
+}
+
+.btn-warning{
+  background:#b7791f;
+}
+
+.btn-light{
+  background:#e7eee9;
+  color:#174b35;
+}
+
+.login-page{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:linear-gradient(135deg,#e7f1e8,#ffffff);
+}
+
+.login-box{
+  width:100%;
+  max-width:420px;
+  background:#fff;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 10px 40px rgba(0,0,0,.1);
+}
+
+.logo{
+  font-size:28px;
+  font-weight:800;
+  color:#17643f;
+}
+
+.login-box h2{
+  margin-bottom:5px;
+}
+
+label{
+  display:block;
+  margin-top:12px;
+  margin-bottom:6px;
+  font-size:13px;
+  font-weight:bold;
+}
+
+input,select,textarea{
+  width:100%;
+  border:1px solid #ccd8d0;
+  border-radius:8px;
+  padding:11px;
+  outline:none;
+  background:white;
+}
+
+input:focus,select:focus,textarea:focus{
+  border-color:#17643f;
+}
+
+.admin-app{
+  display:none;
+}
+
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  bottom:0;
+  width:245px;
+  background:#103c29;
+  color:white;
+  padding:18px;
+  overflow-y:auto;
+}
+
+.sidebar .logo{
+  color:white;
+}
+
+.admin-user{
+  margin-top:8px;
+  font-size:12px;
+  color:#cde4d5;
+}
+
+.nav{
+  margin-top:20px;
+}
+
+.nav button{
+  width:100%;
+  text-align:left;
+  margin-bottom:4px;
+  background:transparent;
+  color:#e6f3ea;
+}
+
+.nav button:hover,
+.nav button.active{
+  background:#245c40;
+}
+
+.main{
+  margin-left:245px;
+  padding:20px;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.page-title{
+  margin:0;
+}
+
+.section{
+  display:none;
+}
+
+.section.active{
+  display:block;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;
+}
+
+.card{
+  background:white;
+  border-radius:14px;
+  padding:18px;
+  box-shadow:0 3px 15px rgba(0,0,0,.06);
+}
+
+.stat-number{
+  font-size:28px;
+  font-weight:bold;
+  margin-top:8px;
+}
+
+.toolbar{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:12px 0;
+}
+
+.table-wrap{
+  width:100%;
+  overflow-x:auto;
+  background:white;
+  border-radius:14px;
+}
+
+table{
+  width:100%;
+  min-width:750px;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:11px;
+  border-bottom:1px solid #edf1ee;
+  text-align:left;
+  font-size:13px;
+  vertical-align:top;
+}
+
+th{
+  background:#f0f5f1;
+}
+
+.badge{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:20px;
+  background:#e4f2e8;
+  color:#17643f;
+  font-size:12px;
+}
+
+.badge-red{
+  background:#fde5e5;
+  color:#b42323;
+}
+
+.badge-yellow{
+  background:#fff2d5;
+  color:#91600d;
+}
+
+.product-image{
+  width:65px;
+  height:55px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+.grid-2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.grid-3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  z-index:100;
+  inset:0;
+  background:rgba(0,0,0,.65);
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  width:100%;
+  max-width:850px;
+  max-height:92vh;
+  overflow-y:auto;
+  background:white;
+  border-radius:16px;
+  padding:20px;
+}
+
+.close{
+  float:right;
+  background:#eee;
+  color:#333;
+}
+
+.variant-row{
+  border:1px solid #dce5df;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:8px;
+}
+
+.notice{
+  padding:12px;
+  border-radius:10px;
+  background:#edf7ef;
+  color:#185d3d;
+  margin:10px 0;
+}
+
+.finance-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:12px;
+}
+
+.finance-box{
+  background:white;
+  padding:18px;
+  border-radius:12px;
+}
+
+.finance-box h2{
+  margin:8px 0 0;
+}
+
+.muted{
+  color:#68766e;
+  font-size:13px;
+}
+
+@media(max-width:800px){
+
+  .sidebar{
+    position:static;
+    width:100%;
+  }
+
+  .main{
+    margin-left:0;
+    padding:12px;
+  }
+
+  .nav{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:3px;
+  }
+
+  .grid-2,
+  .grid-3{
+    grid-template-columns:1fr;
+  }
+
+  .topbar{
+    align-items:flex-start;
+  }
+}
+
+@media print{
+
+  .sidebar,
+  .topbar,
+  .no-print{
+    display:none!important;
+  }
+
+  .main{
+    margin:0;
+    padding:0;
+  }
+
+  .section{
+    display:none!important;
+  }
+
+  #printArea{
+    display:block!important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="loginPage" class="login-page">
+
+  <div class="login-box">
+
+    <div class="logo">🌿 NatureBite</div>
+
+    <h2>Admin Panel</h2>
+
+    <p class="muted">
+      শুধুমাত্র অনুমোদিত Admin অথবা Manager প্রবেশ করতে পারবেন।
+    </p>
+
+    <label>Email</label>
+    <input id="loginEmail" type="email" placeholder="admin email">
+
+    <label>Password</label>
+    <input id="loginPassword" type="password" placeholder="password">
+
+    <button style="width:100%;margin-top:15px" onclick="adminLogin()">
+      Login
+    </button>
+
+    <p id="loginMessage" class="muted"></p>
+
+  </div>
+
+</div>
+
+
+<!-- ADMIN APP -->
+
+<div id="adminApp" class="admin-app">
+
+<aside class="sidebar">
+
+  <div class="logo">🌿 NatureBite</div>
+
+  <div id="adminUserInfo" class="admin-user"></div>
+
+  <div class="nav">
+
+    <button data-page="dashboard" onclick="openPage('dashboard')">
+      📊 Dashboard
+    </button>
+
+    <button data-page="orders" onclick="openPage('orders')">
+      🛒 Orders
+    </button>
+
+    <button data-page="payments" onclick="openPage('payments')">
+      💳 Payment Verification
+    </button>
+
+    <button data-page="settlements" onclick="openPage('settlements')">
+      💰 Rider Settlement
+    </button>
+
+    <button data-page="products" onclick="openPage('products')">
+      📦 Products
+    </button>
+
+    <button data-page="customers" onclick="openPage('customers')">
+      👥 Customers
+    </button>
+
+    <button data-page="riders" onclick="openPage('riders')">
+      🚴 Riders
+    </button>
+
+    <button data-page="coupons" onclick="openPage('coupons')">
+      🎟 Coupons
+    </button>
+
+    <button data-page="offers" onclick="openPage('offers')">
+      🎁 Offers
+    </button>
+
+    <button data-page="reviews" onclick="openPage('reviews')">
+      ⭐ Reviews
+    </button>
+
+    <button data-page="partners" onclick="openPage('partners')">
+      🚚 Delivery Partners
+    </button>
+
+    <button data-page="staff" onclick="openPage('staff')">
+      👨‍💼 Staff & Roles
+    </button>
+
+    <button data-page="finance" onclick="openPage('finance')">
+      📈 Monthly Profit/Loss
+    </button>
+
+    <button data-page="settings" onclick="openPage('settings')">
+      ⚙️ Settings
+    </button>
+
+    <button data-page="ai" onclick="openPage('ai')">
+      🤖 AI Tools
+    </button>
+
+  </div>
+
+</aside>
+
+
+<main class="main">
+
+<div class="topbar">
+
+  <div>
+    <h2 id="pageTitle" class="page-title">
+      Dashboard
+    </h2>
+
+    <span class="muted">
+      NatureBite Management System
+    </span>
+  </div>
+
+  <button class="btn-light" onclick="adminLogout()">
+    Logout
+  </button>
+
+</div>
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="section active">
+
+  <div class="stats">
+
+    <div class="card">
+      <div>মোট Orders</div>
+      <div id="totalOrders" class="stat-number">0</div>
+    </div>
+
+    <div class="card">
+      <div>Confirmed Orders</div>
+      <div id="confirmedOrders" class="stat-number">0</div>
+    </div>
+
+    <div class="card">
+      <div>Pending Payment</div>
+      <div id="pendingPayments" class="stat-number">0</div>
+    </div>
+
+    <div class="card">
+      <div>Total Sales</div>
+      <div id="totalSales" class="stat-number">৳0</div>
+    </div>
+
+    <div class="card">
+      <div>Rider Outstanding COD</div>
+      <div id="riderOutstanding" class="stat-number">৳0</div>
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:15px">
+
+    <h3>Recent Orders</h3>
+
+    <div id="recentOrders">
+      Loading...
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ORDERS -->
+
+<section id="orders" class="section">
+
+  <div class="card">
+
+    <h3>Orders</h3>
+
+    <div class="toolbar">
+
+      <input
+        id="orderSearch"
+        placeholder="Order code / customer / phone"
+        oninput="renderOrders()"
+      >
+
+      <button onclick="loadData()">
+        Refresh
+      </button>
+
+    </div>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Amount</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th>Rider</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="ordersTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- PAYMENT -->
+
+<section id="payments" class="section">
+
+  <div class="card">
+
+    <h3>Payment Verification</h3>
+
+    <p class="muted">
+      Delivery charge অথবা Online Payment-এর transaction ID এখানে verify করুন।
+    </p>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Method</th>
+            <th>Amount</th>
+            <th>Transaction ID</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="paymentTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- SETTLEMENT -->
+
+<section id="settlements" class="section">
+
+  <div class="card">
+
+    <h3>Rider COD Settlement</h3>
+
+    <p class="muted">
+      Rider company-কে COD জমা দেওয়ার পর transaction verify করুন।
+    </p>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Rider</th>
+            <th>Amount</th>
+            <th>Method</th>
+            <th>Transaction</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="settlementTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- PRODUCTS -->
+
+<section id="products" class="section">
+
+  <div class="card">
+
+    <div class="toolbar">
+
+      <button onclick="openProductModal()">
+        + Add Product
+      </button>
+
+      <button class="btn-light" onclick="loadData()">
+        Refresh
+      </button>
+
+    </div>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Cost</th>
+            <th>Stock</th>
+            <th>Variants</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="productTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- CUSTOMERS -->
+
+<section id="customers" class="section">
+
+  <div class="card">
+
+    <h3>Customers</h3>
+
+    <input
+      id="customerSearch"
+      placeholder="Customer search"
+      oninput="renderCustomers()"
+    >
+
+    <div class="table-wrap" style="margin-top:12px">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Role</th>
+            <th>Active</th>
+          </tr>
+        </thead>
+
+        <tbody id="customerTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- RIDERS -->
+
+<section id="riders" class="section">
+
+  <div class="card">
+
+    <div class="toolbar">
+
+      <button onclick="openRiderModal()">
+        + Add Rider
+      </button>
+
+    </div>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Name</th>
+            <th>Rider ID</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Wallet</th>
+            <th>Outstanding</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="riderTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- COUPONS -->
+
+<section id="coupons" class="section">
+
+  <div class="card">
+
+    <div class="toolbar">
+
+      <button onclick="openCouponModal()">
+        + Add Coupon
+      </button>
+
+    </div>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Code</th>
+            <th>Type</th>
+            <th>Value</th>
+            <th>Minimum</th>
+            <th>Usage</th>
+            <th>Active</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="couponTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- OFFERS -->
+
+<section id="offers" class="section">
+
+  <div class="card">
+
+    <div class="toolbar">
+
+      <button onclick="openOfferModal()">
+        + Add Offer
+      </button>
+
+    </div>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Discount</th>
+            <th>Active</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="offerTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- REVIEWS -->
+
+<section id="reviews" class="section">
+
+  <div class="card">
+
+    <h3>Customer Reviews</h3>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Customer</th>
+            <th>Product</th>
+            <th>Rating</th>
+            <th>Comment</th>
+            <th>Active</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="reviewTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- DELIVERY PARTNERS -->
+
+<section id="partners" class="section">
+
+  <div class="card">
+
+    <h3>Delivery Partners</h3>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Active</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="partnerTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- STAFF -->
+
+<section id="staff" class="section">
+
+  <div class="card">
+
+    <h3>Staff & Roles</h3>
+
+    <p class="muted">
+      Firebase Authentication account আলাদাভাবে তৈরি করতে হবে।
+      এখানে সেই user's Firestore role/permission record manage করা হবে।
+    </p>
+
+    <div class="toolbar">
+
+      <button onclick="openStaffModal()">
+        + Add Staff Record
+      </button>
+
+    </div>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>UID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Active</th>
+            <th>Action</th>
+          </tr>
+
+        </thead>
+
+        <tbody id="staffTable"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- FINANCE -->
+
+<section id="finance" class="section">
+
+  <div class="card">
+
+    <h3>📈 Monthly Profit / Loss</h3>
+
+    <div class="notice">
+      এই অংশের তথ্য শুধুমাত্র Admin/Manager-এর জন্য।
+      Customer website/app থেকে এই financial information দেখা যাবে না।
+    </div>
+
+    <p>
+      Current Month:
+      <b id="financeMonth"></b>
+    </p>
+
+  </div>
+
+
+  <div class="finance-grid" style="margin-top:15px">
+
+    <div class="finance-box">
+      <span>Product Sales</span>
+      <h2 id="fProductSales">৳0</h2>
+    </div>
+
+    <div class="finance-box">
+      <span>Delivery Income</span>
+      <h2 id="fDelivery">৳0</h2>
+    </div>
+
+    <div class="finance-box">
+      <span>Platform/App Charge</span>
+      <h2 id="fPlatform">৳0</h2>
+    </div>
+
+    <div class="finance-box">
+      <span>Coupon Discount</span>
+      <h2 id="fDiscount">৳0</h2>
+    </div>
+
+    <div class="finance-box">
+      <span>Product Cost</span>
+      <h2 id="fCost">৳0</h2>
+    </div>
+
+    <div class="finance-box">
+      <span>Refund</span>
+      <h2 id="fRefund">৳0</h2>
+    </div>
+
+    <div class="finance-box">
+      <span>Other Expenses</span>
+      <h2 id="fOther">৳0</h2>
+    </div>
+
+    <div class="finance-box">
+      <span>Staff + Rider Cost</span>
+      <h2 id="fStaff">৳0</h2>
+    </div>
+
+    <div class="finance-box">
+      <span>Profit Before Staff/Rider</span>
+      <h2 id="fBefore">৳0</h2>
+    </div>
+
+    <div class="finance-box">
+      <span>Final Profit/Loss</span>
+      <h2 id="fFinal">৳0</h2>
+    </div>
+
+  </div>
+
+
+  <div class="card" style="margin-top:15px">
+
+    <h3>Monthly Expenses</h3>
+
+    <div class="grid-2">
+
+      <div>
+
+        <label>Other Expenses</label>
+
+        <input
+          id="otherExpenses"
+          type="number"
+          value="0"
+        >
+
+      </div>
+
+      <div>
+
+        <label>Staff + Rider Payment</label>
+
+        <input
+          id="staffRiderExpenses"
+          type="number"
+          value="0"
+        >
+
+      </div>
+
+    </div>
+
+    <div class="toolbar">
+
+      <button onclick="calculateFinance()">
+        Calculate
+      </button>
+
+      <button onclick="archiveStatement()">
+        Archive Month
+      </button>
+
+      <button onclick="printStatement()">
+        Print Statement
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- SETTINGS -->
+
+<section id="settings" class="section">
+
+  <div class="card">
+
+    <h3>⚙️ Business Settings</h3>
+
+    <div class="grid-2">
+
+      <div>
+
+        <label>Chattogram Delivery Charge</label>
+
+        <input id="deliveryCharge" type="number">
+
+      </div>
+
+      <div>
+
+        <label>Outside Chattogram Delivery Charge</label>
+
+        <input id="outsideDeliveryCharge" type="number">
+
+      </div>
+
+      <div>
+
+        <label>Free Delivery Minimum</label>
+
+        <input id="freeDeliveryMinimum" type="number">
+
+      </div>
+
+      <div>
+
+        <label>Platform Charge Type</label>
+
+        <select id="platformType">
+          <option value="percentage">Percentage</option>
+          <option value="fixed">Fixed</option>
+        </select>
+
+      </div>
+
+      <div>
+
+        <label>Platform Charge Value</label>
+
+        <input id="platformValue" type="number">
+
+      </div>
+
+      <div>
+
+        <label>Platform/App Charge</label>
+
+        <select id="platformEnabled">
+          <option value="true">ON</option>
+          <option value="false">OFF</option>
+        </select>
+
+      </div>
+
+      <div>
+
+        <label>bKash Number</label>
+
+        <input id="bkashNumber">
+
+      </div>
+
+      <div>
+
+        <label>Nagad Number</label>
+
+        <input id="nagadNumber">
+
+      </div>
+
+      <div>
+
+        <label>Discount Wheel</label>
+
+        <select id="wheelEnabled">
+          <option value="true">ON</option>
+          <option value="false">OFF</option>
+        </select>
+
+      </div>
+
+      <div>
+
+        <label>Festival / Lucky Draw</label>
+
+        <select id="luckyDrawEnabled">
+          <option value="true">ON</option>
+          <option value="false">OFF</option>
+        </select>
+
+      </div>
+
+      <div>
+
+        <label>Current Theme</label>
+
+        <input id="themeName" placeholder="Default / Eid / Victory Day">
+
+      </div>
+
+      <div>
+
+        <label>Customer Support Link</label>
+
+        <input id="supportLink" placeholder="Telegram / WhatsApp / Facebook">
+
+      </div>
+
+    </div>
+
+    <button style="margin-top:15px" onclick="saveSettings()">
+      Save Settings
+    </button>
+
+    <p id="settingsMessage" class="muted"></p>
+
+  </div>
+
+</section>
+
+
+<!-- AI -->
+
+<section id="ai" class="section">
+
+  <div class="card">
+
+    <h3>🤖 AI Marketing Tools</h3>
+
+    <div class="notice">
+      AI API key কখনো এই HTML file-এর ভিতরে রাখবেন না।
+      Secure backend চালু হলে এখানে API integration যুক্ত হবে।
+    </div>
+
+    <label>Marketing Prompt</label>
+
+    <textarea
+      id="aiPrompt"
+      rows="6"
+      placeholder="যেমন: NatureBite NutriBite-এর জন্য Facebook Eid advertisement তৈরি করো..."
+    ></textarea>
+
+    <button onclick="aiPlaceholder()">
+      Generate
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- PRINT AREA -->
+
+<section id="printArea" style="display:none">
+
+  <div id="printContent"></div>
+
+</section>
+
+
+</main>
+
+</div>
+
+
+<!-- MODAL -->
+
+<div id="modal" class="modal">
+
+  <div class="modal-box">
+
+    <button class="close" onclick="closeModal()">✕</button>
+
+    <div id="modalContent"></div>
+
+  </div>
+
+</div>
+
+
+<script type="module">
+
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  getDoc,
+  doc,
+  setDoc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyDBRf-8g83TnMYdoaKkpYpn_-boYng-SHE",
+
+  authDomain:
+    "naturebite-538ba.firebaseapp.com",
+
+  projectId:
+    "naturebite-538ba",
+
+  storageBucket:
+    "naturebite-538ba.firebasestorage.app",
+
+  messagingSenderId:
+    "403660151204",
+
+  appId:
+    "1:403660151204:web:15db421e18442e85d70931"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+
+let currentUser = null;
+
+let currentStaff = null;
+
+
+const data = {
+
+  orders:[],
+  products:[],
+  customers:[],
+  riders:[],
+  coupons:[],
+  offers:[],
+  reviews:[],
+  partners:[],
+  staff:[],
+  payments:[],
+  settlements:[]
+
+};
+
+
+function esc(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+function money(value){
+
+  return "৳" +
+    Number(value || 0)
+      .toLocaleString("en-BD");
+
+}
+
+
+async function getCollection(name){
+
+  const snap =
+    await getDocs(
+      collection(db,name)
+    );
+
+  return snap.docs.map(
+    d => ({
+      id:d.id,
+      ...d.data()
+    })
+  );
+
+}
+
+
+/* LOGIN */
+
+window.adminLogin = async function(){
+
+  const email =
+    document.getElementById("loginEmail").value.trim();
+
+  const password =
+    document.getElementById("loginPassword").value;
+
+  const message =
+    document.getElementById("loginMessage");
+
+  if(!email || !password){
+
+    message.textContent =
+      "Email এবং password দিন।";
+
+    return;
+
+  }
+
+  try{
+
+    message.textContent =
+      "Login হচ্ছে...";
+
+    await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+  }catch(error){
+
+    message.textContent =
+      error.message;
+
+  }
+
+};
+
+
+window.adminLogout = async function(){
+
+  await signOut(auth);
+
+};
+
+
+onAuthStateChanged(
+  auth,
+  async user => {
+
+    if(!user){
+
+      document.getElementById(
+        "loginPage"
+      ).style.display = "flex";
+
+      document.getElementById(
+        "adminApp"
+      ).style.display = "none";
+
+      return;
+
+    }
+
+    try{
+
+      const staffSnap =
+        await getDoc(
+          doc(db,"staff",user.uid)
+        );
+
+      if(!staffSnap.exists()){
+
+        alert(
+          "আপনার Staff record পাওয়া যায়নি।"
+        );
+
+        await signOut(auth);
+
+        return;
+
+      }
+
+      const staff =
+        staffSnap.data();
+
+      if(
+        staff.active !== true ||
+        !["admin","manager"].includes(staff.role)
+      ){
+
+        alert(
+          "আপনার Admin/Manager permission নেই।"
+        );
+
+        await signOut(auth);
+
+        return;
+
+      }
+
+      currentUser = user;
+
+      currentStaff = staff;
+
+      document.getElementById(
+        "loginPage"
+      ).style.display = "none";
+
+      document.getElementById(
+        "adminApp"
+      ).style.display = "block";
+
+      document.getElementById(
+        "adminUserInfo"
+      ).textContent =
+        `${staff.name || user.email} — ${staff.role}`;
+
+      await loadData();
+
+      openPage("dashboard");
+
+    }catch(error){
+
+      console.error(error);
+
+      alert(
+        "Admin access check করতে সমস্যা হয়েছে।"
+      );
+
+      await signOut(auth);
+
+    }
+
+  }
+);
+
+
+/* LOAD DATA */
+
+window.loadData = async function(){
+
+  const collections = Object.keys(data);
+
+  for(const name of collections){
+
+    try{
+
+      data[name] =
+        await getCollection(name);
+
+    }catch(error){
+
+      console.warn(
+        "Cannot load:",
+        name,
+        error
+      );
+
+      data[name] = [];
+
+    }
+
+  }
+
+  renderAll();
+
+};
+
+
+function renderAll(){
+
+  renderDashboard();
+  renderOrders();
+  renderPayments();
+  renderSettlements();
+  renderProducts();
+  renderCustomers();
+  renderRiders();
+  renderCoupons();
+  renderOffers();
+  renderReviews();
+  renderPartners();
+  renderStaff();
+  calculateFinance();
+  loadSettings();
+
+}
+
+
+/* NAVIGATION */
+
+window.openPage = function(page){
+
+  document
+    .querySelectorAll(".section")
+    .forEach(
+      section =>
+        section.classList.remove("active")
+    );
+
+  const target =
+    document.getElementById(page);
+
+  if(target){
+
+    target.classList.add("active");
+
+  }
+
+  document
+    .querySelectorAll(".nav button")
+    .forEach(button => {
+
+      button.classList.toggle(
+        "active",
+        button.dataset.page === page
+      );
+
+    });
+
+  const activeButton =
+    document.querySelector(
+      `.nav button[data-page="${page}"]`
+    );
+
+  if(activeButton){
+
+    document.getElementById(
+      "pageTitle"
+    ).textContent =
+      activeButton.textContent.trim();
+
+  }
+
+  if(page === "finance"){
+
+    calculateFinance();
+
+  }
+
+};
+
+
+/* DASHBOARD */
+
+function renderDashboard(){
+
+  document.getElementById(
+    "totalOrders"
+  ).textContent =
+    data.orders.length;
+
+  document.getElementById(
+    "confirmedOrders"
+  ).textContent =
+    data.orders.filter(
+      o =>
+        ["confirmed","processing","shipped","delivered"]
+        .includes(o.orderStatus)
+    ).length;
+
+  document.getElementById(
+    "pendingPayments"
+  ).textContent =
+    data.payments.filter(
+      p => p.status === "pending"
+    ).length +
+    data.orders.filter(
+      o =>
+        o.paymentStatus ===
+        "verification_pending"
+    ).length;
+
+  const sales =
+    data.orders
+      .filter(
+        o =>
+          ["confirmed","processing","shipped","delivered"]
+          .includes(o.orderStatus)
+      )
+      .reduce(
+        (sum,o) =>
+          sum + Number(o.totalAmount || 0),
+        0
+      );
+
+  document.getElementById(
+    "totalSales"
+  ).textContent = money(sales);
+
+  const outstanding =
+    data.riders.reduce(
+      (sum,r) =>
+        sum + Number(r.codOutstanding || 0),
+      0
+    );
+
+  document.getElementById(
+    "riderOutstanding"
+  ).textContent =
+    money(outstanding);
+
+  const recent =
+    data.orders
+      .slice(-8)
+      .reverse();
+
+  document.getElementById(
+    "recentOrders"
+  ).innerHTML =
+    recent.length
+    ?
+    recent.map(
+      o => `
+        <p>
+          <b>${esc(o.trackingCode || o.id)}</b>
+          —
+          ${esc(o.customerName || "")}
+          —
+          ${money(o.totalAmount)}
+          —
+          <span class="badge">
+            ${esc(o.orderStatus || "pending")}
+          </span>
+        </p>
+      `
+    ).join("")
+    :
+    "<p>কোনো order নেই।</p>";
+
+}
+
+
+/* ORDERS */
+
+window.renderOrders = function(){
+
+  const search =
+    (
+      document.getElementById(
+        "orderSearch"
+      ).value || ""
+    ).toLowerCase();
+
+  const orders =
+    data.orders.filter(
+      o =>
+        JSON.stringify(o)
+          .toLowerCase()
+          .includes(search)
+    );
+
+  document.getElementById(
+    "ordersTable"
+  ).innerHTML = orders.map(
+    o => `
+
+      <tr>
+
+        <td>
+
+          <b>
+            ${esc(o.trackingCode || o.id)}
+          </b>
+
+          <br>
+
+          ${esc(o.orderStatus || "pending")}
+
+        </td>
+
+        <td>
+
+          ${esc(o.customerName)}
+
+          <br>
+
+          ${esc(o.customerPhone)}
+
+          <br>
+
+          ${esc(o.address || "")}
+
+        </td>
+
+        <td>
+
+          ${money(o.subtotal)}
+
+          <br>
+
+          Delivery:
+          ${money(o.deliveryCharge)}
+
+          <br>
+
+          Total:
+          <b>${money(o.totalAmount)}</b>
+
+        </td>
+
+        <td>
+
+          ${esc(o.paymentMethod || "")}
+
+          <br>
+
+          ${esc(o.paymentStatus || "")}
+
+        </td>
+
+        <td>
+
+          <span class="badge">
+            ${esc(o.orderStatus || "pending")}
+          </span>
+
+        </td>
+
+        <td>
+
+          ${esc(o.assignedRiderId || "Not Assigned")}
+
+        </td>
+
+        <td>
+
+          <button
+            onclick="openOrder('${o.id}')"
+          >
+            Details
+          </button>
+
+        </td>
+
+      </tr>
+
+    `
+  ).join("");
+
+};
+
+
+/* ORDER DETAILS */
+
+window.openOrder = function(id){
+
+  const order =
+    data.orders.find(
+      o => o.id === id
+    );
+
+  if(!order) return;
+
+
+  const riders =
+    data.riders
+      .filter(r => r.active !== false)
+      .map(
+        r => `
+
+          <option
+            value="${esc(r.riderId || r.id)}"
+            ${
+              order.assignedRiderId ===
+              (r.riderId || r.id)
+              ? "selected"
+              : ""
+            }
+          >
+            ${esc(r.name)}
+            —
+            ${esc(r.riderId || r.id)}
+          </option>
+
+        `
+      )
+      .join("");
+
+
+  document.getElementById(
+    "modalContent"
+  ).innerHTML = `
+
+    <h2>
+      Order:
+      ${esc(order.trackingCode || order.id)}
+    </h2>
+
+    <div class="notice">
+
+      Customer confirmation message:
+
+      <br><br>
+
+      ${
+        esc(
+          order.customerNotification ||
+          "Payment verification pending."
+        )
+      }
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>Customer</h3>
+
+      <p>
+        <b>Name:</b>
+        ${esc(order.customerName)}
+      </p>
+
+      <p>
+        <b>Phone:</b>
+        ${esc(order.customerPhone)}
+      </p>
+
+      <p>
+        <b>Address:</b>
+        ${esc(order.address || "")}
+      </p>
+
+      <p>
+        <b>Location:</b>
+        ${esc(order.latitude || "")},
+        ${esc(order.longitude || "")}
+      </p>
+
+    </div>
+
+
+    <div class="card" style="margin-top:10px">
+
+      <h3>Payment</h3>
+
+      <p>
+        Subtotal:
+        ${money(order.subtotal)}
+      </p>
+
+      <p>
+        Delivery:
+        ${money(order.deliveryCharge)}
+      </p>
+
+      <p>
+        Discount:
+        ${money(order.discount)}
+      </p>
+
+      <p>
+        Platform:
+        ${money(order.platformCharge)}
+      </p>
+
+      <p>
+        <b>Total:</b>
+        ${money(order.totalAmount)}
+      </p>
+
+      <p>
+        Payment:
+        ${esc(order.paymentMethod || "")}
+      </p>
+
+      <p>
+        Payment Status:
+        ${esc(order.paymentStatus || "")}
+      </p>
+
+    </div>
+
+
+    <label>Order Status</label>
+
+    <select id="orderStatusEdit">
+
+      <option value="pending">Pending</option>
+      <option value="confirmed">Confirmed</option>
+      <option value="processing">Processing</option>
+      <option value="shipped">Shipped</option>
+      <option value="delivered">Delivered</option>
+      <option value="cancelled">Cancelled</option>
+
+    </select>
+
+
+    <label>Assign Rider</label>
+
+    <select id="orderRiderEdit">
+
+      <option value="">
+        No Rider
+      </option>
+
+      ${riders}
+
+    </select>
+
+
+    <div class="toolbar">
+
+      <button onclick="saveOrder('${order.id}')">
+        Save Order
+      </button>
+
+      <button
+        onclick="printConfirmedOrder('${order.id}')"
+      >
+        🖨 Print
+      </button>
+
+    </div>
+
+  `;
+
+
+  document.getElementById(
+    "orderStatusEdit"
+  ).value =
+    order.orderStatus || "pending";
+
+
+  document.getElementById(
+    "modal"
+  ).classList.add("show");
+
+};
+
+
+window.saveOrder = async function(id){
+
+  const status =
+    document.getElementById(
+      "orderStatusEdit"
+    ).value;
+
+  const rider =
+    document.getElementById(
+      "orderRiderEdit"
+    ).value;
+
+  await updateDoc(
+    doc(db,"orders",id),
+    {
+
+      orderStatus:status,
+
+      assignedRiderId:
+        rider || null,
+
+      riderAssigned:
+        !!rider,
+
+      riderAssignedAt:
+        rider
+        ? serverTimestamp()
+        : null,
+
+      updatedAt:
+        serverTimestamp()
+
+    }
+  );
+
+  closeModal();
+
+  await loadData();
+
+};
+
+
+/* PAYMENT VERIFICATION */
+
+function renderPayments(){
+
+  const pendingOrders =
+    data.orders
+      .filter(
+        o =>
+          o.paymentStatus ===
+          "verification_pending"
+      )
+      .map(
+        o => ({
+          ...o,
+          source:"order"
+        })
+      );
+
+
+  const pendingPayments =
+    data.payments
+      .filter(
+        p => p.status === "pending"
+      )
+      .map(
+        p => ({
+          ...p,
+          source:"payment"
+        })
+      );
+
+
+  const all =
+    [...pendingOrders,...pendingPayments];
+
+
+  document.getElementById(
+    "paymentTable"
+  ).innerHTML =
+    all.map(
+      p => `
+
+        <tr>
+
+          <td>
+            ${esc(
+              p.trackingCode ||
+              p.orderId ||
+              p.id
+            )}
+          </td>
+
+          <td>
+            ${esc(
+              p.customerName ||
+              p.customerId ||
+              ""
+            )}
+          </td>
+
+          <td>
+            ${esc(
+              p.method ||
+              p.paymentMethod ||
+              ""
+            )}
+          </td>
+
+          <td>
+            ${money(
+              p.amount ||
+              p.deliveryCharge
+            )}
+          </td>
+
+          <td>
+            ${esc(
+              p.transactionId ||
+              "Not provided"
+            )}
+          </td>
+
+          <td>
+
+            <button
+              onclick="verifyPayment(
+                '${p.id}',
+                '${p.source}',
+                true
+              )"
+            >
+              Accept
+            </button>
+
+            <button
+              class="btn-danger"
+              onclick="verifyPayment(
+                '${p.id}',
+                '${p.source}',
+                false
+              )"
+            >
+              Reject
+            </button>
+
+          </td>
+
+        </tr>
+
+      `
+    ).join("");
+
+}
+
+
+window.verifyPayment =
+async function(id,source,accepted){
+
+  const confirmationMessage =
+    "আপনার অর্ডার টি কনফার্ম হয়েছে এবং চট্টগ্রাম জোন এর মধ্যে হলে আগামী ১ থেকে ২ দিন এর মধ্যে আপনার অর্ডার ডেলিভারি সম্পুর্ন হবে আর চট্টগ্রাম জোন এর বাহিরে হলে ৩ থেকে ৪ দিন এর মধ্যে সম্পুর্ন করা হবে।।";
+
+
+  const rejectedMessage =
+    "আপনার পেমেন্ট যাচাই করা যায়নি। অনুগ্রহ করে সঠিক Transaction ID ব্যবহার করুন।";
+
+
+  if(source === "order"){
+
+    await updateDoc(
+      doc(db,"orders",id),
+      {
+
+        paymentStatus:
+          accepted
+          ? "verified"
+          : "rejected",
+
+        orderStatus:
+          accepted
+          ? "confirmed"
+          : "payment_verification_failed",
+
+        customerNotification:
+          accepted
+          ? confirmationMessage
+          : rejectedMessage,
+
+        customerNotificationType:
+          accepted
+          ? "order_confirmed"
+          : "payment_rejected",
+
+        customerNotificationAt:
+          serverTimestamp(),
+
+        deliveryEstimateText:
+          accepted
+          ? "চট্টগ্রাম: ১–২ দিন; চট্টগ্রামের বাইরে: ৩–৪ দিন"
+          : "",
+
+        paymentVerifiedBy:
+          currentUser.uid,
+
+        paymentVerifiedAt:
+          serverTimestamp()
+
+      }
+    );
+
+  }
+
+
+  if(source === "payment"){
+
+    const payment =
+      data.payments.find(
+        p => p.id === id
+      );
+
+    await updateDoc(
+      doc(db,"payments",id),
+      {
+
+        status:
+          accepted
+          ? "verified"
+          : "rejected",
+
+        verifiedBy:
+          currentUser.uid,
+
+        verifiedAt:
+          serverTimestamp()
+
+      }
+    );
+
+
+    if(
+      accepted &&
+      payment &&
+      payment.orderId
+    ){
+
+      await updateDoc(
+        doc(
+          db,
+          "orders",
+          payment.orderId
+        ),
+        {
+
+          paymentStatus:
+            "verified",
+
+          orderStatus:
+            "confirmed",
+
+          customerNotification:
+            confirmationMessage,
+
+          customerNotificationType:
+            "order_confirmed",
+
+          customerNotificationAt:
+            serverTimestamp(),
+
+          deliveryEstimateText:
+            "চট্টগ্রাম: ১–২ দিন; চট্টগ্রামের বাইরে: ৩–৪ দিন"
+
+        }
+      );
+
+    }
+
+  }
+
+
+  await loadData();
+
+};
+
+
+/* SETTLEMENT */
+
+function renderSettlements(){
+
+  document.getElementById(
+    "settlementTable"
+  ).innerHTML =
+    data.settlements.map(
+      s => `
+
+        <tr>
+
+          <td>
+            ${esc(s.riderId)}
+          </td>
+
+          <td>
+            ${money(s.amount)}
+          </td>
+
+          <td>
+            ${esc(s.method)}
+          </td>
+
+          <td>
+            ${esc(s.transactionId)}
+          </td>
+
+          <td>
+            ${esc(s.status)}
+          </td>
+
+          <td>
+
+            ${
+              s.status === "pending"
+              ?
+
+              `
+
+              <button
+                onclick="verifySettlement(
+                  '${s.id}',
+                  true
+                )"
+              >
+                Accept
+              </button>
+
+              <button
+                class="btn-danger"
+                onclick="verifySettlement(
+                  '${s.id}',
+                  false
+                )"
+              >
+                Reject
+              </button>
+
+              `
+
+              :
+
+              "—"
+
+            }
+
+          </td>
+
+        </tr>
+
+      `
+    ).join("");
+
+}
+
+
+window.verifySettlement =
+async function(id,accepted){
+
+  const settlement =
+    data.settlements.find(
+      s => s.id === id
+    );
+
+  if(!settlement) return;
+
+
+  await updateDoc(
+    doc(
+      db,
+      "settlements",
+      id
+    ),
+    {
+
+      status:
+        accepted
+        ? "verified"
+        : "rejected",
+
+      verifiedAt:
+        serverTimestamp(),
+
+      verifiedBy:
+        currentUser.uid,
+
+      verificationNote:
+        accepted
+        ? "Verified by Admin"
+        : "Rejected"
+
+    }
+  );
+
+
+  if(accepted){
+
+    const rider =
+      data.riders.find(
+        r =>
+          r.riderId ===
+          settlement.riderId
+      );
+
+
+    if(rider){
+
+      const amount =
+        Number(
+          settlement.amount || 0
+        );
+
+      const outstanding =
+        Math.max(
+          0,
+          Number(
+            rider.codOutstanding || 0
+          ) - amount
+        );
+
+      const wallet =
+        Math.max(
+          0,
+          Number(
+            rider.walletBalance || 0
+          ) - amount
+        );
+
+
+      await updateDoc(
+        doc(
+          db,
+          "riders",
+          rider.id
+        ),
+        {
+
+          codOutstanding:
+            outstanding,
+
+          walletBalance:
+            wallet,
+
+          lastSettlementAmount:
+            amount,
+
+          settlementStatus:
+            outstanding > 0
+            ? "outstanding"
+            : "clear"
+
+        }
+      );
+
+    }
+
+  }
+
+
+  await loadData();
+
+};
+
+
+/* PRODUCTS */
+
+function renderProducts(){
+
+  document.getElementById(
+    "productTable"
+  ).innerHTML =
+    data.products.map(
+      p => `
+
+        <tr>
+
+          <td>
+
+            ${
+              p.imageUrl
+              ?
+              `<img
+                src="${esc(p.imageUrl)}"
+                class="product-image"
+              >`
+              :
+              "—"
+            }
+
+          </td>
+
+          <td>
+
+            <b>${esc(p.name)}</b>
+
+            <br>
+
+            ${esc(p.description)}
+
+          </td>
+
+          <td>
+            ${esc(p.category)}
+          </td>
+
+          <td>
+            ${money(p.price)}
+          </td>
+
+          <td>
+            ${money(p.costPrice)}
+          </td>
+
+          <td>
+            ${p.stock ?? 0}
+          </td>
+
+          <td>
+            ${p.variants?.length || 0}
+          </td>
+
+          <td>
+
+            <button
+              onclick="openProductModal('${p.id}')"
+            >
+              Edit
+            </button>
+
+            <button
+              class="btn-danger"
+              onclick="deleteRecord(
+                'products',
+                '${p.id}'
+              )"
+            >
+              Delete
+            </button>
+
+          </td>
+
+        </tr>
+
+      `
+    ).join("");
+
+}
+
+
+window.openProductModal =
+function(id=""){
+
+  const product =
+    data.products.find(
+      p => p.id === id
+    ) || {};
+
+
+  document.getElementById(
+    "modalContent"
+  ).innerHTML = `
+
+    <h2>
+      ${id ? "Edit" : "Add"} Product
+    </h2>
+
+    <div class="grid-2">
+
+      <div>
+
+        <label>Product Name</label>
+
+        <input
+          id="productName"
+          value="${esc(product.name)}"
+        >
+
+      </div>
+
+      <div>
+
+        <label>Category</label>
+
+        <input
+          id="productCategory"
+          value="${esc(product.category)}"
+        >
+
+      </div>
+
+      <div>
+
+        <label>Price</label>
+
+        <input
+          id="productPrice"
+          type="number"
+          value="${product.price || 0}"
+        >
+
+      </div>
+
+      <div>
+
+        <label>Cost Price</label>
+
+        <input
+          id="productCost"
+          type="number"
+          value="${product.costPrice || 0}"
+        >
+
+      </div>
+
+      <div>
+
+        <label>Stock</label>
+
+        <input
+          id="productStock"
+          type="number"
+          value="${product.stock || 0}"
+        >
+
+      </div>
+
+      <div>
+
+        <label>Product Image URL</label>
+
+        <input
+          id="productImage"
+          value="${esc(product.imageUrl)}"
+        >
+
+      </div>
+
+    </div>
+
+
+    <label>Description</label>
+
+    <textarea
+      id="productDescription"
+      rows="4"
+    >${esc(product.description)}</textarea>
+
+
+    <h3>
+      Product Variants
+    </h3>
+
+    <p class="muted">
+      একই product-এর 30g, 50g, 100g বা বিভিন্ন size/weight রাখা যাবে।
+    </p>
+
+    <div id="variantsContainer"></div>
+
+    <button
+      class="btn-light"
+      onclick="addVariantRow()"
+    >
+      + Add Variant
+    </button>
+
+    <br><br>
+
+    <button
+      onclick="saveProduct('${id}')"
+    >
+      Save Product
+    </button>
+
+  `;
+
+
+  const variants =
+    product.variants || [];
+
+  if(variants.length){
+
+    variants.forEach(
+      v => addVariantRow(v)
+    );
+
+  }
+
+  document.getElementById(
+    "modal"
+  ).classList.add("show");
+
+};
+
+
+window.addVariantRow =
+function(variant={}){
+
+  const container =
+    document.getElementById(
+      "variantsContainer"
+    );
+
+  const row =
+    document.createElement("div");
+
+  row.className =
+    "variant-row";
+
+
+  row.innerHTML = `
+
+    <div class="grid-3">
+
+      <div>
+
+        <label>Option</label>
+
+        <input
+          class="variant-name"
+          value="${esc(variant.name)}"
+          placeholder="30g"
+        >
+
+      </div>
+
+      <div>
+
+        <label>Price</label>
+
+        <input
+          class="variant-price"
+          type="number"
+          value="${variant.price || 0}"
+        >
+
+      </div>
+
+      <div>
+
+        <label>Stock</label>
+
+        <input
+          class="variant-stock"
+          type="number"
+          value="${variant.stock || 0}"
+        >
+
+      </div>
+
+    </div>
+
+    <label>Option Image URL</label>
+
+    <input
+      class="variant-image"
+      value="${esc(variant.imageUrl)}"
+      placeholder="https://..."
+    >
+
+    <br><br>
+
+    <button
+      class="btn-danger"
+      onclick="this.parentElement.remove()"
+    >
+      Remove
+    </button>
+
+  `;
+
+
+  container.appendChild(row);
+
+};
+
+
+window.saveProduct =
+async function(id){
+
+  const variants = [];
+
+  document
+    .querySelectorAll(".variant-row")
+    .forEach(row => {
+
+      variants.push({
+
+        name:
+          row
+            .querySelector(".variant-name")
+            .value.trim(),
+
+        price:
+          Number(
+            row
+              .querySelector(".variant-price")
+              .value || 0
+          ),
+
+        stock:
+          Number(
+            row
+              .querySelector(".variant-stock")
+              .value || 0
+          ),
+
+        imageUrl:
+          row
+            .querySelector(".variant-image")
+            .value.trim()
+
+      });
+
+    });
+
+
+  const productData = {
+
+    name:
+      document.getElementById(
+        "productName"
+      ).value.trim(),
+
+    category:
+      document.getElementById(
+        "productCategory"
+      ).value.trim(),
+
+    price:
+      Number(
+        document.getElementById(
+          "productPrice"
+        ).value || 0
+      ),
+
+    costPrice:
+      Number(
+        document.getElementById(
+          "productCost"
+        ).value || 0
+      ),
+
+    stock:
+      Number(
+        document.getElementById(
+          "productStock"
+        ).value || 0
+      ),
+
+    imageUrl:
+      document.getElementById(
+        "productImage"
+      ).value.trim(),
+
+    description:
+      document.getElementById(
+        "productDescription"
+      ).value.trim(),
+
+    variants,
+
+    active:true,
+
+    updatedAt:
+      serverTimestamp()
+
+  };
+
+
+  if(id){
+
+    await updateDoc(
+      doc(db,"products",id),
+      productData
+    );
+
+  }else{
+
+    await addDoc(
+      collection(db,"products"),
+      {
+
+        ...productData,
+
+        createdAt:
+          serverTimestamp()
+
+      }
+    );
+
+  }
+
+
+  closeModal();
+
+  await loadData();
+
+};
+
+
+/* CUSTOMERS */
+
+function renderCustomers(){
+
+  const search =
+    (
+      document.getElementById(
+        "customerSearch"
+      ).value || ""
+    ).toLowerCase();
+
+
+  document.getElementById(
+    "customerTable"
+  ).innerHTML =
+    data.customers
+      .filter(
+        c =>
+          JSON.stringify(c)
+            .toLowerCase()
+            .includes(search)
+      )
+      .map(
+        c => `
+
+          <tr>
+
+            <td>
+              ${esc(c.name)}
+            </td>
+
+            <td>
+              ${esc(c.phone)}
+            </td>
+
+            <td>
+              ${esc(c.role)}
+            </td>
+
+            <td>
+              ${c.active ? "Yes" : "No"}
+            </td>
+
+          </tr>
+
+        `
+      ).join("");
+
+}
+
+
+/* RIDERS */
+
+function renderRiders(){
+
+  document.getElementById(
+    "riderTable"
+  ).innerHTML =
+    data.riders.map(
+      r => `
+
+        <tr>
+
+          <td>
+            ${esc(r.name)}
+          </td>
+
+          <td>
+            ${esc(r.riderId)}
+          </td>
+
+          <td>
+            ${esc(r.phone)}
+          </td>
+
+          <td>
+            ${esc(r.status)}
+          </td>
+
+          <td>
+            ${money(r.walletBalance)}
+          </td>
+
+          <td>
+            ${money(r.codOutstanding)}
+          </td>
+
+          <td>
+
+            <button
+              onclick="openRiderModal('${r.id}')"
+            >
+              Edit
+            </button>
+
+            <button
+              class="btn-danger"
+              onclick="deleteRecord(
+                'riders',
+                '${r.id}'
+              )"
+            >
+              Delete
+            </button>
+
+          </td>
+
+        </tr>
+
+      `
+    ).join("");
+
+}
+
+
+window.openRiderModal =
+function(id=""){
+
+  const rider =
+    data.riders.find(
+      r => r.id === id
+    ) || {};
+
+
+  document.getElementById(
+    "modalContent"
+  ).innerHTML = `
+
+    <h2>Rider</h2>
+
+    <div class="grid-2">
+
+      <div>
+
+        <label>Name</label>
+
+        <input
+          id="riderName"
+          value="${esc(rider.name)}"
+        >
+
+      </div>
+
+      <div>
+
+        <label>Rider ID</label>
+
+        <input
+          id="riderId"
+          value="${esc(rider.riderId)}"
+        >
+
+      </div>
+
+      <div>
+
+        <label>Phone</label>
+
+        <input
+          id="riderPhone"
+          value="${esc(rider.phone)}"
+        >
+
+      </div>
+
+      <div>
+
+        <label>Status</label>
+
+        <select id="riderStatus">
+
+          <option value="offline">Offline</option>
+          <option value="online">Online</option>
+          <option value="busy">Busy</option>
+
+        </select>
+
+      </div>
+
+      <div>
+
+        <label>Wallet Balance</label>
+
+        <input
+          id="riderWallet"
+          type="number"
+          value="${rider.walletBalance || 0}"
+        >
+
+      </div>
+
+      <div>
+
+        <label>COD Outstanding</label>
+
+        <input
+          id="riderOutstandingEdit"
+          type="number"
+          value="${rider.codOutstanding || 0}"
+        >
+
+      </div>
+
+    </div>
+
+    <br>
+
+    <button
+      onclick="saveRider('${id}')"
+    >
+      Save Rider
+    </button>
+
+  `;
+
+
+  if(rider.status){
+
+    document.getElementById(
+      "riderStatus"
+    ).value =
+      rider.status;
+
+  }
+
+
+  document.getElementById(
+    "modal"
+  ).classList.add("show");
+
+};
+
+
+window.saveRider =
+async function(id){
+
+  const riderData = {
+
+    name:
+      document.getElementById(
+        "riderName"
+      ).value.trim(),
+
+    riderId:
+      document.getElementById(
+        "riderId"
+      ).value.trim(),
+
+    phone:
+      document.getElementById(
+        "riderPhone"
+      ).value.trim(),
+
+    status:
+      document.getElementById(
+        "riderStatus"
+      ).value,
+
+    walletBalance:
+      Number(
+        document.getElementById(
+          "riderWallet"
+        ).value || 0
+      ),
+
+    codOutstanding:
+      Number(
+        document.getElementById(
+          "riderOutstandingEdit"
+        ).value || 0
+      ),
+
+    active:true,
+
+    updatedAt:
+      serverTimestamp()
+
+  };
+
+
+  if(id){
+
+    await updateDoc(
+      doc(db,"riders",id),
+      riderData
+    );
+
+  }else{
+
+    await addDoc(
+      collection(db,"riders"),
+      {
+        ...riderData,
+        createdAt:
+          serverTimestamp()
+      }
+    );
+
+  }
+
+
+  closeModal();
+
+  await loadData();
+
+};
+
+
+/* COUPONS */
+
+function renderCoupons(){
+
+  document.getElementById(
+    "couponTable"
+  ).innerHTML =
+    data.coupons.map(
+      c => `
+
+        <tr>
+
+          <td>
+            <b>${esc(c.code)}</b>
+          </td>
+
+          <td>
+            ${esc(c.discountType)}
+          </td>
+
+          <td>
+            ${c.discountValue}
+          </td>
+
+          <td>
+            ${money(c.minimumOrder)}
+          </td>
+
+          <td>
+            ${c.usageLimit || 0}
+          </td>
+
+          <td>
+            ${c.active ? "Yes" : "No"}
+          </td>
+
+          <td>
+
+            <button
+              onclick="openCouponModal('${c.id}')"
+            >
+              Edit
+            </button>
+
+            <button
+              class="btn-danger"
+              onclick="deleteRecord(
+                'coupons',
+                '${c.id}'
+              )"
+            >
+              Delete
+            </button>
+
+          </td>
+
+        </tr>
+
+      `
+    ).join("");
+
+}
+
+
+window.openCouponModal =
+function(id=""){
+
+  const c =
+    data.coupons.find(
+      x => x.id === id
+    ) || {};
+
+
+  document.getElementById(
+    "modalContent"
+  ).innerHTML = `
+
+    <h2>Coupon</h2>
+
+    <label>Coupon Code</label>
+
+    <input
+      id="couponCode"
+      value="${esc(c.code)}"
+    >
+
+    <div class="grid-2">
+
+      <div>
+
+        <label>Discount Type</label>
+
+        <select id="couponType">
+
+          <option value="percentage">
+            Percentage
+          </option>
+
+          <option value="fixed">
+            Fixed
+          </option>
+
+        </select>
+
+      </div>
+
+      <div>
+
+        <label>Discount Value</label>
+
+        <input
+          id="couponValue"
+          type="number"
+          value="${c.discountValue || 0}"
+        >
+
+      </div>
+
+      <div>
+
+        <label>Minimum Order</label>
+
+        <input
+          id="couponMinimum"
+          type="number"
+          value="${c.minimumOrder || 0}"
+        >
+
+      </div>
+
+      <div>
+
+        <label>Usage Limit</label>
+
+        <input
+          id="couponLimit"
+          type="number"
+          value="${c.usageLimit || 100}"
+        >
+
+      </div>
+
+      <div>
+
+        <label>Active</label>
+
+        <select id="couponActive">
+
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+    <br>
+
+    <button
+      onclick="saveCoupon('${id}')"
+    >
+      Save Coupon
+    </button>
+
+  `;
+
+
+  if(c.discountType){
+
+    document.getElementById(
+      "couponType"
+    ).value =
+      c.discountType;
+
+  }
+
+  document.getElementById(
+    "couponActive"
+  ).value =
+    String(c.active !== false);
+
+
+  document.getElementById(
+    "modal"
+  ).classList.add("show");
+
+};
+
+
+window.saveCoupon =
+async function(id){
+
+  const code =
+    document.getElementById(
+      "couponCode"
+    ).value
+      .trim()
+      .toUpperCase();
+
+
+  const coupon = {
+
+    code,
+
+    discountType:
+      document.getElementById(
+        "couponType"
+      ).value,
+
+    discountValue:
+      Number(
+        document.getElementById(
+          "couponValue"
+        ).value || 0
+      ),
+
+    minimumOrder:
+      Number(
+        document.getElementById(
+          "couponMinimum"
+        ).value || 0
+      ),
+
+    usageLimit:
+      Number(
+        document.getElementById(
+          "couponLimit"
+        ).value || 0
+      ),
+
+    active:
+      document.getElementById(
+        "couponActive"
+      ).value === "true",
+
+    updatedAt:
+      serverTimestamp()
+
+  };
+
+
+  if(id){
+
+    await updateDoc(
+      doc(db,"coupons",id),
+      coupon
+    );
+
+  }else{
+
+    await setDoc(
+      doc(db,"coupons",code),
+      coupon
+    );
+
+  }
+
+
+  closeModal();
+
+  await loadData();
+
+};
+
+
+/* OFFERS */
+
+function renderOffers(){
+
+  document.getElementById(
+    "offerTable"
+  ).innerHTML =
+    data.offers.map(
+      o => `
+
+        <tr>
+
+          <td>
+            ${esc(o.title)}
+          </td>
+
+          <td>
+            ${esc(o.description)}
+          </td>
+
+          <td>
+            ${esc(o.discountType)}
+            ${o.discountValue}
+          </td>
+
+          <td>
+            ${o.active ? "Yes" : "No"}
+          </td>
+
+          <td>
+
+            <button
+              onclick="openOfferModal('${o.id}')"
+            >
+              Edit
+            </button>
+
+            <button
+              class="btn-danger"
+              onclick="deleteRecord(
+                'offers',
+                '${o.id}'
+              )"
+            >
+              Delete
+            </button>
+
+          </td>
+
+        </tr>
+
+      `
+    ).join("");
+
+}
+
+
+window.openOfferModal =
+function(id=""){
+
+  const offer =
+    data.offers.find(
+      o => o.id === id
+    ) || {};
+
+
+  document.getElementById(
+    "modalContent"
+  ).innerHTML = `
+
+    <h2>Offer</h2>
+
+    <label>Title</label>
+
+    <input
+      id="offerTitle"
+      value="${esc(offer.title)}"
+    >
+
+    <label>Description</label>
+
+    <textarea
+      id="offerDescription"
+      rows="4"
+    >${esc(offer.description)}</textarea>
+
+    <div class="grid-2">
+
+      <div>
+
+        <label>Discount Type</label>
+
+        <select id="offerType">
+
+          <option value="percentage">
+            Percentage
+          </option>
+
+          <option value="fixed">
+            Fixed
+          </option>
+
+        </select>
+
+      </div>
+
+      <div>
+
+        <label>Discount Value</label>
+
+        <input
+          id="offerValue"
+          type="number"
+          value="${offer.discountValue || 0}"
+        >
+
+      </div>
+
+      <div>
+
+        <label>Active</label>
+
+        <select id="offerActive">
+
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+    <br>
+
+    <button
+      onclick="saveOffer('${id}')"
+    >
+      Save Offer
+    </button>
+
+  `;
+
+
+  if(offer.discountType){
+
+    document.getElementById(
+      "offerType"
+    ).value =
+      offer.discountType;
+
+  }
+
+  document.getElementById(
+    "offerActive"
+  ).value =
+    String(offer.active !== false);
+
+
+  document.getElementById(
+    "modal"
+  ).classList.add("show");
+
+};
+
+
+window.saveOffer =
+async function(id){
+
+  const offer = {
+
+    title:
+      document.getElementById(
+        "offerTitle"
+      ).value.trim(),
+
+    description:
+      document.getElementById(
+        "offerDescription"
+      ).value.trim(),
+
+    discountType:
+      document.getElementById(
+        "offerType"
+      ).value,
+
+    discountValue:
+      Number(
+        document.getElementById(
+          "offerValue"
+        ).value || 0
+      ),
+
+    active:
+      document.getElementById(
+        "offerActive"
+      ).value === "true",
+
+    updatedAt:
+      serverTimestamp()
+
+  };
+
+
+  if(id){
+
+    await updateDoc(
+      doc(db,"offers",id),
+      offer
+    );
+
+  }else{
+
+    await addDoc(
+      collection(db,"offers"),
+      {
+        ...offer,
+        createdAt:
+          serverTimestamp()
+      }
+    );
+
+  }
+
+
+  closeModal();
+
+  await loadData();
+
+};
+
+
+/* REVIEWS */
+
+function renderReviews(){
+
+  document.getElementById(
+    "reviewTable"
+  ).innerHTML =
+    data.reviews.map(
+      r => `
+
+        <tr>
+
+          <td>
+            ${esc(
+              r.customerName ||
+              r.customerId
+            )}
+          </td>
+
+          <td>
+            ${esc(r.productId)}
+          </td>
+
+          <td>
+            ⭐ ${r.rating}
+          </td>
+
+          <td>
+            ${esc(r.comment)}
+          </td>
+
+          <td>
+            ${r.active === false
+              ? "Hidden"
+              : "Active"}
+          </td>
+
+          <td>
+
+            <button
+              onclick="toggleReview(
+                '${r.id}',
+                ${r.active !== false}
+              )"
+            >
+              ${
+                r.active === false
+                ? "Activate"
+                : "Hide"
+              }
+            </button>
+
+          </td>
+
+        </tr>
+
+      `
+    ).join("");
+
+}
+
+
+window.toggleReview =
+async function(id,current){
+
+  await updateDoc(
+    doc(db,"reviews",id),
+    {
+      active:!current,
+      updatedAt:
+        serverTimestamp()
+    }
+  );
+
+  await loadData();
+
+};
+
+
+/* PARTNERS */
+
+function renderPartners(){
+
+  document.getElementById(
+    "partnerTable"
+  ).innerHTML =
+    data.partners.map(
+      p => `
+
+        <tr>
+
+          <td>
+            ${esc(p.name)}
+          </td>
+
+          <td>
+            ${esc(p.type)}
+          </td>
+
+          <td>
+            ${p.active ? "Yes" : "No"}
+          </td>
+
+          <td>
+
+            <button
+              onclick="togglePartner(
+                '${p.id}',
+                ${p.active !== false}
+              )"
+            >
+              ${
+                p.active === false
+                ? "Activate"
+                : "Disable"
+              }
+            </button>
+
+          </td>
+
+        </tr>
+
+      `
+    ).join("");
+
+}
+
+
+window.togglePartner =
+async function(id,current){
+
+  await updateDoc(
+    doc(
+      db,
+      "deliveryPartners",
+      id
+    ),
+    {
+      active:!current,
+      updatedAt:
+        serverTimestamp()
+    }
+  );
+
+  await loadData();
+
+};
+
+
+/* STAFF */
+
+function renderStaff(){
+
+  document.getElementById(
+    "staffTable"
+  ).innerHTML =
+    data.staff.map(
+      s => `
+
+        <tr>
+
+          <td>
+            ${esc(s.id)}
+          </td>
+
+          <td>
+            ${esc(s.name)}
+          </td>
+
+          <td>
+            ${esc(s.email)}
+          </td>
+
+          <td>
+            ${esc(s.role)}
+          </td>
+
+          <td>
+            ${s.active ? "Yes" : "No"}
+          </td>
+
+          <td>
+
+            <button
+              onclick="openStaffModal('${s.id}')"
+            >
+              Edit
+            </button>
+
+            ${
+              s.id !== currentUser?.uid
+              ?
+              `
+              <button
+                class="btn-danger"
+                onclick="deleteRecord(
+                  'staff',
+                  '${s.id}'
+                )"
+              >
+                Delete
+              </button>
+              `
+              :
+              ""
+            }
+
+          </td>
+
+        </tr>
+
+      `
+    ).join("");
+
+}
+
+
+window.openStaffModal =
+function(id=""){
+
+  const staff =
+    data.staff.find(
+      s => s.id === id
+    ) || {};
+
+
+  document.getElementById(
+    "modalContent"
+  ).innerHTML = `
+
+    <h2>Staff Role</h2>
+
+    <p class="muted">
+      Firebase Auth UID এখানে দিতে হবে।
+    </p>
+
+    <label>Firebase Auth UID</label>
+
+    <input
+      id="staffUid"
+      value="${esc(id)}"
+      ${id ? "readonly" : ""}
+    >
+
+    <label>Name</label>
+
+    <input
+      id="staffName"
+      value="${esc(staff.name)}"
+    >
+
+    <label>Email</label>
+
+    <input
+      id="staffEmail"
+      value="${esc(staff.email)}"
+    >
+
+    <label>Role</label>
+
+    <select id="staffRole">
+
+      <option value="admin">Admin</option>
+      <option value="manager">Manager</option>
+      <option value="staff">Staff</option>
+
+    </select>
+
+    <label>Active</label>
+
+    <select id="staffActive">
+
+      <option value="true">Active</option>
+      <option value="false">Inactive</option>
+
+    </select>
+
+    <br><br>
+
+    <button
+      onclick="saveStaff('${id}')"
+    >
+      Save Staff
+    </button>
+
+  `;
+
+
+  if(staff.role){
+
+    document.getElementById(
+      "staffRole"
+    ).value =
+      staff.role;
+
+  }
+
+  document.getElementById(
+    "staffActive"
+  ).value =
+    String(staff.active !== false);
+
+
+  document.getElementById(
+    "modal"
+  ).classList.add("show");
+
+};
+
+
+window.saveStaff =
+async function(id){
+
+  const uid =
+    id ||
+    document.getElementById(
+      "staffUid"
+    ).value.trim();
+
+
+  if(!uid){
+
+    alert(
+      "Firebase Auth UID দিন।"
+    );
+
+    return;
+
+  }
+
+
+  const staffData = {
+
+    name:
+      document.getElementById(
+        "staffName"
+      ).value.trim(),
+
+    email:
+      document.getElementById(
+        "staffEmail"
+      ).value.trim(),
+
+    role:
+      document.getElementById(
+        "staffRole"
+      ).value,
+
+    active:
+      document.getElementById(
+        "staffActive"
+      ).value === "true",
+
+    updatedAt:
+      serverTimestamp()
+
+  };
+
+
+  await setDoc(
+    doc(db,"staff",uid),
+    staffData,
+    {merge:true}
+  );
+
+
+  closeModal();
+
+  await loadData();
+
+};
+
+
+/* SETTINGS */
+
+async function loadSettings(){
+
+  try{
+
+    const deliverySnap =
+      await getDoc(
+        doc(db,"settings","delivery")
+      );
+
+    const platformSnap =
+      await getDoc(
+        doc(db,"settings","platform")
+      );
+
+    const paymentSnap =
+      await getDoc(
+        doc(db,"settings","payment")
+      );
+
+    const publicSnap =
+      await getDoc(
+        doc(db,"settings","public")
+      );
+
+
+    const delivery =
+      deliverySnap.data() || {};
+
+    const platform =
+      platformSnap.data() || {};
+
+    const payment =
+      paymentSnap.data() || {};
+
+    const publicData =
+      publicSnap.data() || {};
+
+
+    document.getElementById(
+      "deliveryCharge"
+    ).value =
+      delivery.charge || 60;
+
+
+    document.getElementById(
+      "outsideDeliveryCharge"
+    ).value =
+      delivery.outsideCharge || 120;
+
+
+    document.getElementById(
+      "freeDeliveryMinimum"
+    ).value =
+      delivery.freeDeliveryMinimum || 1000;
+
+
+    document.getElementById(
+      "platformType"
+    ).value =
+      platform.type || "percentage";
+
+
+    document.getElementById(
+      "platformValue"
+    ).value =
+      platform.value || 2;
+
+
+    document.getElementById(
+      "platformEnabled"
+    ).value =
+      String(platform.enabled !== false);
+
+
+    document.getElementById(
+      "bkashNumber"
+    ).value =
+      payment.bkashNumber || "";
+
+
+    document.getElementById(
+      "nagadNumber"
+    ).value =
+      payment.nagadNumber || "";
+
+
+    document.getElementById(
+      "wheelEnabled"
+    ).value =
+      String(
+        publicData.discountWheelEnabled !== false
+      );
+
+
+    document.getElementById(
+      "luckyDrawEnabled"
+    ).value =
+      String(
+        publicData.luckyDrawEnabled === true
+      );
+
+
+    document.getElementById(
+      "themeName"
+    ).value =
+      publicData.themeName || "Default";
+
+
+    document.getElementById(
+      "supportLink"
+    ).value =
+      publicData.supportLink || "";
+
+  }catch(error){
+
+    console.warn(
+      "Settings load error:",
+      error
+    );
+
+  }
+
+}
+
+
+window.saveSettings =
+async function(){
+
+  const delivery =
+    Number(
+      document.getElementById(
+        "deliveryCharge"
+      ).value || 0
+    );
+
+
+  const outside =
+    Number(
+      document.getElementById(
+        "outsideDeliveryCharge"
+      ).value || 0
+    );
+
+
+  const freeMinimum =
+    Number(
+      document.getElementById(
+        "freeDeliveryMinimum"
+      ).value || 0
+    );
+
+
+  const platformType =
+    document.getElementById(
+      "platformType"
+    ).value;
+
+
+  const platformValue =
+    Number(
+      document.getElementById(
+        "platformValue"
+      ).value || 0
+    );
+
+
+  const platformEnabled =
+    document.getElementById(
+      "platformEnabled"
+    ).value === "true";
+
+
+  const bkash =
+    document.getElementById(
+      "bkashNumber"
+    ).value.trim();
+
+
+  const nagad =
+    document.getElementById(
+      "nagadNumber"
+    ).value.trim();
+
+
+  const wheel =
+    document.getElementById(
+      "wheelEnabled"
+    ).value === "true";
+
+
+  const luckyDraw =
+    document.getElementById(
+      "luckyDrawEnabled"
+    ).value === "true";
+
+
+  const theme =
+    document.getElementById(
+      "themeName"
+    ).value.trim();
+
+
+  const support =
+    document.getElementById(
+      "supportLink"
+    ).value.trim();
+
+
+  await setDoc(
+    doc(db,"settings","delivery"),
+    {
+
+      charge:delivery,
+
+      outsideCharge:outside,
+
+      freeDeliveryMinimum:
+        freeMinimum,
+
+      active:true,
+
+      updatedAt:
+        serverTimestamp()
+
+    },
+    {merge:true}
+  );
+
+
+  await setDoc(
+    doc(db,"settings","platform"),
+    {
+
+      enabled:
+        platformEnabled,
+
+      type:
+        platformType,
+
+      value:
+        platformValue,
+
+      updatedAt:
+        serverTimestamp()
+
+    },
+    {merge:true}
+  );
+
+
+  await setDoc(
+    doc(db,"settings","payment"),
+    {
+
+      bkashNumber:
+        bkash,
+
+      nagadNumber:
+        nagad,
+
+      deliveryChargePaymentRequired:
+        true,
+
+      active:true,
+
+      updatedAt:
+        serverTimestamp()
+
+    },
+    {merge:true}
+  );
+
+
+  await setDoc(
+    doc(db,"settings","public"),
+    {
+
+      deliveryCharge:
+        delivery,
+
+      outsideDeliveryCharge:
+        outside,
+
+      freeDeliveryMinimum:
+        freeMinimum,
+
+      platformEnabled:
+        platformEnabled,
+
+      platformType:
+        platformType,
+
+      platformValue:
+        platformValue,
+
+      bkashNumber:
+        bkash,
+
+      nagadNumber:
+        nagad,
+
+      discountWheelEnabled:
+        wheel,
+
+      luckyDrawEnabled:
+        luckyDraw,
+
+      themeName:
+        theme,
+
+      supportLink:
+        support,
+
+      updatedAt:
+        serverTimestamp()
+
+    },
+    {merge:true}
+  );
+
+
+  document.getElementById(
+    "settingsMessage"
+  ).textContent =
+    "Settings successfully saved.";
+
+};
+
+
+/* FINANCE */
+
+function calculateFinance(){
+
+  const date =
+    new Date();
+
+  const year =
+    date.getFullYear();
+
+  const month =
+    String(
+      date.getMonth()+1
+    ).padStart(2,"0");
+
+
+  const monthKey =
+    `${year}-${month}`;
+
+
+  document.getElementById(
+    "financeMonth"
+  ).textContent =
+    monthKey;
+
+
+  const orders =
+    data.orders.filter(
+      o => {
+
+        if(
+          ![
+            "confirmed",
+            "processing",
+            "shipped",
+            "delivered"
+          ].includes(
+            o.orderStatus
+          )
+        ){
+
+          return false;
+
+        }
+
+
+        if(
+          !o.createdAt ||
+          !o.createdAt.seconds
+        ){
+
+          return false;
+
+        }
+
+
+        const d =
+          new Date(
+            o.createdAt.seconds * 1000
+          );
+
+
+        return (
+          d.getFullYear() === year &&
+          d.getMonth()+1 ===
+            Number(month)
+        );
+
+      }
+    );
+
+
+  let productSales = 0;
+
+  let deliveryIncome = 0;
+
+  let platformIncome = 0;
+
+  let discount = 0;
+
+  let productCost = 0;
+
+  let refund = 0;
+
+
+  orders.forEach(
+    order => {
+
+      productSales +=
+        Number(
+          order.subtotal || 0
+        );
+
+      deliveryIncome +=
+        Number(
+          order.deliveryCharge || 0
+        );
+
+      platformIncome +=
+        Number(
+          order.platformCharge || 0
+        );
+
+      discount +=
+        Number(
+          order.discount || 0
+        );
+
+      refund +=
+        Number(
+          order.refundAmount || 0
+        );
+
+
+      if(
+        Array.isArray(
+          order.items
+        )
+      ){
+
+        order.items.forEach(
+          item => {
+
+            productCost +=
+              Number(
+                item.costPrice || 0
+              ) *
+              Number(
+                item.quantity || 1
+              );
+
+          }
+        );
+
+      }
+
+    }
+  );
+
+
+  const other =
+    Number(
+      document.getElementById(
+        "otherExpenses"
+      ).value || 0
+    );
+
+
+  const staff =
+    Number(
+      document.getElementById(
+        "staffRiderExpenses"
+      ).value || 0
+    );
+
+
+  const revenue =
+    productSales +
+    deliveryIncome +
+    platformIncome;
+
+
+  const profitBefore =
+    revenue -
+    discount -
+    productCost -
+    refund -
+    other;
+
+
+  const finalProfit =
+    profitBefore -
+    staff;
+
+
+  document.getElementById(
+    "fProductSales"
+  ).textContent =
+    money(productSales);
+
+
+  document.getElementById(
+    "fDelivery"
+  ).textContent =
+    money(deliveryIncome);
+
+
+  document.getElementById(
+    "fPlatform"
+  ).textContent =
+    money(platformIncome);
+
+
+  document.getElementById(
+    "fDiscount"
+  ).textContent =
+    money(discount);
+
+
+  document.getElementById(
+    "fCost"
+  ).textContent =
+    money(productCost);
+
+
+  document.getElementById(
+    "fRefund"
+  ).textContent =
+    money(refund);
+
+
+  document.getElementById(
+    "fOther"
+  ).textContent =
+    money(other);
+
+
+  document.getElementById(
+    "fStaff"
+  ).textContent =
+    money(staff);
+
+
+  document.getElementById(
+    "fBefore"
+  ).textContent =
+    money(profitBefore);
+
+
+  document.getElementById(
+    "fFinal"
+  ).textContent =
+    money(finalProfit);
+
+
+  return {
+
+    monthKey,
+
+    productSales,
+
+    deliveryIncome,
+
+    platformIncome,
+
+    discount,
+
+    productCost,
+
+    refund,
+
+    other,
+
+    staff,
+
+    revenue,
+
+    profitBefore,
+
+    finalProfit
+
+  };
+
+}
+
+
+window.calculateFinance =
+calculateFinance;
+
+
+window.archiveStatement =
+async function(){
+
+  const statement =
+    calculateFinance();
+
+
+  await setDoc(
+    doc(
+      db,
+      "settings",
+      "statement_" +
+      statement.monthKey
+    ),
+    {
+
+      month:
+        statement.monthKey,
+
+      productSales:
+        statement.productSales,
+
+      deliveryIncome:
+        statement.deliveryIncome,
+
+      platformIncome:
+        statement.platformIncome,
+
+      discount:
+        statement.discount,
+
+      productCost:
+        statement.productCost,
+
+      refund:
+        statement.refund,
+
+      otherExpenses:
+        statement.other,
+
+      staffRiderCost:
+        statement.staff,
+
+      revenue:
+        statement.revenue,
+
+      profitBeforeStaffRider:
+        statement.profitBefore,
+
+      finalProfitLoss:
+        statement.finalProfit,
+
+      archivedAt:
+        serverTimestamp(),
+
+      archivedBy:
+        currentUser.uid
+
+    }
+  );
+
+
+  alert(
+    "এই মাসের statement archive হয়েছে।"
+  );
+
+};
+
+
+/* PRINT ORDER */
+
+window.printConfirmedOrder =
+function(id){
+
+  const order =
+    data.orders.find(
+      o => o.id === id
+    );
+
+  if(!order) return;
+
+
+  document.getElementById(
+    "printContent"
+  ).innerHTML = `
+
+    <div
+      style="
+        max-width:700px;
+        margin:auto;
+        padding:30px;
+        font-family:Arial;
+      "
+    >
+
+      <h1>
+        🌿 NatureBite
+      </h1>
+
+      <h2>
+        Confirmed Order
+      </h2>
+
+      <hr>
+
+      <p>
+        <b>Order Code:</b>
+        ${esc(
+          order.trackingCode ||
+          order.id
+        )}
+      </p>
+
+      <p>
+        <b>Customer:</b>
+        ${esc(order.customerName)}
+      </p>
+
+      <p>
+        <b>Phone:</b>
+        ${esc(order.customerPhone)}
+      </p>
+
+      <p>
+        <b>Address:</b>
+        ${esc(order.address || "")}
+      </p>
+
+      <p>
+        <b>Payment:</b>
+        ${esc(order.paymentMethod || "")}
+      </p>
+
+      <p>
+        <b>Payment Status:</b>
+        ${esc(order.paymentStatus || "")}
+      </p>
+
+      <p>
+        <b>Subtotal:</b>
+        ${money(order.subtotal)}
+      </p>
+
+      <p>
+        <b>Delivery:</b>
+        ${money(order.deliveryCharge)}
+      </p>
+
+      <p>
+        <b>Discount:</b>
+        ${money(order.discount)}
+      </p>
+
+      <p>
+        <b>Total:</b>
+        ${money(order.totalAmount)}
+      </p>
+
+      <hr>
+
+      <h2 style="letter-spacing:5px">
+        |||
+        ${esc(
+          order.trackingCode ||
+          order.id
+        )}
+        |||
+      </h2>
+
+      <p>
+        QR/Barcode ID:
+        ${esc(
+          order.trackingCode ||
+          order.id
+        )}
+      </p>
+
+    </div>
+
+  `;
+
+
+  const printArea =
+    document.getElementById(
+      "printArea"
+    );
+
+  printArea.style.display =
+    "block";
+
+
+  setTimeout(
+    () => {
+
+      window.print();
+
+      printArea.style.display =
+        "none";
+
+    },
+    200
+  );
+
+};
+
+
+/* PRINT FINANCE */
+
+window.printStatement =
+function(){
+
+  const statement =
+    calculateFinance();
+
+
+  document.getElementById(
+    "printContent"
+  ).innerHTML = `
+
+    <div
+      style="
+        max-width:800px;
+        margin:auto;
+        padding:30px;
+        font-family:Arial;
+      "
+    >
+
+      <h1>
+        NatureBite
+      </h1>
+
+      <h2>
+        Monthly Profit/Loss Statement
+      </h2>
+
+      <p>
+        Month:
+        <b>${statement.monthKey}</b>
+      </p>
+
+      <hr>
+
+      <p>
+        Product Sales:
+        <b>${money(statement.productSales)}</b>
+      </p>
+
+      <p>
+        Delivery Income:
+        <b>${money(statement.deliveryIncome)}</b>
+      </p>
+
+      <p>
+        Platform/App Charge:
+        <b>${money(statement.platformIncome)}</b>
+      </p>
+
+      <p>
+        Coupon Discount:
+        <b>${money(statement.discount)}</b>
+      </p>
+
+      <p>
+        Product Cost:
+        <b>${money(statement.productCost)}</b>
+      </p>
+
+      <p>
+        Refund:
+        <b>${money(statement.refund)}</b>
+      </p>
+
+      <p>
+        Other Expenses:
+        <b>${money(statement.other)}</b>
+      </p>
+
+      <h3>
+        Profit Before Staff/Rider:
+        ${money(statement.profitBefore)}
+      </h3>
+
+      <h3>
+        Staff + Rider Cost:
+        ${money(statement.staff)}
+      </h3>
+
+      <h2>
+        Final Profit/Loss:
+        ${money(statement.finalProfit)}
+      </h2>
+
+    </div>
+
+  `;
+
+
+  const printArea =
+    document.getElementById(
+      "printArea"
+    );
+
+  printArea.style.display =
+    "block";
+
+
+  setTimeout(
+    () => {
+
+      window.print();
+
+      printArea.style.display =
+        "none";
+
+    },
+    200
+  );
+
+};
+
+
+/* DELETE */
+
+window.deleteRecord =
+async function(collectionName,id){
+
+  if(
+    !confirm(
+      "আপনি কি সত্যিই delete করতে চান?"
+    )
+  ){
+
+    return;
+
+  }
+
+
+  await deleteDoc(
+    doc(
+      db,
+      collectionName,
+      id
+    )
+  );
+
+
+  await loadData();
+
+};
+
+
+/* MODAL */
+
+window.closeModal =
+function(){
+
+  document
+    .getElementById("modal")
+    .classList.remove("show");
+
+};
+
+
+window.aiPlaceholder =
+function(){
+
+  alert(
+    "AI backend এখনো connected নয়। Secure backend/API যুক্ত করার পর এই feature চালু হবে।"
+  );
+
+};
+
+</script>
+
+</body>
+</html>
