@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NatureBite - Login</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f5f8f3;
+    color:#173b28;
+}
+
+.header{
+    background:#123d28;
+    color:white;
+    padding:18px 6%;
+    font-size:28px;
+    font-weight:800;
+}
+
+.container{
+    max-width:520px;
+    margin:55px auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:24px;
+    border:1px solid #dfe7df;
+    box-shadow:0 10px 30px rgba(0,0,0,.07);
+}
+
+.logo{
+    text-align:center;
+    font-size:36px;
+    font-weight:800;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#66736a;
+    margin-bottom:25px;
+}
+
+input{
+    width:100%;
+    padding:15px;
+    margin:8px 0;
+    border:1px solid #ccd8ce;
+    border-radius:12px;
+    font-size:16px;
+    outline:none;
+}
+
+input:focus{
+    border-color:#17633d;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    border:0;
+    border-radius:12px;
+    background:#17633d;
+    color:white;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+button:hover{
+    opacity:.92;
+}
+
+.secondary{
+    background:#e8efe9;
+    color:#17462e;
+}
+
+.danger{
+    background:#c92f25;
+}
+
+#otpSection{
+    display:none;
+}
+
+.message{
+    margin-top:15px;
+    padding:13px;
+    border-radius:10px;
+    display:none;
+    line-height:1.6;
+}
+
+.success{
+    background:#e9f7eb;
+    color:#185b31;
+}
+
+.error{
+    background:#ffe9e7;
+    color:#8d201b;
+}
+
+.adminLink{
+    text-align:center;
+    margin-top:25px;
+}
+
+.adminLink a{
+    color:#17633d;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+.footer{
+    text-align:center;
+    color:#777;
+    margin-top:25px;
+    font-size:13px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    NatureBite
+</div>
+
+<div class="container">
+
+<div class="card">
+
+<div class="logo">
+    NatureBite
+</div>
+
+<div class="subtitle">
+    Healthy food delivered to your door
+</div>
+
+<input
+    id="phone"
+    type="tel"
+    placeholder="+8801XXXXXXXXX"
+    inputmode="tel"
+>
+
+<div id="recaptcha-container"></div>
+
+<button id="sendOtp">
+    Send OTP
+</button>
+
+<div id="otpSection">
+
+<input
+    id="otp"
+    type="number"
+    placeholder="6 digit OTP"
+    inputmode="numeric"
+>
+
+<button id="verifyOtp">
+    Verify & Login
+</button>
+
+<button
+    id="resendOtp"
+    class="secondary">
+    Resend OTP
+</button>
+
+</div>
+
+<div id="message" class="message"></div>
+
+<div class="adminLink">
+    <a href="admin.html">
+        Admin / Staff Login
+    </a>
+</div>
+
+<div class="footer">
+    © NatureBite
+</div>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import {
+    initializeApp
+}
+from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+import {
+    getAuth,
+    RecaptchaVerifier,
+    signInWithPhoneNumber,
+    onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+/* ================================
+   FIREBASE CONFIG
+================================ */
+
+const firebaseConfig = {
+
+    apiKey:
+    "AIzaSyDBRf8g83TnMYdoaKkpYpn_-boyNg-SHE",
+
+    authDomain:
+    "naturebite-538ba.firebaseapp.com",
+
+    projectId:
+    "naturebite-538ba",
+
+    storageBucket:
+    "naturebite-538ba.firebasestorage.app",
+
+    messagingSenderId:
+    "403660151204",
+
+    appId:
+    "1:403660151204:web:15db421e18442e85d70931"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+
+/* ================================
+   ELEMENTS
+================================ */
+
+const phoneInput =
+document.getElementById("phone");
+
+const otpInput =
+document.getElementById("otp");
+
+const sendOtpButton =
+document.getElementById("sendOtp");
+
+const verifyOtpButton =
+document.getElementById("verifyOtp");
+
+const resendOtpButton =
+document.getElementById("resendOtp");
+
+const otpSection =
+document.getElementById("otpSection");
+
+const message =
+document.getElementById("message");
+
+
+/* ================================
+   MESSAGE
+================================ */
+
+function showMessage(text,type="success"){
+
+    message.style.display="block";
+
+    message.className =
+    "message " + type;
+
+    message.innerText=text;
+
+}
+
+
+/* ================================
+   AUTH REDIRECT
+================================ */
+
+onAuthStateChanged(
+    auth,
+    async(user)=>{
+
+        if(!user){
+            return;
+        }
+
+        /*
+        এখানে Customer login হলে Dashboard-এ যাবে।
+        Admin login হলেও index থেকে সরাসরি
+        Dashboard-এ যাবে না যদি admin.html দিয়ে
+        login করা হয়।
+        */
+
+        const userRef =
+        doc(db,"users",user.uid);
+
+        const userSnap =
+        await getDoc(userRef);
+
+        if(!userSnap.exists()){
+
+            await setDoc(
+                userRef,
+                {
+                    name:"NatureBite Customer",
+
+                    phone:
+                    user.phoneNumber || "",
+
+                    role:"customer",
+
+                    active:true,
+
+                    createdAt:
+                    serverTimestamp()
+                },
+                {
+                    merge:true
+                }
+            );
+
+        }
+
+        window.location.href=
+        "dashboard.html";
+
+    }
+);
+
+
+/* ================================
+   RECAPTCHA
+================================ */
+
+let recaptchaVerifier;
+
+try{
+
+    recaptchaVerifier =
+    new RecaptchaVerifier(
+        auth,
+        "recaptcha-container",
+        {
+            size:"normal"
+        }
+    );
+
+}
+catch(error){
+
+    console.error(
+        "reCAPTCHA Error:",
+        error
+    );
+
+}
+
+
+/* ================================
+   SEND OTP
+================================ */
+
+let confirmationResult=null;
+
+
+async function sendOTP(){
+
+    let phone =
+    phoneInput.value.trim();
+
+    if(
+        !/^\+8801\d{9}$/.test(phone)
+    ){
+
+        showMessage(
+            "সঠিক বাংলাদেশি মোবাইল নম্বর দিন। যেমন: +88017XXXXXXXX",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    sendOtpButton.disabled=true;
+
+    sendOtpButton.innerText=
+    "Sending OTP...";
+
+
+    try{
+
+        confirmationResult =
+        await signInWithPhoneNumber(
+            auth,
+            phone,
+            recaptchaVerifier
+        );
+
+
+        otpSection.style.display=
+        "block";
+
+
+        showMessage(
+            "আপনার মোবাইল নম্বরে OTP পাঠানো হয়েছে।",
+            "success"
+        );
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        showMessage(
+            "OTP পাঠানো যায়নি। Firebase Phone Auth এবং নম্বরটি পরীক্ষা করুন।",
+            "error"
+        );
+
+        try{
+
+            recaptchaVerifier.clear();
+
+            recaptchaVerifier =
+            new RecaptchaVerifier(
+                auth,
+                "recaptcha-container",
+                {
+                    size:"normal"
+                }
+            );
+
+        }
+        catch(e){}
+
+    }
+    finally{
+
+        sendOtpButton.disabled=false;
+
+        sendOtpButton.innerText=
+        "Send OTP";
+
+    }
+
+}
+
+
+/* ================================
+   VERIFY OTP
+================================ */
+
+async function verifyOTP(){
+
+    if(!confirmationResult){
+
+        showMessage(
+            "আগে Send OTP চাপুন।",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const otp =
+    otpInput.value.trim();
+
+
+    if(
+        !/^\d{6}$/.test(otp)
+    ){
+
+        showMessage(
+            "৬ সংখ্যার OTP দিন।",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    verifyOtpButton.disabled=true;
+
+    verifyOtpButton.innerText=
+    "Verifying...";
+
+
+    try{
+
+        const result =
+        await confirmationResult.confirm(otp);
+
+
+        const user =
+        result.user;
+
+
+        const userRef =
+        doc(db,"users",user.uid);
+
+
+        const userSnap =
+        await getDoc(userRef);
+
+
+        if(!userSnap.exists()){
+
+            await setDoc(
+                userRef,
+                {
+                    name:
+                    "NatureBite Customer",
+
+                    phone:
+                    user.phoneNumber || phoneInput.value.trim(),
+
+                    role:
+                    "customer",
+
+                    active:true,
+
+                    createdAt:
+                    serverTimestamp()
+                }
+            );
+
+        }
+        else{
+
+            const oldData =
+            userSnap.data();
+
+            /*
+            Admin/staff account থাকলে customer
+            role দিয়ে overwrite করা হবে না।
+            */
+
+            if(
+                oldData.role !== "admin" &&
+                oldData.role !== "manager" &&
+                oldData.role !== "staff"
+            ){
+
+                await setDoc(
+                    userRef,
+                    {
+                        phone:
+                        user.phoneNumber ||
+                        phoneInput.value.trim(),
+
+                        role:"customer",
+
+                        active:true,
+
+                        updatedAt:
+                        serverTimestamp()
+                    },
+                    {
+                        merge:true
+                    }
+                );
+
+            }
+
+        }
+
+
+        showMessage(
+            "Login successful. Dashboard-এ নেওয়া হচ্ছে...",
+            "success"
+        );
+
+
+        setTimeout(
+            ()=>{
+                window.location.href=
+                "dashboard.html";
+            },
+            700
+        );
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        showMessage(
+            "OTP সঠিক নয় অথবা Login ব্যর্থ হয়েছে।",
+            "error"
+        );
+
+    }
+    finally{
+
+        verifyOtpButton.disabled=false;
+
+        verifyOtpButton.innerText=
+        "Verify & Login";
+
+    }
+
+}
+
+
+/* ================================
+   BUTTON EVENTS
+================================ */
+
+sendOtpButton.onclick=
+sendOTP;
+
+verifyOtpButton.onclick=
+verifyOTP;
+
+resendOtpButton.onclick=
+sendOTP;
+
+</script>
+
+</body>
+</html>
