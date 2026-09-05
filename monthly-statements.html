@@ -1,0 +1,2793 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>NatureBite | Monthly Statements</title>
+
+<style>
+
+*{
+ box-sizing:border-box;
+ margin:0;
+ padding:0;
+ font-family:Arial,sans-serif;
+}
+
+body{
+ background:#f4f7f1;
+ color:#183522;
+}
+
+button,input,select{
+ font:inherit;
+}
+
+button{
+ cursor:pointer;
+}
+
+.header{
+ background:#173a25;
+ color:white;
+ padding:16px 22px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ position:sticky;
+ top:0;
+ z-index:100;
+}
+
+.brand{
+ font-size:23px;
+ font-weight:bold;
+}
+
+.brand small{
+ display:block;
+ font-size:11px;
+ color:#c9ddce;
+ margin-top:3px;
+}
+
+.header-right{
+ display:flex;
+ align-items:center;
+ gap:10px;
+}
+
+.back-btn,
+.logout-btn{
+ border:0;
+ padding:9px 13px;
+ border-radius:7px;
+}
+
+.back-btn{
+ background:#315f42;
+ color:white;
+}
+
+.logout-btn{
+ background:#fff;
+ color:#173a25;
+}
+
+.container{
+ max-width:1250px;
+ margin:auto;
+ padding:22px;
+}
+
+.page-title{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ flex-wrap:wrap;
+ gap:12px;
+ margin-bottom:20px;
+}
+
+.page-title h1{
+ font-size:27px;
+}
+
+.page-title p{
+ color:#68766d;
+ font-size:13px;
+ margin-top:5px;
+}
+
+.card{
+ background:white;
+ border:1px solid #dfe7dc;
+ border-radius:14px;
+ padding:18px;
+ margin-bottom:18px;
+}
+
+.card h2,
+.card h3{
+ color:#1d5c36;
+ margin-bottom:15px;
+}
+
+.control-grid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:15px;
+}
+
+.form-group label{
+ display:block;
+ font-size:13px;
+ font-weight:bold;
+ margin-bottom:6px;
+}
+
+.input,
+.select{
+ width:100%;
+ padding:11px;
+ border:1px solid #d1dbcf;
+ border-radius:8px;
+ background:white;
+}
+
+.buttons{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+ align-items:end;
+}
+
+.btn{
+ border:0;
+ padding:10px 14px;
+ border-radius:8px;
+}
+
+.green{
+ background:#1d5c36;
+ color:white;
+}
+
+.blue{
+ background:#286ca8;
+ color:white;
+}
+
+.gray{
+ background:#e9eee7;
+ color:#183522;
+}
+
+.orange{
+ background:#d48b00;
+ color:white;
+}
+
+.summary-grid{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:13px;
+}
+
+.summary{
+ background:#f5f8f3;
+ border-radius:10px;
+ padding:14px;
+ border:1px solid #e3e9e0;
+}
+
+.summary span{
+ display:block;
+ color:#6d796f;
+ font-size:12px;
+}
+
+.summary strong{
+ display:block;
+ margin-top:7px;
+ font-size:19px;
+ color:#1d5c36;
+}
+
+.statement-grid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:20px;
+}
+
+.statement-list{
+ border:1px solid #e1e8df;
+ border-radius:10px;
+ overflow:hidden;
+}
+
+.statement-row{
+ display:flex;
+ justify-content:space-between;
+ gap:10px;
+ padding:11px 13px;
+ border-bottom:1px solid #edf1eb;
+ font-size:13px;
+}
+
+.statement-row:last-child{
+ border-bottom:0;
+}
+
+.statement-row span:first-child{
+ color:#5e6b62;
+}
+
+.income{
+ color:#237442;
+ font-weight:bold;
+}
+
+.expense{
+ color:#b42318;
+ font-weight:bold;
+}
+
+.final-box{
+ background:#173a25;
+ color:white;
+ border-radius:13px;
+ padding:22px;
+ margin-top:18px;
+}
+
+.final-grid{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:15px;
+}
+
+.final-item{
+ padding:16px;
+ background:rgba(255,255,255,.08);
+ border-radius:10px;
+}
+
+.final-item span{
+ display:block;
+ font-size:12px;
+ color:#c7d8cc;
+}
+
+.final-item strong{
+ display:block;
+ margin-top:7px;
+ font-size:25px;
+}
+
+.profit{
+ color:#a8e0b6;
+}
+
+.loss{
+ color:#ffaaa4;
+}
+
+.notice{
+ background:#eef6ec;
+ border-left:4px solid #1d5c36;
+ padding:13px;
+ border-radius:7px;
+ font-size:13px;
+ line-height:1.6;
+ margin-bottom:15px;
+}
+
+.warning{
+ background:#fff5dc;
+ border-left:4px solid #d89400;
+ padding:13px;
+ border-radius:7px;
+ font-size:13px;
+ line-height:1.6;
+ margin-bottom:15px;
+}
+
+.table-wrap{
+ overflow-x:auto;
+}
+
+table{
+ width:100%;
+ border-collapse:collapse;
+ min-width:650px;
+}
+
+th,td{
+ padding:11px;
+ border-bottom:1px solid #e9eee7;
+ text-align:left;
+ font-size:13px;
+}
+
+th{
+ background:#f2f6ef;
+}
+
+.empty{
+ text-align:center;
+ padding:25px;
+ color:#718078;
+}
+
+.loading{
+ text-align:center;
+ padding:25px;
+ color:#607066;
+}
+
+.archive-card{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:15px;
+ padding:15px;
+ border:1px solid #dfe7dc;
+ border-radius:10px;
+ margin-bottom:10px;
+}
+
+.archive-card strong{
+ display:block;
+ margin-bottom:5px;
+}
+
+.archive-card small{
+ color:#718078;
+}
+
+.footer-note{
+ text-align:center;
+ color:#718078;
+ font-size:12px;
+ padding:20px;
+}
+
+@media(max-width:900px){
+
+ .summary-grid{
+  grid-template-columns:1fr 1fr;
+ }
+
+ .statement-grid{
+  grid-template-columns:1fr;
+ }
+
+}
+
+@media(max-width:600px){
+
+ .container{
+  padding:13px;
+ }
+
+ .header{
+  padding:13px;
+ }
+
+ .brand{
+  font-size:19px;
+ }
+
+ .header-right{
+  gap:5px;
+ }
+
+ .back-btn,
+ .logout-btn{
+  padding:7px 9px;
+  font-size:12px;
+ }
+
+ .control-grid{
+  grid-template-columns:1fr;
+ }
+
+ .summary-grid{
+  grid-template-columns:1fr 1fr;
+ }
+
+ .summary strong{
+  font-size:16px;
+ }
+
+ .page-title h1{
+  font-size:22px;
+ }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+HEADER
+===================================================== -->
+
+<header class="header">
+
+<div class="brand">
+
+NatureBite
+
+<small>
+Monthly Financial Statements
+</small>
+
+</div>
+
+
+<div class="header-right">
+
+<button
+class="back-btn"
+onclick="goAdmin()">
+
+← Admin Panel
+
+</button>
+
+<button
+class="logout-btn"
+onclick="logout()">
+
+Logout
+
+</button>
+
+</div>
+
+</header>
+
+
+
+<div class="container">
+
+
+<!-- =====================================================
+TITLE
+===================================================== -->
+
+<div class="page-title">
+
+<div>
+
+<h1>📈 Monthly Profit / Loss</h1>
+
+<p>
+NatureBite-এর সম্পূর্ণ মাসিক আর্থিক হিসাব
+</p>
+
+</div>
+
+<div>
+
+<button
+class="btn blue"
+onclick="calculateStatement()">
+
+Calculate
+
+</button>
+
+<button
+class="btn green"
+onclick="downloadCSV()">
+
+Download CSV
+
+</button>
+
+<button
+class="btn gray"
+onclick="printStatement()">
+
+🖨️ Print
+
+</button>
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================================
+MONTH SELECT
+===================================================== -->
+
+<div class="card">
+
+<h3>📅 Statement Period</h3>
+
+<div class="control-grid">
+
+<div class="form-group">
+
+<label>
+মাস নির্বাচন করুন
+</label>
+
+<input
+type="month"
+id="statementMonth"
+class="input">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Archive Mode
+</label>
+
+<select
+id="archiveMode"
+class="select">
+
+<option value="automatic">
+Automatic Archive
+</option>
+
+<option value="manual">
+Manual Archive
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<div style="margin-top:14px">
+
+<button
+class="btn orange"
+onclick="archiveCurrentStatement()">
+
+📦 Archive This Month
+
+</button>
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================================
+SUMMARY
+===================================================== -->
+
+<div class="card">
+
+<h3>
+📊 Monthly Summary
+</h3>
+
+<div
+id="summaryGrid"
+class="summary-grid">
+
+<div class="loading">
+Statement calculate করুন।
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================================
+INCOME / EXPENSE
+===================================================== -->
+
+<div class="card">
+
+<h3>
+💰 Income & Expenses
+</h3>
+
+<div class="statement-grid">
+
+
+<!-- INCOME -->
+
+<div>
+
+<h3>
+Income
+</h3>
+
+<div class="statement-list">
+
+<div class="statement-row">
+
+<span>Product Sales</span>
+
+<strong
+id="productSales"
+class="income">
+
+৳0.00
+
+</strong>
+
+</div>
+
+
+<div class="statement-row">
+
+<span>Delivery Income</span>
+
+<strong
+id="deliveryIncome"
+class="income">
+
+৳0.00
+
+</strong>
+
+</div>
+
+
+<div class="statement-row">
+
+<span>Platform/App Charge</span>
+
+<strong
+id="platformIncome"
+class="income">
+
+৳0.00
+
+</strong>
+
+</div>
+
+
+<div class="statement-row">
+
+<span>Total Revenue</span>
+
+<strong
+id="totalRevenue"
+class="income">
+
+৳0.00
+
+</strong>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- EXPENSE -->
+
+<div>
+
+<h3>
+Expenses / Deductions
+</h3>
+
+<div class="statement-list">
+
+<div class="statement-row">
+
+<span>Coupon Discount</span>
+
+<strong
+id="discounts"
+class="expense">
+
+- ৳0.00
+
+</strong>
+
+</div>
+
+
+<div class="statement-row">
+
+<span>Product Cost</span>
+
+<strong
+id="productCost"
+class="expense">
+
+- ৳0.00
+
+</strong>
+
+</div>
+
+
+<div class="statement-row">
+
+<span>Delivery Partner Cost</span>
+
+<strong
+id="partnerCost"
+class="expense">
+
+- ৳0.00
+
+</strong>
+
+</div>
+
+
+<div class="statement-row">
+
+<span>Refund</span>
+
+<strong
+id="refunds"
+class="expense">
+
+- ৳0.00
+
+</strong>
+
+</div>
+
+
+<div class="statement-row">
+
+<span>Other Expenses</span>
+
+<strong
+id="otherExpenses"
+class="expense">
+
+- ৳0.00
+
+</strong>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================================
+STAFF / RIDER
+===================================================== -->
+
+<div class="card">
+
+<h3>
+👥 Staff & Rider Expenses
+</h3>
+
+<div class="control-grid">
+
+
+<div class="form-group">
+
+<label>
+Staff Salary / Wages
+</label>
+
+<input
+id="staffWages"
+class="input"
+type="number"
+value="0">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Rider Salary / Wages
+</label>
+
+<input
+id="riderWages"
+class="input"
+type="number"
+value="0">
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Other Expenses
+</label>
+
+<input
+id="manualOtherExpenses"
+class="input"
+type="number"
+value="0">
+
+</div>
+
+
+</div>
+
+
+<div style="margin-top:15px">
+
+<button
+class="btn green"
+onclick="saveExpenses()">
+
+Save Expenses
+
+</button>
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================================
+PROFIT
+===================================================== -->
+
+<div class="card">
+
+<h3>
+📈 Profit / Loss
+</h3>
+
+
+<div class="final-box">
+
+<div class="final-grid">
+
+
+<div class="final-item">
+
+<span>
+Profit Before Staff/Rider
+</span>
+
+<strong
+id="profitBefore"
+class="profit">
+
+৳0.00
+
+</strong>
+
+</div>
+
+
+<div class="final-item">
+
+<span>
+Final Profit/Loss After Staff & Rider
+</span>
+
+<strong
+id="finalProfit"
+class="profit">
+
+৳0.00
+
+</strong>
+
+</div>
+
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================================
+PAYMENT BREAKDOWN
+===================================================== -->
+
+<div class="card">
+
+<h3>
+💳 Payment Breakdown
+</h3>
+
+<div class="summary-grid">
+
+<div class="summary">
+
+<span>
+COD Collected
+</span>
+
+<strong id="codCollected">
+৳0.00
+</strong>
+
+</div>
+
+
+<div class="summary">
+
+<span>
+Online Payment
+</span>
+
+<strong id="onlinePayment">
+৳0.00
+</strong>
+
+</div>
+
+
+<div class="summary">
+
+<span>
+Rider COD
+</span>
+
+<strong id="riderCOD">
+৳0.00
+</strong>
+
+</div>
+
+
+<div class="summary">
+
+<span>
+Current COD Outstanding
+</span>
+
+<strong id="codOutstanding">
+৳0.00
+</strong>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================================
+ORDER BREAKDOWN
+===================================================== -->
+
+<div class="card">
+
+<h3>
+📦 Order Breakdown
+</h3>
+
+<div class="summary-grid">
+
+<div class="summary">
+
+<span>
+Total Orders
+</span>
+
+<strong id="totalOrders">
+0
+</strong>
+
+</div>
+
+
+<div class="summary">
+
+<span>
+Completed
+</span>
+
+<strong id="completedOrders">
+0
+</strong>
+
+</div>
+
+
+<div class="summary">
+
+<span>
+Cancelled
+</span>
+
+<strong id="cancelledOrders">
+0
+</strong>
+
+</div>
+
+
+<div class="summary">
+
+<span>
+Pending / Other
+</span>
+
+<strong id="otherOrders">
+0
+</strong>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================================
+ARCHIVE
+===================================================== -->
+
+<div class="card">
+
+<h3>
+📦 Previous Month Archive
+</h3>
+
+<div class="notice">
+
+প্রতিটি মাসের statement আলাদা Firestore document হিসেবে
+সংরক্ষণ করা হবে। নতুন মাস শুরু হলে আগের মাসের statement
+delete হবে না।
+
+</div>
+
+
+<div id="archiveList">
+
+<div class="loading">
+Loading archive...
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================================
+SECURITY NOTE
+===================================================== -->
+
+<div class="warning">
+
+<strong>Admin Financial Data</strong>
+
+<br>
+
+এই page-এর Profit/Loss, Salary, COD, Revenue,
+Expense এবং অন্যান্য financial information
+Customer dashboard-এ দেখানো হবে না।
+
+শুধুমাত্র authorized Admin/Manager Firebase authentication
+থাকলে এই page access করতে পারবে।
+
+</div>
+
+
+
+<div class="footer-note">
+
+NatureBite — Internal Financial Statement
+
+</div>
+
+
+</div>
+
+
+
+<script type="module">
+
+import {
+ initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+
+import {
+ getAuth,
+ onAuthStateChanged,
+ signOut
+}
+from
+"https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+
+import {
+ getFirestore,
+ collection,
+ doc,
+ getDoc,
+ getDocs,
+ query,
+ where,
+ limit,
+ setDoc,
+ serverTimestamp
+}
+from
+"https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+
+/* =====================================================
+FIREBASE CONFIG
+===================================================== */
+
+const firebaseConfig={
+
+apiKey:
+"AIzaSyDBRf8g83TnMYdoaKkpYpn_-boYng-SHE",
+
+authDomain:
+"naturebite-538ba.firebaseapp.com",
+
+projectId:
+"naturebite-538ba",
+
+storageBucket:
+"naturebite-538ba.firebasestorage.app",
+
+messagingSenderId:
+"403660151204",
+
+appId:
+"1:403660151204:web:15db421e18442e85d70931"
+
+};
+
+
+const app=
+initializeApp(firebaseConfig);
+
+
+const auth=
+getAuth(app);
+
+
+const db=
+getFirestore(app);
+
+
+
+/* =====================================================
+GLOBAL DATA
+===================================================== */
+
+let currentUser=null;
+
+let currentStatement=null;
+
+let currentOrders=[];
+
+
+
+/* =====================================================
+DATE
+===================================================== */
+
+function currentMonth(){
+
+const d=new Date();
+
+return d.getFullYear()+
+"-"+
+String(
+d.getMonth()+1
+).padStart(2,"0");
+
+}
+
+
+document.getElementById(
+"statementMonth"
+).value=
+currentMonth();
+
+
+
+/* =====================================================
+AUTH
+===================================================== */
+
+onAuthStateChanged(
+auth,
+async user=>{
+
+if(!user){
+
+showAccessDenied(
+"Login Required"
+);
+
+return;
+
+}
+
+
+currentUser=user;
+
+
+try{
+
+const staffSnap=
+await getDoc(
+doc(
+db,
+"staff",
+user.uid
+)
+);
+
+
+if(!staffSnap.exists()){
+
+showAccessDenied(
+"Admin/Manager account পাওয়া যায়নি।"
+);
+
+return;
+
+}
+
+
+const staff=
+staffSnap.data();
+
+
+if(
+staff.active!==true ||
+(
+staff.role!=="admin" &&
+staff.role!=="manager"
+)
+){
+
+showAccessDenied(
+"আপনার financial statement access নেই।"
+);
+
+return;
+
+}
+
+
+await loadPreviousArchives();
+
+await calculateStatement();
+
+}catch(error){
+
+console.error(error);
+
+showAccessDenied(
+"Access verification failed."
+);
+
+}
+
+});
+
+
+
+/* =====================================================
+ACCESS DENIED
+===================================================== */
+
+function showAccessDenied(message){
+
+document.body.innerHTML=`
+
+<div style="
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+text-align:center">
+
+<div>
+
+<h2 style="color:#b42318">
+Access Denied
+</h2>
+
+<p style="margin-top:10px;color:#667">
+${escapeHTML(message)}
+</p>
+
+<button
+onclick="window.location.href='index.html'"
+style="
+margin-top:15px;
+background:#1d5c36;
+color:white;
+border:0;
+padding:11px 18px;
+border-radius:8px">
+
+Go to Login
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+
+/* =====================================================
+CALCULATE STATEMENT
+===================================================== */
+
+window.calculateStatement=
+async function(){
+
+const month=
+document.getElementById(
+"statementMonth"
+).value;
+
+
+if(!month){
+
+alert("মাস নির্বাচন করুন।");
+
+return;
+
+}
+
+
+try{
+
+showLoading();
+
+
+/*
+Load orders
+*/
+
+const orderSnap=
+await getDocs(
+query(
+collection(db,"orders"),
+limit(500)
+)
+);
+
+
+const orders=[];
+
+
+orderSnap.forEach(d=>{
+
+orders.push({
+id:d.id,
+...d.data()
+});
+
+});
+
+
+currentOrders=orders;
+
+
+
+/*
+Load products for cost fallback
+*/
+
+const productSnap=
+await getDocs(
+collection(db,"products")
+);
+
+
+const productMap={};
+
+
+productSnap.forEach(d=>{
+
+productMap[d.id]=d.data();
+
+});
+
+
+
+/*
+Financial variables
+*/
+
+let totalOrders=0;
+
+let completedOrders=0;
+
+let cancelledOrders=0;
+
+let otherOrders=0;
+
+let productSales=0;
+
+let deliveryIncome=0;
+
+let platformIncome=0;
+
+let discounts=0;
+
+let productCost=0;
+
+let partnerCost=0;
+
+let refunds=0;
+
+let codCollected=0;
+
+let onlinePayment=0;
+
+let riderCOD=0;
+
+
+
+/*
+Process orders
+*/
+
+orders.forEach(o=>{
+
+if(!o.createdAt?.seconds)return;
+
+
+const date=
+new Date(
+o.createdAt.seconds*1000
+);
+
+
+const orderMonth=
+date.getFullYear()+
+"-"+
+String(
+date.getMonth()+1
+).padStart(2,"0");
+
+
+if(orderMonth!==month)return;
+
+
+totalOrders++;
+
+
+const status=
+String(
+o.orderStatus||""
+).toLowerCase();
+
+
+if(status==="cancelled"){
+
+cancelledOrders++;
+
+refunds+=
+Number(
+o.refundAmount||0
+);
+
+return;
+
+}
+
+
+if(status==="delivered"){
+
+completedOrders++;
+
+}else{
+
+otherOrders++;
+
+}
+
+
+const subtotal=
+Number(
+o.subtotal||0
+);
+
+
+const delivery=
+Number(
+o.deliveryCharge||0
+);
+
+
+const platform=
+Number(
+o.platformCharge||0
+);
+
+
+const discount=
+Number(
+o.discount||0
+);
+
+
+productSales+=subtotal;
+
+deliveryIncome+=delivery;
+
+platformIncome+=platform;
+
+discounts+=discount;
+
+
+/*
+Product Cost
+
+First preference:
+order item costPrice
+
+Fallback:
+current product costPrice
+*/
+
+if(
+Array.isArray(o.items)
+){
+
+o.items.forEach(item=>{
+
+let cost=
+Number(
+item.costPrice||0
+);
+
+
+if(
+!cost &&
+item.productId &&
+productMap[item.productId]
+){
+
+cost=
+Number(
+productMap[item.productId].costPrice||0
+);
+
+}
+
+
+productCost+=
+cost*
+Number(
+item.quantity||0
+);
+
+});
+
+}
+
+
+/*
+Delivery partner cost
+*/
+
+partnerCost+=
+Number(
+o.deliveryPartnerCost||0
+);
+
+
+/*
+COD
+*/
+
+if(
+String(
+o.paymentMethod||""
+).toLowerCase()==="cod"
+){
+
+if(
+status==="delivered" ||
+status==="confirmed"
+){
+
+codCollected+=
+Number(
+o.codAmount ||
+o.totalAmount ||
+0
+);
+
+}
+
+}
+
+
+/*
+Online payment
+*/
+
+if(
+String(
+o.paymentMethod||""
+).toLowerCase()
+.includes("online")
+){
+
+if(
+o.paymentStatus==="verified" ||
+status==="delivered"
+){
+
+onlinePayment+=
+Number(
+o.totalAmount||0
+);
+
+}
+
+}
+
+
+/*
+Rider COD
+
+Use codAmount for delivered
+COD orders
+*/
+
+if(
+status==="delivered" &&
+String(
+o.paymentMethod||""
+).toLowerCase()==="cod"
+){
+
+riderCOD+=
+Number(
+o.codAmount ||
+o.totalAmount ||
+0
+);
+
+}
+
+});
+
+
+
+/*
+Revenue
+*/
+
+const totalRevenue=
+productSales+
+deliveryIncome+
+platformIncome;
+
+
+/*
+Load saved statement
+*/
+
+const statementRef=
+doc(
+db,
+"settings",
+"statement_"+month
+);
+
+
+const savedSnap=
+await getDoc(statementRef);
+
+
+const saved=
+savedSnap.exists()
+?savedSnap.data()
+:{};
+
+
+const staffWages=
+Number(
+saved.staffWages||0
+);
+
+
+const riderWages=
+Number(
+saved.riderWages||0
+);
+
+
+const otherExpenses=
+Number(
+saved.otherExpenses||0
+);
+
+
+
+/*
+Profit before salary
+*/
+
+const profitBefore=
+totalRevenue-
+discounts-
+productCost-
+partnerCost-
+refunds-
+otherExpenses;
+
+
+/*
+Final profit
+*/
+
+const finalProfit=
+profitBefore-
+staffWages-
+riderWages;
+
+
+
+/*
+Current rider outstanding
+*/
+
+let codOutstanding=0;
+
+
+try{
+
+const riderSnap=
+await getDocs(
+collection(db,"riders")
+);
+
+
+riderSnap.forEach(d=>{
+
+const r=d.data();
+
+codOutstanding+=
+Number(
+r.codOutstanding||0
+);
+
+});
+
+}catch(e){
+
+console.log(
+"Rider outstanding unavailable"
+);
+
+}
+
+
+
+/*
+Create statement object
+*/
+
+currentStatement={
+
+month,
+
+totalOrders,
+
+completedOrders,
+
+cancelledOrders,
+
+otherOrders,
+
+productSales,
+
+deliveryIncome,
+
+platformIncome,
+
+totalRevenue,
+
+discounts,
+
+productCost,
+
+partnerCost,
+
+refunds,
+
+otherExpenses,
+
+staffWages,
+
+riderWages,
+
+profitBefore,
+
+finalProfit,
+
+codCollected,
+
+onlinePayment,
+
+riderCOD,
+
+codOutstanding
+
+};
+
+
+
+/*
+Render
+*/
+
+renderStatement(
+currentStatement
+);
+
+
+await loadPreviousArchives();
+
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"Statement calculation failed: "+
+error.message
+);
+
+}
+
+};
+
+
+
+/* =====================================================
+RENDER STATEMENT
+===================================================== */
+
+function renderStatement(s){
+
+document.getElementById(
+"summaryGrid"
+).innerHTML=`
+
+<div class="summary">
+
+<span>Total Orders</span>
+
+<strong>
+${s.totalOrders}
+</strong>
+
+</div>
+
+
+<div class="summary">
+
+<span>Completed</span>
+
+<strong>
+${s.completedOrders}
+</strong>
+
+</div>
+
+
+<div class="summary">
+
+<span>Cancelled</span>
+
+<strong>
+${s.cancelledOrders}
+</strong>
+
+</div>
+
+
+<div class="summary">
+
+<span>Total Revenue</span>
+
+<strong>
+৳${money(s.totalRevenue)}
+</strong>
+
+</div>
+
+`;
+
+
+
+document.getElementById(
+"productSales"
+).innerText=
+"৳"+money(s.productSales);
+
+
+document.getElementById(
+"deliveryIncome"
+).innerText=
+"৳"+money(s.deliveryIncome);
+
+
+document.getElementById(
+"platformIncome"
+).innerText=
+"৳"+money(s.platformIncome);
+
+
+document.getElementById(
+"totalRevenue"
+).innerText=
+"৳"+money(s.totalRevenue);
+
+
+document.getElementById(
+"discounts"
+).innerText=
+"- ৳"+money(s.discounts);
+
+
+document.getElementById(
+"productCost"
+).innerText=
+"- ৳"+money(s.productCost);
+
+
+document.getElementById(
+"partnerCost"
+).innerText=
+"- ৳"+money(s.partnerCost);
+
+
+document.getElementById(
+"refunds"
+).innerText=
+"- ৳"+money(s.refunds);
+
+
+document.getElementById(
+"otherExpenses"
+).innerText=
+"- ৳"+money(s.otherExpenses);
+
+
+document.getElementById(
+"staffWages"
+).value=
+s.staffWages;
+
+
+document.getElementById(
+"riderWages"
+).value=
+s.riderWages;
+
+
+document.getElementById(
+"manualOtherExpenses"
+).value=
+s.otherExpenses;
+
+
+document.getElementById(
+"profitBefore"
+).innerText=
+"৳"+money(s.profitBefore);
+
+
+document.getElementById(
+"finalProfit"
+).innerText=
+"৳"+money(s.finalProfit);
+
+
+setProfitClass(
+document.getElementById("profitBefore"),
+s.profitBefore
+);
+
+
+setProfitClass(
+document.getElementById("finalProfit"),
+s.finalProfit
+);
+
+
+document.getElementById(
+"codCollected"
+).innerText=
+"৳"+money(s.codCollected);
+
+
+document.getElementById(
+"onlinePayment"
+).innerText=
+"৳"+money(s.onlinePayment);
+
+
+document.getElementById(
+"riderCOD"
+).innerText=
+"৳"+money(s.riderCOD);
+
+
+document.getElementById(
+"codOutstanding"
+).innerText=
+"৳"+money(s.codOutstanding);
+
+
+document.getElementById(
+"totalOrders"
+).innerText=
+s.totalOrders;
+
+
+document.getElementById(
+"completedOrders"
+).innerText=
+s.completedOrders;
+
+
+document.getElementById(
+"cancelledOrders"
+).innerText=
+s.cancelledOrders;
+
+
+document.getElementById(
+"otherOrders"
+).innerText=
+s.otherOrders;
+
+}
+
+
+
+/* =====================================================
+SAVE EXPENSES
+===================================================== */
+
+window.saveExpenses=
+async function(){
+
+const month=
+document.getElementById(
+"statementMonth"
+).value;
+
+
+if(!month)return;
+
+
+const staff=
+Number(
+document.getElementById(
+"staffWages"
+).value||0
+);
+
+
+const rider=
+Number(
+document.getElementById(
+"riderWages"
+).value||0
+);
+
+
+const other=
+Number(
+document.getElementById(
+"manualOtherExpenses"
+).value||0
+);
+
+
+try{
+
+await setDoc(
+
+doc(
+db,
+"settings",
+"statement_"+month
+),
+
+{
+
+month,
+
+staffWages:staff,
+
+riderWages:rider,
+
+otherExpenses:other,
+
+savedBy:
+currentUser.uid,
+
+savedAt:
+serverTimestamp()
+
+},
+
+{merge:true}
+
+);
+
+
+alert(
+"Monthly expenses saved."
+);
+
+
+await calculateStatement();
+
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"Save failed: "+
+error.message
+);
+
+}
+
+};
+
+
+
+/* =====================================================
+ARCHIVE
+===================================================== */
+
+window.archiveCurrentStatement=
+async function(){
+
+if(!currentStatement){
+
+await calculateStatement();
+
+}
+
+
+if(!currentStatement)return;
+
+
+const month=
+currentStatement.month;
+
+
+const archiveMode=
+document.getElementById(
+"archiveMode"
+).value;
+
+
+try{
+
+await setDoc(
+
+doc(
+db,
+"settings",
+"statement_"+month
+),
+
+{
+
+...currentStatement,
+
+month,
+
+archived:true,
+
+archiveMode,
+
+archivedAt:
+serverTimestamp(),
+
+archivedBy:
+currentUser.uid
+
+},
+
+{merge:true}
+
+);
+
+
+alert(
+month+
+" statement archived successfully."
+);
+
+
+await loadPreviousArchives();
+
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"Archive failed: "+
+error.message
+);
+
+}
+
+};
+
+
+
+/* =====================================================
+LOAD ARCHIVES
+===================================================== */
+
+window.loadPreviousArchives=
+async function(){
+
+const container=
+document.getElementById(
+"archiveList"
+);
+
+
+container.innerHTML=
+`<div class="loading">
+Loading archives...
+</div>`;
+
+
+try{
+
+const now=new Date();
+
+const months=[];
+
+
+/*
+Show previous 12 months
+*/
+
+for(let i=1;i<=12;i++){
+
+const d=new Date(
+now.getFullYear(),
+now.getMonth()-i,
+1
+);
+
+const month=
+d.getFullYear()+
+"-"+
+String(
+d.getMonth()+1
+).padStart(2,"0");
+
+
+months.push(month);
+
+}
+
+
+const records=[];
+
+
+for(const month of months){
+
+const snap=
+await getDoc(
+doc(
+db,
+"settings",
+"statement_"+month
+)
+);
+
+
+if(snap.exists()){
+
+records.push({
+month,
+...snap.data()
+});
+
+}
+
+}
+
+
+if(!records.length){
+
+container.innerHTML=
+`<div class="empty">
+এখনো কোনো previous statement archive করা হয়নি।
+</div>`;
+
+return;
+
+}
+
+
+container.innerHTML=
+records.map(s=>`
+
+<div class="archive-card">
+
+<div>
+
+<strong>
+${escapeHTML(s.month)}
+</strong>
+
+<small>
+
+Final Profit/Loss:
+৳${money(
+Number(
+s.finalProfit||0
+)
+)}
+
+<br>
+
+Orders:
+${Number(
+s.totalOrders||0
+)}
+
+</small>
+
+</div>
+
+
+<div>
+
+<button
+class="btn blue"
+onclick="openArchived('${escapeHTML(s.month)}')">
+
+View
+
+</button>
+
+</div>
+
+</div>
+
+`).join("");
+
+
+}catch(error){
+
+console.error(error);
+
+container.innerHTML=
+`<div class="empty">
+Archive load failed.
+</div>`;
+
+}
+
+};
+
+
+
+/* =====================================================
+OPEN ARCHIVED
+===================================================== */
+
+window.openArchived=
+async function(month){
+
+try{
+
+const snap=
+await getDoc(
+doc(
+db,
+"settings",
+"statement_"+month
+)
+);
+
+
+if(!snap.exists()){
+
+alert(
+"Statement পাওয়া যায়নি।"
+);
+
+return;
+
+}
+
+
+const s=snap.data();
+
+
+document.getElementById(
+"statementMonth"
+).value=
+month;
+
+
+currentStatement=s;
+
+
+renderStatement(s);
+
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+
+}catch(error){
+
+console.error(error);
+
+alert(
+error.message
+);
+
+}
+
+};
+
+
+
+/* =====================================================
+DOWNLOAD CSV
+===================================================== */
+
+window.downloadCSV=
+function(){
+
+if(!currentStatement){
+
+alert(
+"প্রথমে Calculate করুন।"
+);
+
+return;
+
+}
+
+
+const s=currentStatement;
+
+
+const rows=[
+
+["NatureBite Monthly Financial Statement"],
+
+["Month",s.month],
+
+[],
+
+["Category","Amount"],
+
+["Product Sales",s.productSales],
+
+["Delivery Income",s.deliveryIncome],
+
+["Platform/App Charge",s.platformIncome],
+
+["Total Revenue",s.totalRevenue],
+
+["Coupon Discount",-s.discounts],
+
+["Product Cost",-s.productCost],
+
+["Delivery Partner Cost",-s.partnerCost],
+
+["Refund",-s.refunds],
+
+["Other Expenses",-s.otherExpenses],
+
+["Profit Before Staff/Rider",s.profitBefore],
+
+["Staff Wages",-s.staffWages],
+
+["Rider Wages",-s.riderWages],
+
+["Final Profit/Loss",s.finalProfit],
+
+[],
+
+["Total Orders",s.totalOrders],
+
+["Completed Orders",s.completedOrders],
+
+["Cancelled Orders",s.cancelledOrders],
+
+["COD Collected",s.codCollected],
+
+["Online Payment",s.onlinePayment],
+
+["Rider COD",s.riderCOD],
+
+["COD Outstanding",s.codOutstanding]
+
+];
+
+
+const csv=
+rows.map(row=>
+row.map(cell=>
+`"${String(cell??"")
+.replaceAll('"','""')}"`
+).join(",")
+).join("\n");
+
+
+const blob=
+new Blob(
+["\uFEFF"+csv],
+{
+type:"text/csv;charset=utf-8;"
+}
+);
+
+
+const url=
+URL.createObjectURL(blob);
+
+
+const a=
+document.createElement("a");
+
+
+a.href=url;
+
+a.download=
+"NatureBite-Statement-"+
+s.month+
+".csv";
+
+
+a.click();
+
+
+URL.revokeObjectURL(url);
+
+};
+
+
+
+/* =====================================================
+PRINT
+===================================================== */
+
+window.printStatement=
+function(){
+
+if(!currentStatement){
+
+alert(
+"প্রথমে Calculate করুন।"
+);
+
+return;
+
+}
+
+
+window.print();
+
+};
+
+
+
+/* =====================================================
+ADMIN
+===================================================== */
+
+window.goAdmin=
+function(){
+
+window.location.href=
+"admin.html";
+
+};
+
+
+
+/* =====================================================
+LOGOUT
+===================================================== */
+
+window.logout=
+async function(){
+
+await signOut(auth);
+
+window.location.href=
+"index.html";
+
+};
+
+
+
+/* =====================================================
+HELPERS
+===================================================== */
+
+function money(value){
+
+return Number(
+value||0
+).toLocaleString(
+"en-BD",
+{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}
+);
+
+}
+
+
+function escapeHTML(value){
+
+return String(value??"")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
+
+
+function setProfitClass(
+element,
+value
+){
+
+element.classList.remove(
+"profit",
+"loss"
+);
+
+element.classList.add(
+Number(value)>=0
+?"profit"
+:"loss"
+);
+
+}
+
+
+function showLoading(){
+
+document.getElementById(
+"summaryGrid"
+).innerHTML=
+`<div class="loading">
+Calculating...
+</div>`;
+
+}
+
+
+</script>
+
+
+
+<!-- =====================================================
+PRINT CSS
+===================================================== -->
+
+<style>
+
+@media print{
+
+.header,
+.page-title button,
+.back-btn,
+.logout-btn,
+.control-grid,
+.archive-card button,
+.footer-note,
+.warning,
+.notice{
+ display:none!important;
+}
+
+body{
+ background:white;
+}
+
+.container{
+ max-width:none;
+ padding:0;
+}
+
+.card{
+ border:1px solid #ddd;
+ box-shadow:none;
+ break-inside:avoid;
+}
+
+.final-box{
+ color:black;
+ background:white;
+ border:2px solid #173a25;
+}
+
+.final-item{
+ background:white;
+ border:1px solid #ddd;
+}
+
+.final-item span{
+ color:#555;
+}
+
+}
+
+</style>
+
+</body>
+</html>
