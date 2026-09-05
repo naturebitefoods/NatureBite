@@ -1,0 +1,2218 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>NatureBite Admin Panel</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ font-family:Arial,"Noto Sans Bengali",sans-serif;
+ background:#f4f7f3;
+ color:#183c29;
+}
+
+header{
+ background:#123d27;
+ color:white;
+ padding:15px 20px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ position:sticky;
+ top:0;
+ z-index:50;
+}
+
+.logo{
+ font-size:27px;
+ font-weight:bold;
+}
+
+.layout{
+ display:flex;
+ min-height:calc(100vh - 65px);
+}
+
+.sidebar{
+ width:245px;
+ background:#102f20;
+ color:white;
+ padding:18px 12px;
+}
+
+.sidebar button{
+ width:100%;
+ text-align:left;
+ background:transparent;
+ color:white;
+ margin-bottom:5px;
+ padding:13px;
+ border-radius:10px;
+}
+
+.sidebar button:hover{
+ background:#1b5d3c;
+}
+
+.main{
+ flex:1;
+ padding:25px;
+}
+
+.card{
+ background:white;
+ border-radius:18px;
+ padding:22px;
+ margin-bottom:20px;
+ box-shadow:0 3px 15px rgba(0,0,0,.05);
+}
+
+h1,h2{
+ color:#176b43;
+}
+
+.stats{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+ gap:15px;
+}
+
+.stat{
+ background:white;
+ border-radius:16px;
+ padding:20px;
+ border:1px solid #e0e8e1;
+}
+
+.stat b{
+ display:block;
+ font-size:27px;
+ margin-top:7px;
+}
+
+input,select,textarea{
+ width:100%;
+ padding:12px;
+ border:1px solid #cfd8cf;
+ border-radius:10px;
+ margin:6px 0;
+ font-size:15px;
+}
+
+button{
+ border:0;
+ border-radius:10px;
+ padding:11px 16px;
+ cursor:pointer;
+ font-size:15px;
+}
+
+.green{
+ background:#176b43;
+ color:white;
+}
+
+.red{
+ background:#c92b20;
+ color:white;
+}
+
+.orange{
+ background:#d99400;
+ color:white;
+}
+
+.gray{
+ background:#e7ece7;
+ color:#183c29;
+}
+
+table{
+ width:100%;
+ border-collapse:collapse;
+}
+
+th,td{
+ border-bottom:1px solid #ddd;
+ padding:11px;
+ text-align:left;
+ vertical-align:top;
+}
+
+.scroll{
+ overflow-x:auto;
+}
+
+.hidden{
+ display:none!important;
+}
+
+.notice{
+ background:#eaf7ef;
+ border-left:5px solid #176b43;
+ padding:14px;
+ border-radius:9px;
+ margin:10px 0;
+}
+
+.warning{
+ background:#fff4d5;
+ border-left:5px solid #d99400;
+ padding:14px;
+ border-radius:9px;
+ margin:10px 0;
+}
+
+.variantRow{
+ display:grid;
+ grid-template-columns:1.2fr 1fr 1fr 2fr auto;
+ gap:8px;
+ margin-bottom:8px;
+}
+
+@media(max-width:800px){
+
+ .layout{
+  display:block;
+ }
+
+ .sidebar{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:5px;
+ }
+
+ .main{
+  padding:14px;
+ }
+
+ .variantRow{
+  grid-template-columns:1fr;
+ }
+
+ table{
+  min-width:700px;
+ }
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="logo">NatureBite Admin</div>
+
+ <div>
+   <button class="gray" onclick="location.href='dashboard.html'">
+    Customer Dashboard
+   </button>
+
+   <button class="red" onclick="logout()">
+    Logout
+   </button>
+ </div>
+</header>
+
+<div id="loginBox" class="card" style="margin:30px">
+ <h1>Admin Login Required</h1>
+ <p>Admin/Manager account দিয়ে login করুন।</p>
+ <button class="green" onclick="location.href='index.html'">
+  Go to Login
+ </button>
+</div>
+
+<div id="app" class="layout hidden">
+
+ <aside class="sidebar">
+
+  <button onclick="showSection('dashboard')">📊 Dashboard</button>
+  <button onclick="showSection('orders')">📦 Orders</button>
+  <button onclick="showSection('payments')">💳 Payments</button>
+  <button onclick="showSection('settlements')">💰 Settlements</button>
+  <button onclick="showSection('products')">🥗 Products</button>
+  <button onclick="showSection('customers')">👥 Customers</button>
+  <button onclick="showSection('riders')">🛵 Riders</button>
+  <button onclick="showSection('coupons')">🎟️ Coupons</button>
+  <button onclick="showSection('offers')">🔥 Offers</button>
+  <button onclick="showSection('partners')">🚚 Delivery Partners</button>
+  <button onclick="showSection('staff')">👨‍💼 Staff</button>
+  <button onclick="showSection('settings')">⚙️ Settings</button>
+  <button onclick="showSection('lucky')">🎉 Festival / Lucky Draw</button>
+
+  <button onclick="location.href='monthly-statements.html'">
+   📈 Monthly Statements
+  </button>
+
+ </aside>
+
+ <main class="main">
+
+  <!-- DASHBOARD -->
+
+  <section id="dashboard" class="section">
+
+   <h1>Dashboard</h1>
+
+   <div class="stats">
+
+    <div class="stat">
+     Orders
+     <b id="statOrders">0</b>
+    </div>
+
+    <div class="stat">
+     Pending
+     <b id="statPending">0</b>
+    </div>
+
+    <div class="stat">
+     Completed
+     <b id="statCompleted">0</b>
+    </div>
+
+    <div class="stat">
+     Cancelled
+     <b id="statCancelled">0</b>
+    </div>
+
+    <div class="stat">
+     Sales
+     <b id="statSales">৳0</b>
+    </div>
+
+   </div>
+
+   <div class="card">
+    <h2>Recent Orders</h2>
+    <div id="recentOrders"></div>
+   </div>
+
+  </section>
+
+
+  <!-- ORDERS -->
+
+  <section id="orders" class="section hidden">
+
+   <h1>Order Management</h1>
+
+   <div id="orderList"></div>
+
+  </section>
+
+
+  <!-- PAYMENTS -->
+
+  <section id="payments" class="section hidden">
+
+   <h1>Payment Verification</h1>
+
+   <div id="paymentList"></div>
+
+  </section>
+
+
+  <!-- SETTLEMENTS -->
+
+  <section id="settlements" class="section hidden">
+
+   <h1>Rider COD Settlements</h1>
+
+   <div id="settlementList"></div>
+
+  </section>
+
+
+  <!-- PRODUCTS -->
+
+  <section id="products" class="section hidden">
+
+   <h1>Products</h1>
+
+   <div class="card">
+
+    <input type="hidden" id="productId">
+
+    <label>Product Name</label>
+    <input id="productName">
+
+    <label>Category</label>
+    <input id="productCategory">
+
+    <label>Description</label>
+    <textarea id="productDescription"></textarea>
+
+    <label>Main Product Image URL</label>
+    <input id="productImage"
+     placeholder="https://...">
+
+    <label>Base Price</label>
+    <input id="productPrice" type="number">
+
+    <label>Cost Price</label>
+    <input id="productCost" type="number">
+
+    <label>Base Stock</label>
+    <input id="productStock" type="number">
+
+    <label>
+     <input id="productActive" type="checkbox" checked>
+     Active
+    </label>
+
+    <h3>Multiple Product Variants</h3>
+
+    <div id="variantRows"></div>
+
+    <button class="gray" onclick="addVariantRow()">
+     + Add Variant
+    </button>
+
+    <br><br>
+
+    <button class="green" onclick="saveProduct()">
+     Save Product
+    </button>
+
+    <button class="gray" onclick="clearProductForm()">
+     Clear
+    </button>
+
+   </div>
+
+   <div class="card">
+    <h2>Product List</h2>
+    <div class="scroll">
+     <table>
+      <thead>
+       <tr>
+        <th>Product</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Variants</th>
+        <th>Action</th>
+       </tr>
+      </thead>
+      <tbody id="productList"></tbody>
+     </table>
+    </div>
+   </div>
+
+  </section>
+
+
+  <!-- CUSTOMERS -->
+
+  <section id="customers" class="section hidden">
+
+   <h1>Customers</h1>
+
+   <div class="card">
+    <div id="customerList"></div>
+   </div>
+
+  </section>
+
+
+  <!-- RIDERS -->
+
+  <section id="riders" class="section hidden">
+
+   <h1>Riders</h1>
+
+   <div class="card">
+
+    <input type="hidden" id="riderDocId">
+
+    <input id="riderName" placeholder="Rider Name">
+    <input id="riderPhone" placeholder="Phone">
+    <input id="riderId" placeholder="Rider ID">
+    <input id="riderAuthUid" placeholder="Firebase Auth UID">
+
+    <select id="riderStatus">
+     <option value="offline">Offline</option>
+     <option value="online">Online</option>
+     <option value="busy">Busy</option>
+    </select>
+
+    <button class="green" onclick="saveRider()">
+     Save Rider
+    </button>
+
+   </div>
+
+   <div class="card">
+    <div id="riderList"></div>
+   </div>
+
+  </section>
+
+
+  <!-- COUPONS -->
+
+  <section id="coupons" class="section hidden">
+
+   <h1>Coupons</h1>
+
+   <div class="card">
+
+    <input id="couponDocId" placeholder="Document ID / Code">
+    <input id="couponCodeAdmin" placeholder="Coupon Code">
+
+    <select id="couponType">
+     <option value="percentage">Percentage</option>
+     <option value="fixed">Fixed</option>
+    </select>
+
+    <input id="couponValue" type="number"
+     placeholder="Discount">
+
+    <input id="couponMinimum" type="number"
+     placeholder="Minimum Order">
+
+    <input id="couponLimit" type="number"
+     placeholder="Usage Limit">
+
+    <label>
+     <input id="couponActive" type="checkbox" checked>
+     Active
+    </label>
+
+    <button class="green" onclick="saveCoupon()">
+     Save Coupon
+    </button>
+
+   </div>
+
+   <div id="couponList"></div>
+
+  </section>
+
+
+  <!-- OFFERS -->
+
+  <section id="offers" class="section hidden">
+
+   <h1>Offers</h1>
+
+   <div class="card">
+
+    <input id="offerId" placeholder="Offer Document ID">
+
+    <input id="offerTitle" placeholder="Offer Title">
+
+    <textarea id="offerDescription"
+     placeholder="Description"></textarea>
+
+    <select id="offerType">
+     <option value="percentage">Percentage</option>
+     <option value="fixed">Fixed</option>
+    </select>
+
+    <input id="offerValue" type="number">
+
+    <label>
+     <input id="offerActive" type="checkbox" checked>
+     Active
+    </label>
+
+    <button class="green" onclick="saveOffer()">
+     Save Offer
+    </button>
+
+   </div>
+
+   <div id="offerList"></div>
+
+  </section>
+
+
+  <!-- PARTNERS -->
+
+  <section id="partners" class="section hidden">
+
+   <h1>Delivery Partners</h1>
+
+   <div class="card">
+
+    <input id="partnerId" placeholder="Partner ID">
+
+    <input id="partnerName" placeholder="Partner Name">
+
+    <input id="partnerCost" type="number"
+     placeholder="Default Delivery Partner Cost">
+
+    <label>
+     <input id="partnerActive" type="checkbox" checked>
+     Active
+    </label>
+
+    <button class="green" onclick="savePartner()">
+     Save Partner
+    </button>
+
+   </div>
+
+   <div id="partnerList"></div>
+
+  </section>
+
+
+  <!-- STAFF -->
+
+  <section id="staff" class="section hidden">
+
+   <h1>Staff & Roles</h1>
+
+   <div class="warning">
+    Staff create/update/delete শুধুমাত্র Admin করতে পারবে।
+   </div>
+
+   <div class="card">
+
+    <input id="staffUid" placeholder="Firebase Auth UID">
+
+    <input id="staffName" placeholder="Name">
+
+    <input id="staffEmail" placeholder="Email">
+
+    <select id="staffRole">
+     <option value="manager">Manager</option>
+     <option value="staff">Staff</option>
+     <option value="admin">Admin</option>
+    </select>
+
+    <label>
+     <input id="staffActive" type="checkbox" checked>
+     Active
+    </label>
+
+    <button class="green" onclick="saveStaff()">
+     Save Staff
+    </button>
+
+   </div>
+
+   <div id="staffList"></div>
+
+  </section>
+
+
+  <!-- SETTINGS -->
+
+  <section id="settings" class="section hidden">
+
+   <h1>Settings</h1>
+
+   <div class="card">
+
+    <h2>Delivery</h2>
+
+    <label>Chattogram Delivery</label>
+    <input id="setDelivery" type="number">
+
+    <label>Outside Chattogram Delivery</label>
+    <input id="setOutsideDelivery" type="number">
+
+    <label>Free Delivery Minimum</label>
+    <input id="setFreeDelivery" type="number">
+
+   </div>
+
+   <div class="card">
+
+    <h2>Platform / App Charge</h2>
+
+    <label>
+     <input id="setPlatformEnabled" type="checkbox">
+     Enabled
+    </label>
+
+    <select id="setPlatformType">
+     <option value="percentage">Percentage</option>
+     <option value="fixed">Fixed</option>
+    </select>
+
+    <input id="setPlatformValue" type="number">
+
+   </div>
+
+   <div class="card">
+
+    <h2>Payment</h2>
+
+    <input id="setBkash" placeholder="bKash Number">
+    <input id="setNagad" placeholder="Nagad Number">
+
+    <button class="green" onclick="saveSettings()">
+     Save Settings
+    </button>
+
+   </div>
+
+  </section>
+
+
+  <!-- LUCKY DRAW -->
+
+  <section id="lucky" class="section hidden">
+
+   <h1>Festival & Lucky Draw</h1>
+
+   <div class="card">
+
+    <label>
+     <input id="luckyEnabled" type="checkbox">
+     Lucky Draw Enabled
+    </label>
+
+    <input id="luckyTitle"
+     placeholder="Festival / Campaign Title">
+
+    <input id="luckyStart" type="date">
+
+    <input id="luckyEnd" type="date">
+
+    <input id="luckyDrawDate" type="date">
+
+    <input id="luckyPrize"
+     placeholder="Prize">
+
+    <button class="green" onclick="saveLuckyDraw()">
+     Save Campaign
+    </button>
+
+   </div>
+
+  </section>
+
+ </main>
+</div>
+
+
+<script type="module">
+
+import {
+ initializeApp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+import {
+ getAuth,
+ onAuthStateChanged,
+ signOut
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+import {
+ getFirestore,
+ collection,
+ getDocs,
+ getDoc,
+ doc,
+ setDoc,
+ updateDoc,
+ addDoc,
+ deleteDoc,
+ query,
+ where,
+ limit,
+ serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+
+const firebaseConfig={
+ apiKey:"AIzaSyDBRf8g83TnMYdoaKkpYpn_-boYng-SHE",
+ authDomain:"naturebite-538ba.firebaseapp.com",
+ projectId:"naturebite-538ba",
+ storageBucket:"naturebite-538ba.firebasestorage.app",
+ messagingSenderId:"403660151204",
+ appId:"1:403660151204:web:15db421e18442e85d70931"
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+
+let currentUser=null;
+let currentRole=null;
+let orders=[];
+let riders=[];
+let products=[];
+
+
+onAuthStateChanged(auth,async user=>{
+
+ if(!user){
+   showLogin();
+   return;
+ }
+
+ try{
+
+   const staffSnap=await getDoc(
+     doc(db,"staff",user.uid)
+   );
+
+   if(
+     !staffSnap.exists() ||
+     staffSnap.data().active!==true ||
+     !["admin","manager"].includes(
+       staffSnap.data().role
+     )
+   ){
+
+     showLogin();
+     return;
+   }
+
+   currentUser=user;
+   currentRole=staffSnap.data().role;
+
+   document.getElementById("loginBox")
+    .classList.add("hidden");
+
+   document.getElementById("app")
+    .classList.remove("hidden");
+
+   await loadAll();
+
+ }catch(e){
+
+   console.error(e);
+   showLogin();
+
+ }
+
+});
+
+
+function showLogin(){
+
+ document.getElementById("loginBox")
+  .classList.remove("hidden");
+
+ document.getElementById("app")
+  .classList.add("hidden");
+
+}
+
+
+window.logout=async()=>{
+ await signOut(auth);
+ location.href="index.html";
+};
+
+
+window.showSection=id=>{
+
+ document.querySelectorAll(".section")
+ .forEach(x=>x.classList.add("hidden"));
+
+ document.getElementById(id)
+ .classList.remove("hidden");
+
+};
+
+
+async function loadAll(){
+
+ await loadOrders();
+ await loadProducts();
+ await loadRiders();
+
+ loadDashboard();
+ loadProductsTable();
+ loadRiderTable();
+ loadCustomers();
+ loadCoupons();
+ loadOffers();
+ loadPartners();
+ loadStaff();
+ loadSettings();
+ loadLuckyDraw();
+ loadPayments();
+ loadSettlements();
+
+}
+
+
+async function loadOrders(){
+
+ const snap=await getDocs(
+   query(collection(db,"orders"),limit(2000))
+ );
+
+ orders=[];
+
+ snap.forEach(d=>{
+   orders.push({id:d.id,...d.data()});
+ });
+
+}
+
+
+function loadDashboard(){
+
+ document.getElementById("statOrders")
+ .innerText=orders.length;
+
+ document.getElementById("statPending")
+ .innerText=orders.filter(o=>
+   !["delivered","cancelled"].includes(
+     o.orderStatus
+   )
+ ).length;
+
+ document.getElementById("statCompleted")
+ .innerText=orders.filter(o=>
+   ["delivered","completed"].includes(
+     o.orderStatus
+   )
+ ).length;
+
+ document.getElementById("statCancelled")
+ .innerText=orders.filter(o=>
+   o.cancelled===true ||
+   o.orderStatus==="cancelled"
+ ).length;
+
+ const sales=orders
+ .filter(o=>!o.cancelled)
+ .reduce((s,o)=>s+Number(o.totalAmount||0),0);
+
+ document.getElementById("statSales")
+ .innerText="৳"+sales.toFixed(2);
+
+ const recent=[...orders]
+ .sort((a,b)=>
+   (b.createdAt?.seconds||0)-
+   (a.createdAt?.seconds||0)
+ )
+ .slice(0,10);
+
+ document.getElementById("recentOrders").innerHTML=
+ recent.map(o=>`
+
+  <div class="notice">
+
+   <b>${esc(o.trackingCode||o.id)}</b><br>
+
+   Customer:
+   ${esc(o.customerName||"")}<br>
+
+   Total:
+   ৳${Number(o.totalAmount||0).toFixed(2)}<br>
+
+   Status:
+   ${esc(o.orderStatus||"pending")}
+
+  </div>
+
+ `).join("");
+
+ loadOrderTable();
+
+}
+
+
+function loadOrderTable(){
+
+ document.getElementById("orderList").innerHTML=
+ orders.map(o=>`
+
+ <div class="card">
+
+  <h3>
+   ${esc(o.trackingCode||o.id)}
+  </h3>
+
+  <p>
+   <b>Customer:</b>
+   ${esc(o.customerName||"")}
+  </p>
+
+  <p>
+   <b>Phone:</b>
+   ${esc(o.customerPhone||"")}
+  </p>
+
+  <p>
+   <b>Address:</b>
+   ${esc(o.address||"")}
+  </p>
+
+  <p>
+   <b>Total:</b>
+   ৳${Number(o.totalAmount||0).toFixed(2)}
+  </p>
+
+  <label>Status</label>
+
+  <select id="status-${o.id}">
+   ${[
+    "payment_verification_pending",
+    "confirmed",
+    "processing",
+    "assigned",
+    "picked_up",
+    "out_for_delivery",
+    "delivered",
+    "cancelled"
+   ].map(s=>`
+    <option
+     value="${s}"
+     ${o.orderStatus===s?"selected":""}>
+     ${s}
+    </option>
+   `).join("")}
+  </select>
+
+  <label>Assign Rider</label>
+
+  <select id="rider-${o.id}">
+   <option value="">Select Rider</option>
+
+   ${riders.map(r=>`
+    <option
+     value="${r.riderId||r.id}"
+     ${o.assignedRiderId===
+       (r.riderId||r.id)
+       ?"selected":""}>
+     ${esc(r.name||"")} -
+     ${esc(r.riderId||r.id)}
+    </option>
+   `).join("")}
+
+  </select>
+
+  <label>Delivery Partner</label>
+
+  <select id="partner-${o.id}">
+   <option value="">NatureBite</option>
+   <option value="Steadfast"
+    ${o.deliveryPartner==="Steadfast"?"selected":""}>
+    Steadfast
+   </option>
+   <option value="Pathao"
+    ${o.deliveryPartner==="Pathao"?"selected":""}>
+    Pathao
+   </option>
+  </select>
+
+  <button class="green"
+   onclick="saveOrder('${o.id}')">
+   Save Order
+  </button>
+
+  <button class="gray"
+   onclick="printOrder('${o.id}')">
+   🖨️ Print / QR
+  </button>
+
+ </div>
+
+ `).join("");
+
+}
+
+
+window.saveOrder=async id=>{
+
+ const status=
+  document.getElementById("status-"+id).value;
+
+ const rider=
+  document.getElementById("rider-"+id).value;
+
+ const partner=
+  document.getElementById("partner-"+id).value;
+
+ const update={
+
+   orderStatus:status,
+
+   assignedRiderId:rider||"",
+
+   riderAssigned:!!rider,
+
+   riderAssignedAt:
+    rider ? serverTimestamp() : null,
+
+   deliveryPartner:
+    partner || "NatureBite",
+
+   notification:
+    status==="confirmed"
+    ?
+    "আপনার অর্ডার টি কনফার্ম হয়েছে এবং চট্টগ্রাম জোন এর মধ্যে হলে আগামী ১ থেকে ২ দিন এর মধ্যে আপনার অর্ডার ডেলিভারি সম্পুর্ন হবে আর চট্টগ্রাম জোন এর বাহিরে হলে ৩ থেকে ৪ দিন এর মধ্যে সম্পুর্ন করা হবে।"
+    :
+    "Order status updated: "+status
+
+ };
+
+ if(rider){
+
+   update.barcodeValue=
+    id;
+
+ }
+
+ await updateDoc(
+   doc(db,"orders",id),
+   update
+ );
+
+ alert("Order updated.");
+ await loadOrders();
+ loadDashboard();
+
+};
+
+
+async function loadProducts(){
+
+ const snap=await getDocs(
+  query(collection(db,"products"),limit(500))
+ );
+
+ products=[];
+
+ snap.forEach(d=>{
+  products.push({
+   id:d.id,
+   ...d.data(),
+   variants:Array.isArray(d.data().variants)
+    ? d.data().variants
+    : []
+  });
+ });
+
+}
+
+
+function loadProductsTable(){
+
+ document.getElementById("productList").innerHTML=
+ products.map(p=>`
+
+ <tr>
+
+  <td>
+   <b>${esc(p.name||"")}</b>
+  </td>
+
+  <td>${esc(p.category||"")}</td>
+
+  <td>৳${Number(p.price||0)}</td>
+
+  <td>${Number(p.stock||0)}</td>
+
+  <td>${p.variants.length}</td>
+
+  <td>
+
+   <button class="green"
+    onclick="editProduct('${p.id}')">
+    Edit
+   </button>
+
+   <button class="red"
+    onclick="deleteProduct('${p.id}')">
+    Delete
+   </button>
+
+  </td>
+
+ </tr>
+
+ `).join("");
+
+}
+
+
+window.addVariantRow=(v={})=>{
+
+ const div=document.createElement("div");
+
+ div.className="variantRow";
+
+ div.innerHTML=`
+
+  <input class="vName"
+   placeholder="Option / Weight"
+   value="${escAttr(v.name||v.optionName||"")}">
+
+  <input class="vPrice"
+   type="number"
+   placeholder="Price"
+   value="${v.price||""}">
+
+  <input class="vStock"
+   type="number"
+   placeholder="Stock"
+   value="${v.stock||""}">
+
+  <input class="vImage"
+   placeholder="Image URL"
+   value="${escAttr(v.image||v.imageUrl||"")}">
+
+  <button class="red"
+   onclick="this.parentElement.remove()">
+   X
+  </button>
+
+ `;
+
+ document.getElementById("variantRows")
+ .appendChild(div);
+
+};
+
+
+window.clearProductForm=()=>{
+
+ document.getElementById("productId").value="";
+ document.getElementById("productName").value="";
+ document.getElementById("productCategory").value="";
+ document.getElementById("productDescription").value="";
+ document.getElementById("productImage").value="";
+ document.getElementById("productPrice").value="";
+ document.getElementById("productCost").value="";
+ document.getElementById("productStock").value="";
+ document.getElementById("productActive").checked=true;
+ document.getElementById("variantRows").innerHTML="";
+
+};
+
+
+window.editProduct=id=>{
+
+ const p=products.find(x=>x.id===id);
+
+ if(!p)return;
+
+ document.getElementById("productId").value=id;
+ document.getElementById("productName").value=p.name||"";
+ document.getElementById("productCategory").value=p.category||"";
+ document.getElementById("productDescription").value=p.description||"";
+ document.getElementById("productImage").value=p.imageUrl||"";
+ document.getElementById("productPrice").value=p.price||0;
+ document.getElementById("productCost").value=p.costPrice||0;
+ document.getElementById("productStock").value=p.stock||0;
+ document.getElementById("productActive").checked=
+  p.active!==false;
+
+ document.getElementById("variantRows").innerHTML="";
+
+ p.variants.forEach(v=>addVariantRow(v));
+
+ window.scrollTo({top:0,behavior:"smooth"});
+
+};
+
+
+window.saveProduct=async()=>{
+
+ const id=document.getElementById("productId").value.trim();
+
+ const variants=
+ [...document.querySelectorAll(".variantRow")]
+ .map(row=>({
+
+   name:row.querySelector(".vName").value.trim(),
+
+   price:Number(
+    row.querySelector(".vPrice").value||0
+   ),
+
+   stock:Number(
+    row.querySelector(".vStock").value||0
+   ),
+
+   image:row.querySelector(".vImage").value.trim()
+
+ }))
+ .filter(v=>v.name);
+
+ const data={
+
+  name:document.getElementById("productName").value.trim(),
+
+  category:document.getElementById("productCategory").value.trim(),
+
+  description:
+   document.getElementById("productDescription").value.trim(),
+
+  imageUrl:
+   document.getElementById("productImage").value.trim(),
+
+  price:Number(
+   document.getElementById("productPrice").value||0
+  ),
+
+  costPrice:Number(
+   document.getElementById("productCost").value||0
+  ),
+
+  stock:Number(
+   document.getElementById("productStock").value||0
+  ),
+
+  active:
+   document.getElementById("productActive").checked,
+
+  variants:variants,
+
+  updatedAt:serverTimestamp()
+
+ };
+
+ if(!data.name){
+
+   alert("Product name দিন।");
+   return;
+
+ }
+
+ if(id){
+
+  await updateDoc(
+   doc(db,"products",id),
+   data
+  );
+
+ }else{
+
+  data.createdAt=serverTimestamp();
+
+  await addDoc(
+   collection(db,"products"),
+   data
+  );
+
+ }
+
+ alert("Product saved.");
+
+ clearProductForm();
+ await loadProducts();
+ loadProductsTable();
+
+};
+
+
+window.deleteProduct=async id=>{
+
+ if(!confirm("এই product delete করবেন?"))
+   return;
+
+ await deleteDoc(
+  doc(db,"products",id)
+ );
+
+ await loadProducts();
+ loadProductsTable();
+
+};
+
+
+async function loadRiders(){
+
+ const snap=await getDocs(
+  query(collection(db,"riders"),limit(500))
+ );
+
+ riders=[];
+
+ snap.forEach(d=>{
+  riders.push({
+   id:d.id,
+   ...d.data()
+  });
+ });
+
+}
+
+
+function loadRiderTable(){
+
+ document.getElementById("riderList").innerHTML=
+ riders.map(r=>`
+
+ <div class="card">
+
+  <b>${esc(r.name||"")}</b><br>
+  Rider ID: ${esc(r.riderId||r.id)}<br>
+  Phone: ${esc(r.phone||"")}<br>
+  Status: ${esc(r.status||"offline")}<br>
+  COD Outstanding:
+  ৳${Number(r.codOutstanding||0)}
+
+ </div>
+
+ `).join("");
+
+}
+
+
+window.saveRider=async()=>{
+
+ const id=document.getElementById("riderDocId").value.trim();
+
+ const rider={
+
+  name:document.getElementById("riderName").value.trim(),
+
+  phone:document.getElementById("riderPhone").value.trim(),
+
+  riderId:document.getElementById("riderId").value.trim(),
+
+  authUid:document.getElementById("riderAuthUid").value.trim(),
+
+  status:document.getElementById("riderStatus").value,
+
+  active:true,
+
+  walletBalance:0,
+
+  codCollected:0,
+
+  codOutstanding:0,
+
+  settlementStatus:"clear"
+
+ };
+
+ if(!rider.riderId){
+
+   alert("Rider ID দিন।");
+   return;
+
+ }
+
+ if(id){
+
+  await updateDoc(
+   doc(db,"riders",id),
+   rider
+  );
+
+ }else{
+
+  await addDoc(
+   collection(db,"riders"),
+   rider
+  );
+
+ }
+
+ alert("Rider saved.");
+
+ await loadRiders();
+ loadRiderTable();
+
+};
+
+
+async function loadCoupons(){
+
+ const snap=await getDocs(
+  query(collection(db,"coupons"),limit(500))
+ );
+
+ document.getElementById("couponList").innerHTML=
+ [...snap.docs].map(d=>{
+
+  const c=d.data();
+
+  return `
+   <div class="card">
+
+    <b>${esc(c.code||d.id)}</b><br>
+
+    ${esc(c.discountType||"")}
+    :
+    ${Number(c.discountValue||0)}<br>
+
+    Minimum:
+    ৳${Number(c.minimumOrder||0)}<br>
+
+    Active:
+    ${c.active===true?"Yes":"No"}
+
+   </div>
+  `;
+
+ }).join("");
+
+}
+
+
+window.saveCoupon=async()=>{
+
+ const id=
+  document.getElementById("couponDocId").value.trim();
+
+ const code=
+  document.getElementById("couponCodeAdmin")
+  .value.trim().toUpperCase();
+
+ if(!id || !code){
+  alert("Document ID এবং Code দিন।");
+  return;
+ }
+
+ await setDoc(
+  doc(db,"coupons",id),
+  {
+   code:code,
+   discountType:
+    document.getElementById("couponType").value,
+   discountValue:Number(
+    document.getElementById("couponValue").value||0
+   ),
+   minimumOrder:Number(
+    document.getElementById("couponMinimum").value||0
+   ),
+   usageLimit:Number(
+    document.getElementById("couponLimit").value||0
+   ),
+   active:
+    document.getElementById("couponActive").checked,
+   updatedAt:serverTimestamp()
+  },
+  {merge:true}
+ );
+
+ alert("Coupon saved.");
+ loadCoupons();
+
+};
+
+
+async function loadOffers(){
+
+ const snap=await getDocs(
+  query(collection(db,"offers"),limit(500))
+ );
+
+ document.getElementById("offerList").innerHTML=
+ [...snap.docs].map(d=>{
+
+  const o=d.data();
+
+  return `
+   <div class="card">
+    <b>${esc(o.title||d.id)}</b><br>
+    ${esc(o.description||"")}<br>
+    Discount:
+    ${Number(o.discountValue||0)}
+    ${esc(o.discountType||"")}<br>
+    Active:
+    ${o.active===true?"Yes":"No"}
+   </div>
+  `;
+
+ }).join("");
+
+}
+
+
+window.saveOffer=async()=>{
+
+ const id=
+  document.getElementById("offerId").value.trim();
+
+ if(!id){
+  alert("Offer ID দিন।");
+  return;
+ }
+
+ await setDoc(
+  doc(db,"offers",id),
+  {
+   title:document.getElementById("offerTitle").value.trim(),
+   description:document.getElementById("offerDescription").value.trim(),
+   discountType:document.getElementById("offerType").value,
+   discountValue:Number(
+    document.getElementById("offerValue").value||0
+   ),
+   active:document.getElementById("offerActive").checked,
+   updatedAt:serverTimestamp()
+  },
+  {merge:true}
+ );
+
+ alert("Offer saved.");
+ loadOffers();
+
+};
+
+
+async function loadPartners(){
+
+ const snap=await getDocs(
+  query(collection(db,"deliveryPartners"),limit(100))
+ );
+
+ document.getElementById("partnerList").innerHTML=
+ [...snap.docs].map(d=>{
+
+  const p=d.data();
+
+  return `
+   <div class="card">
+    <b>${esc(p.name||d.id)}</b><br>
+    Active: ${p.active===true?"Yes":"No"}<br>
+    Default Cost:
+    ৳${Number(p.defaultCost||0)}
+   </div>
+  `;
+
+ }).join("");
+
+}
+
+
+window.savePartner=async()=>{
+
+ const id=
+  document.getElementById("partnerId").value.trim();
+
+ if(!id)return;
+
+ await setDoc(
+  doc(db,"deliveryPartners",id),
+  {
+   name:
+    document.getElementById("partnerName").value.trim(),
+   defaultCost:
+    Number(document.getElementById("partnerCost").value||0),
+   active:
+    document.getElementById("partnerActive").checked,
+   type:"external"
+  },
+  {merge:true}
+ );
+
+ alert("Partner saved.");
+ loadPartners();
+
+};
+
+
+async function loadCustomers(){
+
+ const snap=await getDocs(
+  query(collection(db,"users"),limit(1000))
+ );
+
+ document.getElementById("customerList").innerHTML=
+ [...snap.docs]
+ .filter(d=>d.data().role==="customer")
+ .map(d=>{
+
+  const u=d.data();
+
+  return `
+   <div class="card">
+    <b>${esc(u.name||"Customer")}</b><br>
+    Phone: ${esc(u.phone||"")}<br>
+    Active: ${u.active!==false?"Yes":"No"}
+   </div>
+  `;
+
+ }).join("");
+
+}
+
+
+async function loadStaff(){
+
+ const snap=await getDocs(
+  query(collection(db,"staff"),limit(500))
+ );
+
+ document.getElementById("staffList").innerHTML=
+ [...snap.docs].map(d=>{
+
+  const s=d.data();
+
+  return `
+   <div class="card">
+    <b>${esc(s.name||"")}</b><br>
+    UID: ${esc(d.id)}<br>
+    Email: ${esc(s.email||"")}<br>
+    Role: ${esc(s.role||"")}<br>
+    Active:
+    ${s.active===true?"Yes":"No"}
+   </div>
+  `;
+
+ }).join("");
+
+}
+
+
+window.saveStaff=async()=>{
+
+ if(currentRole!=="admin"){
+  alert("শুধুমাত্র Admin staff manage করতে পারবেন।");
+  return;
+ }
+
+ const uid=
+  document.getElementById("staffUid").value.trim();
+
+ if(!uid){
+  alert("Firebase Auth UID দিন।");
+  return;
+ }
+
+ await setDoc(
+  doc(db,"staff",uid),
+  {
+   name:document.getElementById("staffName").value.trim(),
+   email:document.getElementById("staffEmail").value.trim(),
+   role:document.getElementById("staffRole").value,
+   active:document.getElementById("staffActive").checked
+  },
+  {merge:true}
+ );
+
+ alert("Staff saved.");
+ loadStaff();
+
+};
+
+
+async function loadSettings(){
+
+ const d=await getDoc(
+  doc(db,"settings","public")
+ );
+
+ if(!d.exists())return;
+
+ const s=d.data();
+
+ document.getElementById("setDelivery").value=
+  s.deliveryCharge||60;
+
+ document.getElementById("setOutsideDelivery").value=
+  s.outsideDeliveryCharge||120;
+
+ document.getElementById("setFreeDelivery").value=
+  s.freeDeliveryMinimum||1000;
+
+ document.getElementById("setPlatformEnabled").checked=
+  s.platformEnabled===true;
+
+ document.getElementById("setPlatformType").value=
+  s.platformType||"percentage";
+
+ document.getElementById("setPlatformValue").value=
+  s.platformValue||0;
+
+ document.getElementById("setBkash").value=
+  s.bkashNumber||"";
+
+ document.getElementById("setNagad").value=
+  s.nagadNumber||"";
+
+}
+
+
+window.saveSettings=async()=>{
+
+ const data={
+
+  deliveryCharge:Number(
+   document.getElementById("setDelivery").value||60
+  ),
+
+  outsideDeliveryCharge:Number(
+   document.getElementById("setOutsideDelivery").value||120
+  ),
+
+  freeDeliveryMinimum:Number(
+   document.getElementById("setFreeDelivery").value||1000
+  ),
+
+  platformEnabled:
+   document.getElementById("setPlatformEnabled").checked,
+
+  platformType:
+   document.getElementById("setPlatformType").value,
+
+  platformValue:Number(
+   document.getElementById("setPlatformValue").value||0
+  ),
+
+  bkashNumber:
+   document.getElementById("setBkash").value.trim(),
+
+  nagadNumber:
+   document.getElementById("setNagad").value.trim(),
+
+  updatedAt:serverTimestamp()
+
+ };
+
+ await setDoc(
+  doc(db,"settings","public"),
+  data,
+  {merge:true}
+ );
+
+ await setDoc(
+  doc(db,"settings","delivery"),
+  {
+   charge:data.deliveryCharge,
+   outsideDeliveryCharge:data.outsideDeliveryCharge,
+   freeDeliveryMinimum:data.freeDeliveryMinimum,
+   active:true
+  },
+  {merge:true}
+ );
+
+ await setDoc(
+  doc(db,"settings","platform"),
+  {
+   enabled:data.platformEnabled,
+   type:data.platformType,
+   value:data.platformValue
+  },
+  {merge:true}
+ );
+
+ await setDoc(
+  doc(db,"settings","payment"),
+  {
+   bkashNumber:data.bkashNumber,
+   nagadNumber:data.nagadNumber,
+   deliveryChargePaymentRequired:true,
+   active:true
+  },
+  {merge:true}
+ );
+
+ alert("Settings saved.");
+
+};
+
+
+async function loadLuckyDraw(){
+
+ const d=await getDoc(
+  doc(db,"settings","luckyDraw")
+ );
+
+ if(!d.exists())return;
+
+ const x=d.data();
+
+ document.getElementById("luckyEnabled").checked=
+  x.enabled===true;
+
+ document.getElementById("luckyTitle").value=
+  x.title||"";
+
+ document.getElementById("luckyStart").value=
+  x.startDate||"";
+
+ document.getElementById("luckyEnd").value=
+  x.endDate||"";
+
+ document.getElementById("luckyDrawDate").value=
+  x.drawDate||"";
+
+ document.getElementById("luckyPrize").value=
+  x.prize||"";
+
+}
+
+
+window.saveLuckyDraw=async()=>{
+
+ await setDoc(
+  doc(db,"settings","luckyDraw"),
+  {
+   enabled:
+    document.getElementById("luckyEnabled").checked,
+
+   title:
+    document.getElementById("luckyTitle").value.trim(),
+
+   startDate:
+    document.getElementById("luckyStart").value,
+
+   endDate:
+    document.getElementById("luckyEnd").value,
+
+   drawDate:
+    document.getElementById("luckyDrawDate").value,
+
+   prize:
+    document.getElementById("luckyPrize").value.trim(),
+
+   updatedAt:serverTimestamp()
+  },
+  {merge:true}
+ );
+
+ alert("Lucky Draw settings saved.");
+
+};
+
+
+async function loadPayments(){
+
+ const snap=await getDocs(
+  query(collection(db,"paymentVerifications"),limit(500))
+ );
+
+ document.getElementById("paymentList").innerHTML=
+ [...snap.docs].map(d=>{
+
+  const p=d.data();
+
+  return `
+   <div class="card">
+
+    <b>Order:</b>
+    ${esc(p.orderId||"")}<br>
+
+    <b>Transaction:</b>
+    ${esc(p.transactionId||"")}<br>
+
+    <b>Amount:</b>
+    ৳${Number(p.amount||0)}<br>
+
+    <b>Status:</b>
+    ${esc(p.status||"pending")}<br><br>
+
+    ${
+     p.status==="pending"
+     ?
+     `
+      <button class="green"
+       onclick="verifyPayment('${d.id}',true)">
+       Accept
+      </button>
+
+      <button class="red"
+       onclick="verifyPayment('${d.id}',false)">
+       Reject
+      </button>
+     `
+     :""
+    }
+
+   </div>
+  `;
+
+ }).join("");
+
+}
+
+
+window.verifyPayment=async(id,accepted)=>{
+
+ const ref=doc(
+  db,"paymentVerifications",id
+ );
+
+ const snap=await getDoc(ref);
+
+ if(!snap.exists())return;
+
+ const p=snap.data();
+
+ await updateDoc(
+  ref,
+  {
+   status:accepted?"verified":"rejected",
+   verifiedAt:serverTimestamp(),
+   verifiedBy:currentUser.uid
+  }
+ );
+
+ if(p.orderId){
+
+  await updateDoc(
+   doc(db,"orders",p.orderId),
+   {
+    paymentStatus:
+     accepted?"verified":"rejected",
+
+    orderStatus:
+     accepted?"confirmed":"payment_failed",
+
+    notification:
+     accepted
+     ?
+     "আপনার অর্ডার টি কনফার্ম হয়েছে এবং চট্টগ্রাম জোন এর মধ্যে হলে আগামী ১ থেকে ২ দিন এর মধ্যে আপনার অর্ডার ডেলিভারি সম্পুর্ন হবে আর চট্টগ্রাম জোন এর বাহিরে হলে ৩ থেকে ৪ দিন এর মধ্যে সম্পুর্ন করা হবে।"
+     :
+     "আপনার payment verification সফল হয়নি।"
+   }
+  );
+
+ }
+
+ alert("Payment updated.");
+ loadPayments();
+ loadOrders();
+ loadDashboard();
+
+};
+
+
+async function loadSettlements(){
+
+ const snap=await getDocs(
+  query(collection(db,"settlements"),limit(500))
+ );
+
+ document.getElementById("settlementList").innerHTML=
+ [...snap.docs].map(d=>{
+
+  const s=d.data();
+
+  return `
+   <div class="card">
+
+    Rider:
+    ${esc(s.riderId||"")}<br>
+
+    Amount:
+    ৳${Number(s.amount||0)}<br>
+
+    Transaction:
+    ${esc(s.transactionId||"")}<br>
+
+    Status:
+    ${esc(s.status||"pending")}<br><br>
+
+    ${
+     s.status==="pending"
+     ?
+     `<button class="green"
+       onclick="verifySettlement('${d.id}')">
+       Verify Settlement
+      </button>`
+     :""
+    }
+
+   </div>
+  `;
+
+ }).join("");
+
+}
+
+
+window.verifySettlement=async id=>{
+
+ const ref=doc(
+  db,"settlements",id
+ );
+
+ const snap=await getDoc(ref);
+
+ if(!snap.exists())return;
+
+ const s=snap.data();
+
+ const amount=Number(s.amount||0);
+
+ await updateDoc(
+  ref,
+  {
+   status:"verified",
+   verifiedAt:serverTimestamp(),
+   verifiedBy:currentUser.uid,
+   riderWalletDeducted:true
+  }
+ );
+
+ if(s.riderId){
+
+  const q=query(
+   collection(db,"riders"),
+   where("riderId","==",s.riderId),
+   limit(1)
+  );
+
+  const rs=await getDocs(q);
+
+  if(!rs.empty){
+
+   const rd=rs.docs[0];
+
+   const r=rd.data();
+
+   await updateDoc(
+    rd.ref,
+    {
+     codOutstanding:
+      Math.max(
+       0,
+       Number(r.codOutstanding||0)-amount
+      ),
+
+     lastSettlementAmount:amount,
+     settlementStatus:"clear"
+    }
+   );
+
+  }
+
+ }
+
+ alert("Settlement verified.");
+ loadSettlements();
+ loadRiders();
+
+};
+
+
+window.printOrder=async id=>{
+
+ const snap=await getDoc(
+  doc(db,"orders",id)
+ );
+
+ if(!snap.exists())return;
+
+ const o=snap.data();
+
+ const win=window.open("","_blank");
+
+ win.document.write(`
+ <!DOCTYPE html>
+ <html>
+ <head>
+ <title>NatureBite Order</title>
+
+ <style>
+ body{
+  font-family:Arial;
+  padding:25px;
+ }
+ .box{
+  border:2px solid #176b43;
+  padding:20px;
+  border-radius:15px;
+ }
+ </style>
+
+ </head>
+
+ <body>
+
+ <div class="box">
+
+  <h1>NatureBite</h1>
+
+  <h2>
+   Order:
+   ${esc(o.trackingCode||id)}
+  </h2>
+
+  <p>
+   Customer:
+   ${esc(o.customerName||"")}
+  </p>
+
+  <p>
+   Phone:
+   ${esc(o.customerPhone||"")}
+  </p>
+
+  <p>
+   Address:
+   ${esc(o.address||"")}
+  </p>
+
+  <p>
+   Payment:
+   ${esc(o.paymentMethod||"")}
+  </p>
+
+  <p>
+   Total:
+   ৳${Number(o.totalAmount||0).toFixed(2)}
+  </p>
+
+  <hr>
+
+  <h3>Products</h3>
+
+  ${
+   (o.items||[]).map(x=>`
+    <div>
+     ${esc(x.name||"")}
+     ${x.variantName
+       ? " - "+esc(x.variantName)
+       : ""}
+     × ${x.qty}
+    </div>
+   `).join("")
+  }
+
+  <br>
+
+  <div id="qr"></div>
+
+ </div>
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
+
+ <script>
+ new QRCode(document.getElementById("qr"),{
+  text:${JSON.stringify(o.trackingCode||id)},
+  width:180,
+  height:180
+ });
+
+ setTimeout(()=>window.print(),500);
+ <\/script>
+
+ </body>
+ </html>
+ `);
+
+ win.document.close();
+
+};
+
+
+function esc(v){
+
+ return String(v??"")
+  .replaceAll("&","&amp;")
+  .replaceAll("<","&lt;")
+  .replaceAll(">","&gt;")
+  .replaceAll('"',"&quot;")
+  .replaceAll("'","&#039;");
+
+}
+
+function escAttr(v){
+
+ return esc(v);
+
+}
+
+</script>
+
+</body>
+</html>
